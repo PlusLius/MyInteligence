@@ -1,13 +1,14 @@
 <template>
-  <div>
-       <!-- 下拉 -->
-
 
 
     <!-- 侧滑 -->
     <div class="vux-1px-t">
       <swipeout>
-         <swipeout-item @on-close="handleEvents('on-close')" @on-open="handleEvents('on-open')" transition-mode="follow">
+         <swipeout-item
+         @on-close="handleEvents('on-close')"
+         @on-open="handleEvents('on-open')"
+         transition-mode="follow"
+         >
                      <!-- 侧滑菜单 -->
                     <div slot="right-menu">
                       <swipeout-button @click.native="onButtonClick('fav')" type="primary">{{'Yes'}}</swipeout-button>
@@ -29,8 +30,28 @@
 
                               </cell>
 
-                               <!-- 下拉内容 -->
-                              <p class="slide" :class="showContent001?'animate':''">blablabla...<br/>blablabla...<br/>blablabla...<br/>blablabla...</p>
+
+                              <div class="slide" :class="showContent001?'animate':''">
+                                    <!-- 下拉内容 -->
+                                  <div class="vux-1px-t">
+                                     <swipeout>
+
+                                        <swipeout-item @on-close="handleEvents('on-close')"
+                                        @on-open="handleEvents('on-open')"
+                                        transition-mode="follow"
+                                        >
+                                          <div slot="right-menu">
+                                            <swipeout-button @click.native="onButtonClick('fav')" type="primary">{{'Yes'}}</swipeout-button>
+                                            <swipeout-button @click.native="onButtonClick('delete')" type="warn">{{'Right'}}</swipeout-button>
+                                          </div>
+                                          <div slot="content" class="demo-content vux-1px-t">
+                                              {{"Lorem"}}
+                                          </div>
+                                        </swipeout-item>
+
+                                       </swipeout>
+                                  </div>
+                              </div>
 
                           </group>
 
@@ -40,7 +61,7 @@
       </swipeout>
     </div>
 
-  </div>
+
 </template>
 
 
@@ -102,7 +123,7 @@ export default {
   color: #888;
 }
 .slide {
-  padding: 0 20px;
+  /* padding: 0 20px; */
   overflow: hidden;
   max-height: 0;
   transition: max-height .5s cubic-bezier(0, 1, 0, 1) -.1s;
@@ -111,6 +132,10 @@ export default {
   max-height: 9999px;
   transition-timing-function: cubic-bezier(0.5, 0, 1, 0);
   transition-delay: 0s;
+}
+
+.up {
+
 }
 /* .demo-content {
   padding: 10px 10px;
