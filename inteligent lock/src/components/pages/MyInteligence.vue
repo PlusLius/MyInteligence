@@ -1,69 +1,20 @@
 <template>
+  <div>
 
+    <group>
+      <cell
+      :title="'showContent001'"
+      is-link
+      :border-intent="false"
+      :arrow-direction="showContent001 ? 'up' : 'down'"
+      @click.native="showContent001 = !showContent001"></cell>
 
-    <!-- 侧滑 -->
-    <div class="vux-1px-t">
-      <swipeout>
-         <swipeout-item
-         @on-close="handleEvents('on-close')"
-         @on-open="handleEvents('on-open')"
-         transition-mode="follow"
-         >
-                     <!-- 侧滑菜单 -->
-                    <div slot="right-menu">
-                      <swipeout-button @click.native="onButtonClick('fav')" type="primary">{{'Yes'}}</swipeout-button>
-                      <swipeout-button @click.native="onButtonClick('delete')" type="warn">{{'Right'}}</swipeout-button>
-                    </div>
+      <p class="slide" :class="showContent001?'animate':''">blablabla...<br/>blablabla...<br/>blablabla...<br/>blablabla...</p>
 
-                       <!-- 侧滑内容 -->
-                     <div slot="content" class="demo-content vux-1px-t">
-                          <group>
-                              <cell
-                              :title="'乾元物联'"
-                              is-link
-                              :border-intent="false"
-                              :arrow-direction="showContent001 ? 'up' : 'down'"
-                              @click.native="showContent001 = !showContent001">
+    </group>
 
-
-
-
-                              </cell>
-
-
-                              <div class="slide" :class="showContent001?'animate':''">
-                                    <!-- 下拉内容 -->
-                                  <div class="vux-1px-t">
-                                     <swipeout>
-
-                                        <swipeout-item @on-close="handleEvents('on-close')"
-                                        @on-open="handleEvents('on-open')"
-                                        transition-mode="follow"
-                                        >
-                                          <div slot="right-menu">
-                                            <swipeout-button @click.native="onButtonClick('fav')" type="primary">{{'Yes'}}</swipeout-button>
-                                            <swipeout-button @click.native="onButtonClick('delete')" type="warn">{{'Right'}}</swipeout-button>
-                                          </div>
-                                          <div slot="content" class="demo-content vux-1px-t">
-                                              {{"Lorem"}}
-                                          </div>
-                                        </swipeout-item>
-
-                                       </swipeout>
-                                  </div>
-                              </div>
-
-                          </group>
-
-                    </div>
-
-        </swipeout-item>
-      </swipeout>
-    </div>
-
-
+  </div>
 </template>
-
 
 
 <script>
@@ -89,11 +40,17 @@ export default {
     onClick () {
       console.log('on click')
     },
-    onButtonClick (type) {
+    onButtonClick2 (type) {
       alert('on button click ' + type)
+    },
+    handleEvents2 (type) {
+        this.disabled = true;
     },
     handleEvents (type) {
       console.log('event: ', type)
+    },
+    handleEvents1 (type) {
+      this.disabled = false;
     }
   },
   data () {
@@ -110,9 +67,7 @@ export default {
       }],
       money: null,
       showContent001: false,
-      showContent002: false,
-      showContent003: false,
-      showContent004: false
+      disabled:false
     }
   }
 }
@@ -134,9 +89,17 @@ export default {
   transition-delay: 0s;
 }
 
-.up {
-
+.vux-no-group-title {
+  margin-top:0;
 }
+
+.Swipeout-Height {
+  height:44px;
+}
+.weui-cell__ft:after {
+      transition: transform 300ms, -webkit-transform 300ms;
+}
+
 /* .demo-content {
   padding: 10px 10px;
 } */

@@ -4,18 +4,31 @@ import Vue from 'vue'
 import FastClick from 'fastclick'
 import VueRouter from 'vue-router'
 import App from './App'
-import MyInteligence from './components/pages/MyInteligence.vue'
+import MyInteligence from './components/pages/MyInteligence'
+import MyDynamicKey from './components/pages/MyDynamicKey'
 import Home from './components/HelloFromVux'
 
 
 Vue.use(VueRouter)
 
 const routes = [{
-  path: '/',
+  path: '/MyDynamicKey',
+  component: MyDynamicKey,
+  children: [
+    {
+        path: 'MyInteligence',
+        components:MyInteligence
+    }
+  ]
+
+},{
+  path: '/MyInteligence',
   component: MyInteligence
-}]
+}
+]
 
 const router = new VueRouter({
+  mode: 'history',
   routes
 })
 
