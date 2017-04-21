@@ -1,11 +1,7 @@
 <!-- 锁系统密钥组件 -->
 <template>
     <div>
-        <!-- 锁添加密钥部分 -->
-        <div class="addDevice">
-            <div class="DeviceIcon"></div>
-            <div class="DeviceFont">添加设备</div>
-        </div>
+
         <!-- 锁系统列表部分 -->
         <div class="DeviceList">
             <!-- 上拉加载下拉滚动组件 -->
@@ -94,34 +90,7 @@
 
 </script>
 <style scoped>
-    .addDevice {
-        position: relative;
-        width: 100%;
-        height: 161px;
-        background: #29b6f6;
-    }
-    .DeviceIcon,.DeviceFont {
-        position: absolute;
-        left:50%;
-    }
-    .DeviceIcon {
-        top:22px;
-        margin-left: -40px;
-        width: 80px;
-        height: 80px;
-        background: gold;
-    }
-    .DeviceFont {
-        bottom:22px;
-        margin-left: -40px;
-        text-align: center;
-        width: 80px;
-        height: 23px;
-        color:#000;
-    }
     .DeviceHeight {
-      /*   height: 80px;
-        line-height: 80px; */
         border-bottom: 1px solid #ccc;
     }
     .DeviceListSize {

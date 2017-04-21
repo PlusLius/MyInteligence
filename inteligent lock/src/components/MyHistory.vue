@@ -1,30 +1,23 @@
 <!-- 锁系统密钥组件 -->
 <template>
     <div>
-        <!-- 锁添加密钥部分 -->
-        <div class="addDevice">
-            <div class="DeviceIcon"></div>
-            <div class="DeviceFont">添加设备</div>
-        </div>
+
         <!-- 锁系统列表部分 -->
         <div class="DeviceList">
             <!-- 上拉加载下拉滚动组件 -->
             <scroller lock-x  @on-scorll="onScroll" height="500px">
             <!-- 上拉加载下拉滚动组件内容填充 -->
-              <div class="DeviceHeight" v-for="i in 5">
+              <div class="DeviceHeight" v-for="i in 2">
                   <!-- 侧滑组件 -->
                    <swipeout>
                     <!-- 侧滑组件容器 -->
                       <swipeout-item
                       :disabled="disabled"
                       transition-mode="follow"
-                      :right-menu-width="210"
+                      :right-menu-width="70"
                       >
                       <!-- 侧滑组件右侧菜单 -->
                         <div slot="right-menu">
-                          <swipeout-button background-color="#26c6da" :width="70" class="demo">{{'编辑'}}
-                          </swipeout-button>
-                          <swipeout-button background-color="#ffa726" :width="70"> {{'分享'}}</swipeout-button>
                           <swipeout-button background-color="#e84e40" :width="70">{{'删除'}}</swipeout-button>
                         </div>
                         <!-- 侧滑组件正文显示部分 -->
@@ -39,9 +32,6 @@
                                 <div class="DeviceListColor">
                                     {{'ID: 123456654321'}}
                                 </div>
-                            </div>
-                            <div class="DeviceListIcon2">
-                                <router-link to="/MyDynamicKey/MyKeyManagement" class="DeviceIcon2">Home</router-link>
                             </div>
                             <div class="DeviceListGetKey">
                                 <div class="DeviceGetKey">
@@ -94,34 +84,7 @@
 
 </script>
 <style scoped>
-    .addDevice {
-        position: relative;
-        width: 100%;
-        height: 161px;
-        background: #29b6f6;
-    }
-    .DeviceIcon,.DeviceFont {
-        position: absolute;
-        left:50%;
-    }
-    .DeviceIcon {
-        top:22px;
-        margin-left: -40px;
-        width: 80px;
-        height: 80px;
-        background: gold;
-    }
-    .DeviceFont {
-        bottom:22px;
-        margin-left: -40px;
-        text-align: center;
-        width: 80px;
-        height: 23px;
-        color:#000;
-    }
     .DeviceHeight {
-      /*   height: 80px;
-        line-height: 80px; */
         border-bottom: 1px solid #ccc;
     }
     .DeviceListSize {
@@ -136,23 +99,6 @@
         width: 13%;
         height: 80px;
         background: yellowgreen;
-    }
-    .DeviceListIcon2 {
-        position:relative;
-        float: left;
-        width: 12%;
-        height: 80px;
-        background: pink;
-    }
-    .DeviceIcon2 {
-        position:absolute;
-        left:50%;
-        top:50%;
-        margin-left: -10%;
-        margin-top: -10%;
-        width: 20%;
-        height: 20%;
-        background: red;
     }
     .DeviceListID {
         float: left;
@@ -187,11 +133,6 @@
         background: red;
     }
 </style>
-
-
-
-
-
 
 
 

@@ -4,33 +4,66 @@ import Vue from 'vue'
 import FastClick from 'fastclick'
 import VueRouter from 'vue-router'
 import App from './App'
+
 import MyInteligence from './components/pages/MyInteligence'
 import MyDynamicKey from './components/pages/MyDynamicKey'
+import MyKeyManagement from './components/pages/MyKeyManagement'
+import MyResentUse from './components/pages/MyResentUse'
+import MyHistory from './components/MyHistory'
+import MyUserList from './components/MyUserList'
+
 import Home from './components/HelloFromVux'
 
 
 Vue.use(VueRouter)
 
-const routes = [{
-  path: '/MyDynamicKey',
-  component: MyDynamicKey,
-  children: [
-    {
-        path: 'MyInteligence',
-        components:MyInteligence
-    }
-  ]
+const routes = [
 
-},{
-  path: '/MyInteligence',
-  component: MyInteligence
-}
+    {
+      path:'/',
+      meta: {title: 'MyDynamicKey'},
+      component:MyResentUse,
+    },
+    {
+      path: '/MyDynamicKey',
+      meta: {title: 'MyDynamicKey'},
+      component: MyDynamicKey
+    },
+    {
+      path: '/MyDynamicKey/MyKeyManagement',
+      meta: {title: 'MyKeyManagement'},
+      component: MyKeyManagement
+    },
+    {
+      path: '/MyResentUse',
+      component:MyResentUse,
+      children: [
+        {
+          path: 'MyHistory',
+          component:MyHistory
+        },
+        {
+          path: 'MyUserList',
+          component:MyUserList
+        }
+      ]
+    }
 ]
 
 const router = new VueRouter({
   mode: 'history',
   routes
 })
+
+router.beforeEach(function (to,from,next) {
+
+    if (to.meta.title) {
+        document.title = to.meta.title;
+        console.log( document.title)
+    }
+
+    next();
+});
 
 FastClick.attach(document.body)
 
