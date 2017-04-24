@@ -1,18 +1,32 @@
 <template>
   <div>
 
-    <group>
-      <cell
-      :title="'showContent001'"
-      is-link
-      :border-intent="false"
-      :arrow-direction="showContent001 ? 'up' : 'down'"
-      @click.native="showContent001 = !showContent001"></cell>
+      <group>
+             <cell
+              is-link
+              :border-intent="false"
+              :arrow-direction="showContent001 ? 'up' : 'down'"
+              @click.native="showContent001 = !showContent001"
+              class="cls"
+            >
+              <img slot="icon" width="20" style="display:block;margin-right:5px;" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAC4AAAAuCAMAAABgZ9sFAAAAVFBMVEXx8fHMzMzr6+vn5+fv7+/t7e3d3d2+vr7W1tbHx8eysrKdnZ3p6enk5OTR0dG7u7u3t7ejo6PY2Njh4eHf39/T09PExMSvr6+goKCqqqqnp6e4uLgcLY/OAAAAnklEQVRIx+3RSRLDIAxE0QYhAbGZPNu5/z0zrXHiqiz5W72FqhqtVuuXAl3iOV7iPV/iSsAqZa9BS7YOmMXnNNX4TWGxRMn3R6SxRNgy0bzXOW8EBO8SAClsPdB3psqlvG+Lw7ONXg/pTld52BjgSSkA3PV2OOemjIDcZQWgVvONw60q7sIpR38EnHPSMDQ4MjDjLPozhAkGrVbr/z0ANjAF4AcbXmYAAAAASUVORK5CYII=">
+                <div>
+                  {{'乾元捂脸'}}
+                </div>
+                <div>
+                  {{'id: dsfsdf'}}
+                </div>
+               <div>
+                  <span style="color: green">{{'Hi, I\'m Vux.'}}</span>
+                </div>
+          </cell>
 
-      <p class="slide" :class="showContent001?'animate':''">blablabla...<br/>blablabla...<br/>blablabla...<br/>blablabla...</p>
-
-    </group>
-
+           <template v-if="showContent001">
+            <cell-box :border-intent="false" class="sub-item" is-link>content 001</cell-box>
+            <cell-box class="sub-item" is-link>content 001</cell-box>
+            <cell-box class="sub-item" is-link>content 001</cell-box>
+          </template>
+      </group>
   </div>
 </template>
 
@@ -103,5 +117,8 @@ export default {
 /* .demo-content {
   padding: 10px 10px;
 } */
+.weui-cell_access .weui-cell__ft:after {
+  border-color: red !important;
+}
 </style>
 

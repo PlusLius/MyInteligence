@@ -12,6 +12,8 @@ import MyResentUse from './components/pages/MyResentUse'
 import MyHistory from './components/MyHistory'
 import MyUserList from './components/MyUserList'
 
+import cs from './components/pages/cs'
+
 import Home from './components/HelloFromVux'
 
 
@@ -22,7 +24,7 @@ const routes = [
     {
       path:'/',
       meta: {title: 'MyDynamicKey'},
-      component:MyResentUse,
+      component: MyInteligence,
     },
     {
       path: '/MyDynamicKey',
