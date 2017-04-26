@@ -5,11 +5,11 @@
         <!-- 历史记录列表部分 -->
         <div class="DeviceList">
             <!-- 上拉加载下拉滚动组件 -->
-            <scroller lock-x  @on-scorll="onScroll" height="800px" >
+            <scroller lock-x  @on-scorll="onScroll" height="400px" :scroll-bottom-offst="100">
             <!-- 上拉加载下拉滚动组件内容填充 -->
               <div class="DeviceHeight" >
-                  <!-- 侧滑组件 -->
-                   <swipeout v-for="i in 100">
+                    <!-- 侧滑组件 -->
+                   <swipeout v-for="i in 10">
                     <!-- 侧滑组件容器 -->
                       <swipeout-item
                       :disabled="disabled"
@@ -46,7 +46,7 @@
                       </swipeout-item>
 
                     </swipeout>
-
+                    <load-more tip="loading"></load-more>
               </div>
             </scroller>
         </div>
@@ -142,8 +142,6 @@
         height: 10px;
         background: red;
     }
-
-
 </style>
 
 

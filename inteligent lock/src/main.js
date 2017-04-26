@@ -24,7 +24,7 @@ const routes = [
     {
       path:'/',
       meta: {title: 'MyDynamicKey'},
-      component: MyInteligence,
+      component: cs,
     },
     {
       path: '/MyDynamicKey',

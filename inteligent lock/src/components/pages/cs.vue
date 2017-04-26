@@ -1,181 +1,107 @@
-<!-- <template>
-  <div>
-  <div class="vux-1px-t">
-
-    <swipeout>
-
-      <swipeout-item @on-close="handleEvents('on-close')" @on-open="handleEvents('on-open')" transition-mode="follow">
-        <div slot="right-menu">
-          <swipeout-button @click.native="onButtonClick('fav')" type="primary">{{'Yes'}}</swipeout-button>
-          <swipeout-button @click.native="onButtonClick('delete')" type="warn">{{'Right'}}</swipeout-button>
-        </div>
-        <div slot="content" class="demo-content vux-1px-t">
-
-                <swipeout>
-
-                  <swipeout-item @on-close="handleEvents('on-close')" @on-open="handleEvents('on-open')" transition-mode="follow">
-                    <div slot="right-menu">
-                      <swipeout-button @click.native="onButtonClick('fav')" type="primary">{{'Yes'}}</swipeout-button>
-                      <swipeout-button @click.native="onButtonClick('delete')" type="warn">{{'Right'}}</swipeout-button>
-                    </div>
-                    <div slot="content" class="demo-content vux-1px-t">
-                    {{'JavaScript is the best language'}}
-                    </div>
-                  </swipeout-item>
-
-
-                </swipeout>
-
-
-
-        </div>
-      </swipeout-item>
-
-
-    </swipeout>
-  </div>
-
-
-<!--     <div style="padding:15px;">
-      <x-button @click.native="disabled = false" type="primary" :disabled="!disabled">{{ 'set Enabled' }}</x-button>
-      <x-button @click.native="disabled = true" type="warn" :disabled="disabled">{{ 'set Disabled' }}</x-button>
-      <x-button @click.native="$refs.swipeoutItem.open('left')" type="primary">{{ 'open left menu' }}</x-button>
-      <x-button @click.native="$refs.swipeoutItem.open('right')" type="primary">{{ 'open right menu' }}</x-button>
-      <x-button @click.native="$refs.swipeoutItem.close()" type="warn">{{ 'close menu' }}</x-button>
-    </div> -->
-  <!-- </div>
-</template>
-
-
-
-<script>
-import { Swipeout, SwipeoutItem, SwipeoutButton, XButton } from 'vux'
-
-export default {
-  components: {
-    Swipeout,
-    SwipeoutItem,
-    SwipeoutButton,
-    XButton
-  },
-  methods: {
-    onButtonClick (type) {
-      alert('on button click ' + type)
-    },
-    handleEvents (type) {
-      console.log('event: ', type)
-    }
-  },
-  data () {
-    return {
-      disabled: false
-    }
-  }
-}
-</script>
-
-<style lang="less">
-.demo-content {
-  padding: 10px 10px;
-}
-</style> --> -->
-
-
 <template>
   <div>
- <!--    <group>
-      <x-switch :title="'Basic Usage'" v-model="show1"></x-switch>
-      <x-switch :title="'Show cancel menu'" v-model="show2"></x-switch>
-      <x-switch :title="'menu as tips'" v-model="show3"></x-switch>
-      <x-switch :title="'Array menu'" v-model="show5"></x-switch>
-    </group>
- -->
-    <group>
-      <x-switch :title="'Basic Usage'" v-model="show4"></x-switch>
-    </group>
 
-   <!--  <actionsheet v-model="show4" :menus="menus1" :close-on-clicking-mask="false" show-cancel></actionsheet>
+    <div>
+       <tab :line-width=2 active-color='#fc378c' v-model="index">
+        <tab-item class="vux-center" :selected="demo2 === item" v-for="(item, index) in list2" @click="demo2 = item" :key="index">{{item}}</tab-item>
+      </tab>
+      <swiper v-model="index" height="100px" :show-dots="false">
+        <swiper-item v-for="(item, index) in list2" :key="index">
+          <!-- <div class="tab-swiper vux-center">{{item}} Container</div> -->
+          <div v-for="i in 10">
+              {{i}}
+          </div>
+        </swiper-item>
+      </swiper>
+    </div>
 
-    <actionsheet v-model="show1" :menus="menus1" @on-click-menu="click"></actionsheet>
-
-    <actionsheet v-model="show2" :menus="menus2" @on-click-menu="click" show-cancel></actionsheet>
-
-    <actionsheet v-model="show3" :menus="menus3" @on-click-menu="click" @on-click-menu-delete="onDelete" show-cancel></actionsheet>
-
-    <actionsheet v-model="show5" :menus="menus5" show-cancel @on-click-menu="click"></actionsheet>
- -->
-    <toast v-model="showSuccess">{{'Deleted~'}}</toast>
-  </div>
+</div>
 </template>
 
 
 
 <script>
-import { Actionsheet, Group, XSwitch, Toast } from 'vux'
+import { Tab, TabItem, Sticky, Divider, XButton, Swiper, SwiperItem } from 'vux'
+const list = () => ['精选', '美食', '电影', '酒店', '外卖']
 
 export default {
   components: {
-    Actionsheet,
-    Group,
-    XSwitch,
-    Toast
+    Tab,
+    TabItem,
+    Sticky,
+    Divider,
+    XButton,
+    Swiper,
+    SwiperItem
   },
   data () {
     return {
-      show1: false,
-      menus1: {
-        menu1: 'Share to friends',
-        menu2: 'Share to timeline'
-      },
-      show2: false,
-      menus2: {
-        menu1: 'Take Photo',
-        menu2: 'Choose from photos'
-      },
-      show3: false,
-      show4: false,
-      show5: false,
-      menus5: [{
-        label: 'Are you sure?<br/><span style="color:#666;font-size:12px;">Once deleted, you will never find it.</span>',
-        type: 'info'
-      }, {
-        label: 'Primary',
-        type: 'primary',
-        value: 'primary'
-      }, {
-        label: 'Warn',
-        type: 'warn'
-      }, {
-        label: 'Disabled',
-        type: 'disabled'
-      }, {
-        label: 'Default'
-      }],
-      showSuccess: false,
-      menus3: {
-        'title.noop': 'Are you sure?<br/><span style="color:#666;font-size:12px;">Once deleted, you will never find it.</span>',
-        delete: '<span style="color:red">Delete</span>'
+      list2: list(),
+      demo2: '美食',
+      list3: ['收到的消息', '发出的消息'],
+      demo3: '收到的消息',
+      list4: ['正在正映', '即将上映'],
+      demo4: '即将上映',
+      demoDisabled: 'A',
+      index: 0,
+      getBarWidth: function (index) {
+        return (index + 1) * 22 + 'px'
       }
     }
   },
   methods: {
-    click (key) {
-      console.log(key)
+    onItemClick (index) {
+      console.log('on item click:', index)
     },
-    onDelete () {
-      this.showSuccess = true
+    addTab () {
+      if (this.list2.length < 5) {
+        this.list2 = list().slice(0, this.list2.length + 1)
+      }
+    },
+    removeTab () {
+      if (this.list2.length > 1) {
+        this.list2 = list().slice(0, this.list2.length - 1)
+      }
+    },
+    next () {
+      if (this.index === this.list2.length - 1) {
+        this.index = 0
+      } else {
+        ++this.index
+      }
+    },
+    prev () {
+      if (this.index === 0) {
+        this.index = this.list2.length - 1
+      } else {
+        --this.index
+      }
     }
   }
 }
 </script>
 
-<style>
-.popup0 {
-  padding-bottom:15px;
-  height:200px;
+<style lang="less" scoped>
+@import '~vux/src/styles/1px.less';
+@import '~vux/src/styles/center.less';
+
+.box {
+  padding: 15px;
 }
-.popup1 {
-  width:100%;
-  height:100%;
+.active-6-1 {
+  color: rgb(252, 55, 140) !important;
+  border-color: rgb(252, 55, 140) !important;
+}
+.active-6-2 {
+  color: #04be02 !important;
+  border-color: #04be02 !important;
+}
+.active-6-3 {
+  color: rgb(55, 174, 252) !important;
+  border-color: rgb(55, 174, 252) !important;
+}
+.tab-swiper {
+  background-color: #fff;
+  height: 100px;
 }
 </style>

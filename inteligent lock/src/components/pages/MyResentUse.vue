@@ -1,7 +1,7 @@
 <!-- 最近使用页面组件 -->
 <template>
 
-    <div class="BODY">
+    <div>
         <!-- 电量头部部分 -->
         <div class="MyResentUse">
             <div class="Electricity">
@@ -22,7 +22,7 @@
         </div>
 
         <!-- 用户列表与历史记录跳转部分 -->
-        <div class="HistoryMenu">
+   <!--      <div class="HistoryMenu">
             <router-link to="/MyResentUse/MyHistory" class="HistoryMenuFont1">
                 <img src="../../assets/qietu/历史记录灰.png" class="HistoryMenuImg1">
                 历史记录
@@ -31,13 +31,35 @@
                 <img src="../../assets/qietu/用户列表灰.png" class="HistoryMenuImg2">
                 用户列表
             </router-link>
+        </div> -->
+        <div class="HistoryMenu">
+            <div class="HistoryMenuFont1" @click="MyHistory()">
+                <img src="../../assets/qietu/历史记录灰.png" class="HistoryMenuImg1">
+                历史记录
+            </div>
+            <div class="HistoryMenuFont2" @click="MyUserList()">
+                <img src="../../assets/qietu/用户列表灰.png" class="HistoryMenuImg2">
+                用户列表
+            </div>
         </div>
-        <router-view></router-view>
+
+        <div v-if="type == 'MyHistory'">
+            <MyHistory></MyHistory>
+        </div>
+        <div v-else-if="type == 'MyUserList'">
+            <MyUserList></MyUserList>
+        </div>
+
+       <!--  <div class="Container">
+              <router-view></router-view>
+        </div> -->
 
         <div class="AllListMenu">
-            <router-link to="#" class="HistoryMenuFont1">
+            <router-link to="/MyInteligen" class="MyHistoryUse">
+                最近使用
             </router-link>
-            <router-link to="#" class="HistoryMenuFont2">
+            <router-link to="/MyInteligen" class="MyInteligen">
+                我的智能
             </router-link>
         </div>
     </div>
@@ -45,12 +67,26 @@
 </template>
 
 <script>
+    import MyHistory from '../MyHistory'
+    import MyUserList from '../MyUserList'
     export default {
         data(){
             return {
-
+                type: ''
             }
         },
+        components: {
+            MyHistory,
+            MyUserList
+        },
+        methods: {
+            MyHistory (){
+                this.type = 'MyHistory'
+            },
+            MyUserList (){
+                this.type = 'MyUserList'
+            },
+        }
     }
 </script>
 
@@ -141,15 +177,21 @@
         border-bottom: 4px solid #00AEFF;
         color: #00AEFF;
     }
-    .BODY {
-        position: relative;
-    }
     .AllListMenu {
-        position: absolute;
+        position: fixed;
+        display:flex;
+        align-items: center;
         bottom:0;
         width: 100%;
         height: 50px;
-        background: red;
+        background: #F8F8F8;
         border-top: 1px solid #ccc;
+    }
+    .MyHistoryUse,.MyInteligen {
+        flex-grow:1;
+        text-align:center;
+        height: 3.125em;
+        line-height: 3.125em;
+        color:#999;
     }
 </style>
