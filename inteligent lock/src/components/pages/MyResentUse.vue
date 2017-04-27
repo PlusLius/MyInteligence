@@ -21,24 +21,11 @@
             </div>
         </div>
 
-        <!-- 用户列表与历史记录跳转部分 -->
-   <!--      <div class="HistoryMenu">
-            <router-link to="/MyResentUse/MyHistory" class="HistoryMenuFont1">
-                <img src="../../assets/qietu/历史记录灰.png" class="HistoryMenuImg1">
-                历史记录
-            </router-link>
-            <router-link to="/MyResentUse/MyUserList" class="HistoryMenuFont2">
-                <img src="../../assets/qietu/用户列表灰.png" class="HistoryMenuImg2">
-                用户列表
-            </router-link>
-        </div> -->
         <div class="HistoryMenu">
-            <div class="HistoryMenuFont1" @click="MyHistory()">
-                <img src="../../assets/qietu/历史记录灰.png" class="HistoryMenuImg1">
+            <div class="HistoryMenuFont1 icon-History" :class="{colorBlue:Active1}" @click="MyHistory()">
                 历史记录
             </div>
-            <div class="HistoryMenuFont2" @click="MyUserList()">
-                <img src="../../assets/qietu/用户列表灰.png" class="HistoryMenuImg2">
+            <div class="HistoryMenuFont2 icon-UserList" :class="{colorBlue:Active2}" @click="MyUserList()">
                 用户列表
             </div>
         </div>
@@ -50,15 +37,12 @@
             <MyUserList></MyUserList>
         </div>
 
-       <!--  <div class="Container">
-              <router-view></router-view>
-        </div> -->
 
         <div class="AllListMenu">
-            <router-link to="/MyInteligen" class="MyHistoryUse">
+            <router-link to="/MyResentUse" class="MyHistoryUse icon-RecentUse">
                 最近使用
             </router-link>
-            <router-link to="/MyInteligen" class="MyInteligen">
+            <router-link to="/MyInteligence" class="MyInteligen icon-MyInteligence">
                 我的智能
             </router-link>
         </div>
@@ -72,7 +56,9 @@
     export default {
         data(){
             return {
-                type: ''
+                type: '',
+                Active1:false,
+                Active2:false
             }
         },
         components: {
@@ -81,10 +67,14 @@
         },
         methods: {
             MyHistory (){
-                this.type = 'MyHistory'
+                this.Active2 = false;
+                this.type = 'MyHistory';
+                this.Active1 = true;
             },
             MyUserList (){
-                this.type = 'MyUserList'
+                this.Active1 = false;
+                this.type = 'MyUserList';
+                this.Active2 = true;
             },
         }
     }
@@ -168,14 +158,14 @@
         height: 3.125em;
         line-height: 3.125em;
         color:#999;
+        vertical-align:middle;
+         align-items: flex-end;
     }
     .HistoryMenuFont1 {
         border-right: 1px solid #ccc;
     }
     .router-link-active {
-        box-sizing:border-box;
-        border-bottom: 4px solid #00AEFF;
-        color: #00AEFF;
+        color: #00A6F4 !important;
     }
     .AllListMenu {
         position: fixed;
@@ -190,8 +180,23 @@
     .MyHistoryUse,.MyInteligen {
         flex-grow:1;
         text-align:center;
-        height: 3.125em;
-        line-height: 3.125em;
+        font-size: 10px;
         color:#999;
+    }
+    .icon-History:before,.icon-UserList:before {
+        position: relative;
+        top: 1px;
+        font-size: 20px;
+        vertical-align: top;
+    }
+    .icon-RecentUse:before,.icon-MyInteligence:before {
+        display:block;
+        font-size:24px;
+        margin-bottom: 5px;
+    }
+    .colorBlue {
+        color:#00AEFF;
+        box-sizing:border-box;
+        border-bottom:4px solid #00AEFF;
     }
 </style>

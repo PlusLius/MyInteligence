@@ -15,6 +15,10 @@
       </swiper>
     </div>
 
+
+    <div class="icon-box">
+
+    </div>
 </div>
 </template>
 
@@ -104,4 +108,6 @@ export default {
   background-color: #fff;
   height: 100px;
 }
+
+
 </style>

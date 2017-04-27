@@ -49,7 +49,11 @@ const routes = [
           component:MyUserList
         }
       ]
-    }
+    },
+    {
+      path: '/MyInteligence',
+      component: MyInteligence
+    },
 ]
 
 const router = new VueRouter({

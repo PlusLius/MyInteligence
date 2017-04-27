@@ -27,6 +27,15 @@
             <cell-box class="sub-item" is-link>content 001</cell-box>
           </template>
       </group>
+
+      <div class="AllListMenu">
+            <router-link to="/MyResentUse" class="MyHistoryUse icon-RecentUse">
+                最近使用
+            </router-link>
+            <router-link to="/MyInteligence" class="MyInteligen icon-MyInteligence">
+                我的智能
+            </router-link>
+      </div>
   </div>
 </template>
 
@@ -120,5 +129,42 @@ export default {
 .weui-cell_access .weui-cell__ft:after {
   border-color: red !important;
 }
+
+
+  .AllListMenu {
+      position: fixed;
+      display:flex;
+      align-items: center;
+      bottom:0;
+      width: 100%;
+      height: 50px;
+      background: #F8F8F8;
+      border-top: 1px solid #ccc;
+  }
+  .MyHistoryUse,.MyInteligen {
+      flex-grow:1;
+      text-align:center;
+      font-size: 10px;
+      color:#999;
+  }
+  .icon-History:before,.icon-UserList:before {
+      position: relative;
+      top: 1px;
+      font-size: 20px;
+      vertical-align: top;
+  }
+  .icon-RecentUse:before,.icon-MyInteligence:before {
+      display:block;
+      font-size:24px;
+      margin-bottom: 5px;
+  }
+  .router-link-active {
+      color: #00A6F4 !important;
+  }
+  .colorBlue {
+      color:#00AEFF;
+      box-sizing:border-box;
+      border-bottom:4px solid #00AEFF;
+  }
 </style>
 
