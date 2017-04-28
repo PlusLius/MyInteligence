@@ -1,113 +1,152 @@
 <template>
   <div>
+    <group>
+      <cell is-link title="pullup" link="/component/pullup">Pullup</cell>
+      <cell is-link title="pulldown" link="/component/pulldown">Pulldown</cell>
+      <cell is-link title="pulldownpullup" link="/component/pulldown-pullup">PulldownPullup</cell>
+    </group>
 
-    <div>
-       <tab :line-width=2 active-color='#fc378c' v-model="index">
-        <tab-item class="vux-center" :selected="demo2 === item" v-for="(item, index) in list2" @click="demo2 = item" :key="index">{{item}}</tab-item>
-      </tab>
-      <swiper v-model="index" height="100px" :show-dots="false">
-        <swiper-item v-for="(item, index) in list2" :key="index">
-          <!-- <div class="tab-swiper vux-center">{{item}} Container</div> -->
-          <div v-for="i in 10">
-              {{i}}
-          </div>
-        </swiper-item>
-      </swiper>
-    </div>
+    <divider>{{ 'A Horizontal Scroller without Scrollbar' }}</divider>
+    <scroller lock-y :scrollbar-x=false>
+      <div class="box1">
+        <div class="box1-item" v-for="i in 7"><span>{{' ' + i + ' '}}</span></div>
+      </div>
+    </scroller>
 
+    <divider>{{ 'A Horizontal Scroller with Scrollbar' }}</divider>
+    <scroller lock-y scrollbar-x>
+      <div class="box1">
+        <div class="box1-item" v-for="i in 7"><span>{{' ' + i + ' '}}</span></div>
+      </div>
+    </scroller>
 
-    <div class="icon-box">
+    <divider>{{ 'A Horizontal Scroller without bounce effect' }}</divider>
+    <scroller lock-y scrollbar-x :bounce=false>
+      <div class="box1">
+        <div class="box1-item" v-for="i in 7"><span>{{' ' + i + ' '}}</span></div>
+      </div>
+    </scroller>
 
-    </div>
-</div>
+    <divider>{{ 'A Vertical Scroller' }} scrollTop: {{scrollTop}}</divider>
+    <scroller lock-x height="200px" @on-scroll="onScroll" ref="scrollerEvent">
+      <div class="box2">
+        <p v-for="i in 80">placeholder {{i}}</p>
+      </div>
+    </scroller>
+
+    <x-button type="primary" @click.native="$refs.scrollerEvent.reset({top:0})">reset</x-button>
+
+    <divider>{{ 'event:on-scroll-bottom' }} </divider>
+    <scroller lock-x height="200px" @on-scroll-bottom="onScrollBottom" ref="scrollerBottom" :scroll-bottom-offst="200">
+      <div class="box2">
+        <p v-for="i in bottomCount">placeholder {{i}}</p>
+        <load-more tip="loading"></load-more>
+      </div>
+    </scroller>
+
+    <divider>{{ 'A Vertical Scroller with scrollbar' }}</divider>
+    <scroller lock-x scrollbar-y height="200px" ref="scroller">
+      <div class="box2">
+        <p v-for="i in 20" v-if="showList1">placeholder {{ i + '' + i }}</p>
+        <p v-for="i in 10" v-if="!showList1">placeholder {{ i }}</p>
+        <x-button style="margin:10px 0;" type="primary" @click.native="onClickButton">{{ 'Button' }}</x-button>
+        <group>
+          <cell @click.native="onCellClick" title="Title" value="Value"></cell>
+        </group>
+      </div>
+    </scroller>
+    <x-button @click.native="changeList" type="primary">{{ 'show another list' }}</x-button>
+  </div>
 </template>
 
 
 
 <script>
-import { Tab, TabItem, Sticky, Divider, XButton, Swiper, SwiperItem } from 'vux'
-const list = () => ['精选', '美食', '电影', '酒店', '外卖']
+import { Scroller, Divider, Spinner, XButton, Group, Cell, LoadMore } from 'vux'
 
 export default {
   components: {
-    Tab,
-    TabItem,
-    Sticky,
+    Scroller,
     Divider,
+    Spinner,
     XButton,
-    Swiper,
-    SwiperItem
+    Group,
+    Cell,
+    LoadMore
   },
   data () {
     return {
-      list2: list(),
-      demo2: '美食',
-      list3: ['收到的消息', '发出的消息'],
-      demo3: '收到的消息',
-      list4: ['正在正映', '即将上映'],
-      demo4: '即将上映',
-      demoDisabled: 'A',
-      index: 0,
-      getBarWidth: function (index) {
-        return (index + 1) * 22 + 'px'
-      }
+      showList1: true,
+      scrollTop: 0,
+      onFetching: false,
+      bottomCount: 1
     }
   },
+  mounted () {
+    this.$nextTick(() => {
+      this.$refs.scrollerEvent.reset({top: 0})
+    })
+    this.$nextTick(() => {
+      this.$refs.scrollerBottom.reset({top: 0})
+    })
+  },
   methods: {
-    onItemClick (index) {
-      console.log('on item click:', index)
-    },
-    addTab () {
-      if (this.list2.length < 5) {
-        this.list2 = list().slice(0, this.list2.length + 1)
-      }
-    },
-    removeTab () {
-      if (this.list2.length > 1) {
-        this.list2 = list().slice(0, this.list2.length - 1)
-      }
-    },
-    next () {
-      if (this.index === this.list2.length - 1) {
-        this.index = 0
+    onScrollBottom () {
+      if (this.onFetching) {
+        // do nothing
       } else {
-        ++this.index
+        this.onFetching = true
+        setTimeout(() => {
+          this.bottomCount += 1
+          this.$nextTick(() => {
+            this.$refs.scrollerBottom.reset()
+          })
+          this.onFetching = false
+        }, 2000)
       }
     },
-    prev () {
-      if (this.index === 0) {
-        this.index = this.list2.length - 1
-      } else {
-        --this.index
-      }
+    onScroll (pos) {
+      this.scrollTop = pos.top
+    },
+    onCellClick () {
+      window.alert('cell click')
+    },
+    onClickButton () {
+      window.alert('click')
+    },
+    changeList () {
+      this.showList1 = false
+      this.$nextTick(() => {
+        this.$refs.scroller.reset({
+          top: 0
+        })
+      })
     }
   }
 }
 </script>
 
-<style lang="less" scoped>
-@import '~vux/src/styles/1px.less';
-@import '~vux/src/styles/center.less';
-
-.box {
-  padding: 15px;
-}
-.active-6-1 {
-  color: rgb(252, 55, 140) !important;
-  border-color: rgb(252, 55, 140) !important;
-}
-.active-6-2 {
-  color: #04be02 !important;
-  border-color: #04be02 !important;
-}
-.active-6-3 {
-  color: rgb(55, 174, 252) !important;
-  border-color: rgb(55, 174, 252) !important;
-}
-.tab-swiper {
-  background-color: #fff;
+<style scoped>
+.box1 {
   height: 100px;
+  position: relative;
+  width: 1490px;
 }
-
-
+.box1-item {
+  width: 200px;
+  height: 100px;
+  background-color: #ccc;
+  display:inline-block;
+  margin-left: 15px;
+  float: left;
+  text-align: center;
+  line-height: 100px;
+}
+.box1-item:first-child {
+  margin-left: 0;
+}
+.box2-wrap {
+  height: 300px;
+  overflow: hidden;
+}
 </style>

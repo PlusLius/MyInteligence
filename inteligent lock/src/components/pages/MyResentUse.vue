@@ -1,5 +1,5 @@
 <!-- 最近使用页面组件 -->
-<template>
+<template class="BODY">
 
     <div>
         <!-- 电量头部部分 -->
@@ -76,6 +76,9 @@
                 this.type = 'MyUserList';
                 this.Active2 = true;
             },
+        },
+        mounted(){
+            this.MyHistory();
         }
     }
 </script>
@@ -168,7 +171,7 @@
         color: #00A6F4 !important;
     }
     .AllListMenu {
-        position: fixed;
+        position: relative;
         display:flex;
         align-items: center;
         bottom:0;
@@ -198,5 +201,8 @@
         color:#00AEFF;
         box-sizing:border-box;
         border-bottom:4px solid #00AEFF;
+    }
+    .BODY {
+        position:relative;
     }
 </style>

@@ -3,12 +3,11 @@
     <div>
 
         <!-- 历史记录列表部分 -->
-        <!-- <div class="DeviceList"> -->
+        <div class="DeviceList">
             <!-- 上拉加载下拉滚动组件 -->
-            <!-- <scroller lock-x height="400px"> -->
+            <scroller lock-x height="-221px">
             <!-- 上拉加载下拉滚动组件内容填充 -->
-              <!-- <div class="DeviceHeight" > -->
-                <div class="wraper" v-el:wraper>
+              <div class="DeviceHeight" >
                     <div class="MyAdmin" v-for="i in 10">
                         <div class="MyIcon icon-edit">
                         </div>
@@ -23,16 +22,14 @@
                             <input class="weui-switch" type="checkbox">
                         </div>
                     </div>
-                </div>
-              <!-- </div> -->
-            <!-- </scroller> -->
-        <!-- </div> -->
+              </div>
+            </scroller>
+        </div>
 
     </div>
 </template>
 <script>
     import { XSwitch, Group, Scroller} from 'vux'
-    import BScroll from 'better-scroll'
 
     export default {
         components: {
@@ -44,14 +41,6 @@
             return {
               disabled: false
             }
-        },
-        methods: {
-            initScroll(){
-                this.wraper = new BScroll(this.$els.wraper,{})
-            }
-        },
-        mounted(){
-            initScroll()
         }
     }
 
