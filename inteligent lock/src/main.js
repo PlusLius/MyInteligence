@@ -16,6 +16,7 @@ import cs from './components/pages/cs'
 
 import Home from './components/HelloFromVux'
 
+import rem from './assets/lib/flexible.js'
 
 Vue.use(VueRouter)
 
