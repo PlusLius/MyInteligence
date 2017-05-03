@@ -1,32 +1,54 @@
 <template>
   <div>
 
-      <group>
-             <cell
-              is-link
-              :border-intent="false"
-              :arrow-direction="showContent001 ? 'up' : 'down'"
-              @click.native="showContent001 = !showContent001"
-              class="cls"
-            >
-              <img slot="icon" width="20" style="display:block;margin-right:5px;" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAC4AAAAuCAMAAABgZ9sFAAAAVFBMVEXx8fHMzMzr6+vn5+fv7+/t7e3d3d2+vr7W1tbHx8eysrKdnZ3p6enk5OTR0dG7u7u3t7ejo6PY2Njh4eHf39/T09PExMSvr6+goKCqqqqnp6e4uLgcLY/OAAAAnklEQVRIx+3RSRLDIAxE0QYhAbGZPNu5/z0zrXHiqiz5W72FqhqtVuuXAl3iOV7iPV/iSsAqZa9BS7YOmMXnNNX4TWGxRMn3R6SxRNgy0bzXOW8EBO8SAClsPdB3psqlvG+Lw7ONXg/pTld52BjgSSkA3PV2OOemjIDcZQWgVvONw60q7sIpR38EnHPSMDQ4MjDjLPozhAkGrVbr/z0ANjAF4AcbXmYAAAAASUVORK5CYII=">
-                <div>
-                  {{'乾元捂脸'}}
-                </div>
-                <div>
-                  {{'id: dsfsdf'}}
-                </div>
-               <div>
-                  <span style="color: green">{{'Hi, I\'m Vux.'}}</span>
-                </div>
-          </cell>
+      <swipeout>
+          <swipeout-item @on-close="handleEvents('on-close')" @on-open="handleEvents('on-open')" transition-mode="follow">
+            <div slot="right-menu">
+              <swipeout-button
+                @click.native="onButtonClick('fav')"
+                type="primary"
+                :width="73"
+                background-color="#00A6F4"
+                >编辑</swipeout-button>
+              <swipeout-button
+                @click.native="onButtonClick('delete')"
+                type="warn"
+                :width="73"
+                background-color="#E74C3C"
+                >删除</swipeout-button>
+            </div>
+            <div slot="content" class="GateWayBox vux-1px-t">
+                  <div class="GateWaySwiperBox">
+                    <img src="../../assets/qietu/盒子.png"/>
+                  </div>
+                  <div class="GateWayIDBox">
+                     <p class="GateWayName">乾元物联</p>
+                     <p class="GateWayID">ID: 01234567890123456789</p>
+                  </div>
+                  <div class="GateWayAdminBox">
+                      <div class="icon-Administrators"></div>
+                      管理员
+                  </div>
+            </div>
+          </swipeout-item>
+       </swipeout>
+       <ul class="GateWayDropBox">
+         <li class="GateWayEdit icon-edit">编辑</li>
+         <li class="GateWayUpDate icon-RemoteUpgrade">远程升级</li>
+         <li class="GateWayArrow icon-top"></li>
+       </ul>
 
-           <template v-if="showContent001">
-            <cell-box :border-intent="false" class="sub-item" is-link>content 001</cell-box>
-            <cell-box class="sub-item" is-link>content 001</cell-box>
-            <cell-box class="sub-item" is-link>content 001</cell-box>
-          </template>
-      </group>
+      <swipeout>
+        <swipeout-item @on-close="handleEvents('on-close')" @on-open="handleEvents('on-open')" transition-mode="follow">
+          <div slot="right-menu">
+            <swipeout-button @click.native="onButtonClick('fav')" type="primary">{{'Yes'}}</swipeout-button>
+            <swipeout-button @click.native="onButtonClick('delete')" type="warn">{{'Right'}}</swipeout-button>
+          </div>
+          <div slot="content" class="demo-content vux-1px-t">
+          {{'JavaScript is the best language'}}
+          </div>
+        </swipeout-item>
+       </swipeout>
 
       <div class="AllListMenu">
             <router-link to="/MyResentUse" class="MyHistoryUse icon-RecentUse">
@@ -41,95 +63,130 @@
 
 
 <script>
-import { Cell, CellBox, CellFormPreview, Group } from 'vux'
-import { Swipeout, SwipeoutItem, SwipeoutButton } from 'vux'
-
+import { Swipeout, SwipeoutItem, SwipeoutButton, XButton } from 'vux'
 export default {
-  mounted () {
-    setTimeout(() => {
-      this.money = -1024
-    }, 2000)
-  },
-  components: {
-    Group,
-    Cell,
-    CellFormPreview,
-    CellBox,
-    Swipeout,
-    SwipeoutItem,
-    SwipeoutButton
-  },
-  methods: {
-    onClick () {
-      console.log('on click')
+   components: {
+      Swipeout,
+      SwipeoutItem,
+      SwipeoutButton,
+      XButton
     },
-    onButtonClick2 (type) {
-      alert('on button click ' + type)
+   data () {
+      return {
+        disabled: false
+      }
     },
-    handleEvents2 (type) {
-        this.disabled = true;
-    },
-    handleEvents (type) {
-      console.log('event: ', type)
-    },
-    handleEvents1 (type) {
-      this.disabled = false;
-    }
-  },
-  data () {
-    return {
-      list: [{
-        label: 'Apple',
-        value: '3.29'
-      }, {
-        label: 'Banana',
-        value: '1.04'
-      }, {
-        label: 'Fish',
-        value: '8.00'
-      }],
-      money: null,
-      showContent001: false,
-      disabled:false
-    }
-  }
+   methods: {
+      onButtonClick (type) {
+        alert('on button click ' + type)
+      },
+      handleEvents (type) {
+        console.log('event: ', type)
+      }
+   },
 }
 </script>
 
-<style scoped>
-.sub-item {
-  color: #888;
-}
-.slide {
-  /* padding: 0 20px; */
-  overflow: hidden;
-  max-height: 0;
-  transition: max-height .5s cubic-bezier(0, 1, 0, 1) -.1s;
-}
-.animate {
-  max-height: 9999px;
-  transition-timing-function: cubic-bezier(0.5, 0, 1, 0);
-  transition-delay: 0s;
-}
+<style lang='scss' scoped>
+  @function toRem ($DraftSize) {
+      @return  ($DraftSize / 144 * 100) / 75 * 1rem;
+  }
+  @mixin font-dpr($font-size){
+      font-size: $font-size;
+      [data-dpr="2"] & { font-size: $font-size * 2; }
+      [data-dpr="3"] & { font-size: $font-size * 3; }
+  }
 
-.vux-no-group-title {
-  margin-top:0;
-}
+  .GateWayBox {
+    width: 100%;
+    height: toRem(221);
+  }
 
-.Swipeout-Height {
-  height:44px;
-}
-.weui-cell__ft:after {
-      transition: transform 300ms, -webkit-transform 300ms;
-}
+  .GateWaySwiperBox {
+    float: left;
+    width: toRem(209);
+    height: toRem(221);
+    text-align: center;
+  }
 
-/* .demo-content {
-  padding: 10px 10px;
-} */
-.weui-cell_access .weui-cell__ft:after {
-  border-color: red !important;
-}
+  .GateWaySwiperBox img {
+    width: toRem(116);
+    height: toRem(134);
+    margin-top: toRem(54);
+  }
 
+  .GateWayIDBox {
+    float: left;
+    height: toRem(221);
+  }
+
+  .GateWayName {
+    margin-top: toRem(50);
+    @include font-dpr(15px);
+    color:#444444;
+  }
+
+  .GateWayID {
+    @include font-dpr(12px);
+    color:#A5A5A5;
+  }
+
+  .GateWayAdminBox {
+    float: right;
+    width: toRem(158);
+    height: toRem(221);
+    margin-right: toRem(58);
+    text-align: center;
+    color:#F39C12;
+  }
+
+  .GateWayDropBox {
+    display:flex;
+    list-style:none;
+    background: #FFFFFF;
+    border-top: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
+    @include font-dpr(12px);
+    color:#00A6F4;
+  }
+  .GateWayEdit,.GateWayShare,.GateWayDelete,.GateWayUpDate {
+      height:toRem(121);
+      line-height: toRem(121);
+      text-align: center;
+      border-right:1px solid #CCCCCC;
+  }
+  .GateWayEdit {
+    flex:2;
+  }
+  .icon-edit:before {
+    @include font-dpr(16px);
+    margin-right: toRem(16);
+    position:relative;
+    top:2px;
+  }
+  .GateWayUpDate {
+    flex:2;
+  }
+  .icon-RemoteUpgrade:before {
+    @include font-dpr(16px);
+    margin-right: toRem(16);
+    position:relative;
+    top:3px;
+  }
+  .GateWayArrow {
+    flex:1;
+    text-align: center;
+  }
+  .icon-top:before {
+    @include font-dpr(16px);
+    position:relative;
+    top:toRem(38);
+  }
+
+  .icon-Administrators {
+     margin-top: toRem(50);
+     @include font-dpr(24px);
+  }
 
   .AllListMenu {
       position: fixed;

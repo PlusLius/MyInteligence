@@ -187,7 +187,7 @@
         color: #00A6F4 !important;
     }
     .AllListMenu {
-        position: relative;
+        position: absolute;
         display:flex;
         align-items: center;
         bottom:0;
@@ -218,7 +218,7 @@
         box-sizing:border-box;
         border-bottom:4px solid #00AEFF;
     }
-    .BODY {
-        position:relative;
-    }
+    // .BODY {
+    //     position:relative;
+    // }
 </style>

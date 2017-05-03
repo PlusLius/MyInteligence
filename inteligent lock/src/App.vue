@@ -15,6 +15,7 @@ export default {
 
 body {
   background-color: #fbf9fe;
+  font-family: "微软雅黑";
 }
 
 @font-face {

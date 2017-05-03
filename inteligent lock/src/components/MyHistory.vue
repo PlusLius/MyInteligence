@@ -6,7 +6,7 @@
         <div class="DeviceList">
             <!-- 上拉加载下拉滚动组件 -->
             <scroller lock-x  @on-scorll="onScroll"
-            height="-221px"
+             height="9.5rem"
             :use-pulldown='true'
             :use-pullup='true'
             :pulldown-config='pulldownConfig'
@@ -36,7 +36,7 @@
                                 <img src="../assets/qietu/icon/zhiwen@3x.png" class="DeviceListImg1">
                             <!-- </div> -->
                             <div class="DeviceListID">
-                                <div>
+                                <div class="DeviceOpenLock">
                                     {{'指纹开锁'}}
                                 </div>
                                 <div class="DeviceListColor">
@@ -150,13 +150,22 @@
 
 
 </script>
-<style scoped>
+<style lang="scss" scoped>
+    @function toRem ($DraftSize) {
+        @return  ($DraftSize / 144 * 100) / 75 * 1rem;
+    }
+    @mixin font-dpr($font-size){
+        font-size: $font-size;
+        [data-dpr="2"] & { font-size: $font-size * 2; }
+        [data-dpr="3"] & { font-size: $font-size * 3; }
+    }
+
     .DeviceListSize {
-        height: 74px;
+        height: toRem(221);
     }
     .DeviceListColor {
         color:#666;
-        font-size: 12px;
+        @include font-dpr(12px);
     }
   /*   .DeviceListIcon1 {
         float: left;
@@ -166,26 +175,32 @@
     } */
     .DeviceListImg1 {
         float: left;
-        margin-top: 18px;
-        margin-left: 23px;
-        width: 39px;
-        height: 39px;
+        margin-top: toRem(55);
+        margin-left: toRem(70);
+        width: toRem(116);
+        height: toRem(116);
+    }
+    .DeviceOpenLock {
+      color:#444444;
+      @include font-dpr(16px);
     }
     .DeviceListID {
         float: left;
-        margin-top: 16px;
-        margin-left: 18px;
-        width: 76px;
-        font-size:16px;
+        margin-top: toRem(50);
+        margin-left: toRem(53);
+        width: toRem(229);
     }
     .DeviceListGetKey {
         position: relative;
         float: right;
-        margin-top:16px;
-        margin-right: 25px;
+        margin-top:toRem(45);
+        margin-right: toRem(75);
         /* background: gray; */
-        font-size: 12px;
+        @include font-dpr(12px);
         color:#A5A5A5;
+    }
+    .DeviceListTime {
+      text-align: right;
     }
     .DeviceListSize {
         border-bottom: 1px solid #ccc;
