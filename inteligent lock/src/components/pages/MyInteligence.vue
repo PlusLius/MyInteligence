@@ -35,19 +35,39 @@
        <ul class="GateWayDropBox">
          <li class="GateWayEdit icon-edit">编辑</li>
          <li class="GateWayUpDate icon-RemoteUpgrade">远程升级</li>
-         <li class="GateWayArrow icon-top"></li>
+         <li class="GateWayArrow icon-top"
+         @click="arrowTogle"
+         :class="{'arrowUp':arrowMove1,'arrowDown':arrowMove2}">
+
+         </li>
        </ul>
 
       <swipeout>
-        <swipeout-item @on-close="handleEvents('on-close')" @on-open="handleEvents('on-open')" transition-mode="follow">
+       <transition name="fade">
+        <swipeout-item @on-close="handleEvents('on-close')" @on-open="handleEvents('on-open')" transition-mode="follow"  v-if="isTrue">
           <div slot="right-menu">
-            <swipeout-button @click.native="onButtonClick('fav')" type="primary">{{'Yes'}}</swipeout-button>
-            <swipeout-button @click.native="onButtonClick('delete')" type="warn">{{'Right'}}</swipeout-button>
+             <swipeout-button
+                @click.native="onButtonClick('fav')"
+                type="primary"
+                :width="73"
+                background-color="#00A6F4"
+                >编辑</swipeout-button>
+              <swipeout-button
+                @click.native="onButtonClick('delete')"
+                type="warn"
+                :width="73"
+                background-color="#E74C3C"
+                >删除</swipeout-button>
           </div>
-          <div slot="content" class="demo-content vux-1px-t">
-          {{'JavaScript is the best language'}}
+          <div slot="content" class="GateWayDropChild vux-1px-t">
+            <div class="GateWayChildLock icon-lock"></div>
+            <div class="GateWayChildMore">
+                <p class="GateWayChildLockTitle">智能锁2</p>
+                <p class="GateWayChildLockID">ID: 12345678901234567890</p>
+            </div>
           </div>
         </swipeout-item>
+        </transition>
        </swipeout>
 
       <div class="AllListMenu">
@@ -73,7 +93,10 @@ export default {
     },
    data () {
       return {
-        disabled: false
+        disabled: false,
+        arrowMove1: false,
+        arrowMove2: true,
+        isTrue:false
       }
     },
    methods: {
@@ -82,6 +105,11 @@ export default {
       },
       handleEvents (type) {
         console.log('event: ', type)
+      },
+      arrowTogle (){
+        this.arrowMove1 = !this.arrowMove1;
+        this.arrowMove2 = !this.arrowMove2;
+        this.isTrue = !this.isTrue;
       }
    },
 }
@@ -179,8 +207,18 @@ export default {
   }
   .icon-top:before {
     @include font-dpr(16px);
+    display: inline-block;
     position:relative;
     top:toRem(38);
+    transform-origin: center center;
+  }
+
+  .arrowUp{
+     transform:rotate(180deg);
+     transition: all 0.5s linear;
+  }
+  .arrowDown {
+     transition: all 0.5s linear;
   }
 
   .icon-Administrators {
@@ -188,40 +226,79 @@ export default {
      @include font-dpr(24px);
   }
 
-  .AllListMenu {
-      position: fixed;
-      display:flex;
-      align-items: center;
-      bottom:0;
-      width: 100%;
-      height: 50px;
+  .GateWayDropChild {
+      height: toRem(150);
       background: #F8F8F8;
-      border-top: 1px solid #ccc;
   }
-  .MyHistoryUse,.MyInteligen {
-      flex-grow:1;
-      text-align:center;
-      font-size: 10px;
-      color:#999;
+
+  .GateWayChildLock {
+      float: left;
+      width: toRem(256);
+      height: toRem(150);
+      text-align: right;
+      @include font-dpr(19px);
+      line-height: toRem(150);
+      color:#00A6F4;
   }
-  .icon-History:before,.icon-UserList:before {
-      position: relative;
-      top: 1px;
-      font-size: 20px;
-      vertical-align: top;
+
+  .icon-lock:before {
+      @include font-dpr(22px);
   }
-  .icon-RecentUse:before,.icon-MyInteligence:before {
-      display:block;
-      font-size:24px;
-      margin-bottom: 5px;
+
+  .GateWayChildMore {
+     float: left;
+     margin-left: toRem(41);
   }
-  .router-link-active {
-      color: #00A6F4 !important;
+
+  .GateWayChildLockTitle {
+       margin-top: toRem(16);
+       @include font-dpr(15px);
+       color:#666666;
   }
-  .colorBlue {
-      color:#00AEFF;
-      box-sizing:border-box;
-      border-bottom:4px solid #00AEFF;
+
+  .GateWayChildLockID {
+      @include font-dpr(12px);
+      color:#A5A5A5;
   }
+
+.fade-enter-active, .fade-leave-active {
+  transition: opacity .5s;
+}
+.fade-enter, .fade-leave-active {
+  opacity: 0;
+}
+
+   .AllListMenu {
+        position: absolute;
+        display:flex;
+        align-items: center;
+        bottom:0;
+        width: 100%;
+        height: toRem(159);
+        background: #F8F8F8;
+        border-top: 1px solid #ccc;
+    }
+    .MyHistoryUse,.MyInteligen {
+        flex-grow:1;
+        text-align:center;
+        @include font-dpr(10px)
+        color:#999;
+    }
+    .icon-History:before,.icon-UserList:before {
+        position: relative;
+        top: 1px;
+        @include font-dpr(15px)
+        vertical-align: top;
+    }
+    .icon-RecentUse:before,.icon-MyInteligence:before {
+        display:block;
+        @include font-dpr(20px)
+        margin-bottom: 5px;
+    }
+    .colorBlue {
+        color:#00AEFF;
+        box-sizing:border-box;
+        border-bottom:4px solid #00AEFF;
+    }
 </style>
 
