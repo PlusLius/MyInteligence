@@ -15,11 +15,48 @@
                 <div class="MyDynamicKey">
                     {{"智能锁: 1245484811122234"}}
                 </div>
-                <div class="RemoteUnlock">
+                <div class="RemoteUnlock" @click="RemoteUnlock">
                     {{"远程开锁"}}
                 </div>
             </div>
         </div>
+
+
+        <div id="dialog1" v-show="ShowLog">
+            <div class="weui-mask"></div>
+            <div class="weui-dialog My-dialog ">
+                <div class="weui-dialog__hd My-title"><strong class="weui-dialog__title">远程开锁</strong></div>
+                <div class="weui-dialog__bd My-dialogBody">
+                    <input class="My-PassWord" type="password" name="password" placeholder="请输入您的远程开锁密码" v-show="MyChangePassWordBox">
+                    <div class="MyChangePassWordBox" v-show="MyChangePassWordBox">
+                         <div class="MyChangePassWord" @click="ChangePassWord">
+                            修改密码
+                        </div>
+                    </div>
+
+                    <div class="MyChangePassWordBox2"  v-show="MyChangePassWordBox2">
+                        <input class="My-PassWordOld" type="password" name="password" placeholder="请输入您的旧密码">
+
+                        <input class="My-PassWordNew" type="password" name="password" placeholder="请输入您的新密码">
+
+                        <input class="My-PassWordMoreNew" type="password" name="password" placeholder="请再次输入您的新密码">
+                    </div>
+                </div>
+                <div class="weui-dialog__ft My-dialogBottom">
+                    <a href="javascript:;"
+                    class="weui-dialog__btn weui-dialog__btn_default MyOk"
+                    @click="DialogOK"
+                    >确定</a>
+                    <a href="javascript:;"
+                    class="weui-dialog__btn weui-dialog__btn_primary MyCancel "
+                    @click="DialogCancel"
+                    >取消</a>
+                </div>
+            </div>
+        </div>
+
+
+
 
         <div class="HistoryMenu">
             <div class="HistoryMenuFont1 icon-History" :class="{colorBlue:Active1}" @click="MyHistory()">
@@ -58,7 +95,10 @@
             return {
                 type: '',
                 Active1:false,
-                Active2:false
+                Active2:false,
+                ShowLog:false,
+                MyChangePassWordBox:true,
+                MyChangePassWordBox2:false,
             }
         },
         components: {
@@ -76,6 +116,24 @@
                 this.type = 'MyUserList';
                 this.Active2 = true;
             },
+            RemoteUnlock () {
+                this.ShowLog = true;
+                this.MyChangePassWordBox2 = false;
+            },
+            DialogOK () {
+                this.ShowLog = false;
+                this.MyChangePassWordBox = true;
+            },
+            DialogCancel () {
+                this.ShowLog = false;
+                this.MyChangePassWordBox = true;
+            },
+            ChangePassWord() {
+                if(this.MyChangePassWordBox){
+                    this.MyChangePassWordBox2 = true;
+                    this.MyChangePassWordBox = false;
+                }
+            }
         },
         mounted(){
             this.MyHistory();
@@ -91,6 +149,17 @@
         font-size: $font-size;
         [data-dpr="2"] & { font-size: $font-size * 2; }
         [data-dpr="3"] & { font-size: $font-size * 3; }
+    }
+
+    input[type=password] {
+        border: 1px solid #ccc;
+        background-color:transparent;
+        color:#ccc;
+        FILTER: alpha(opacity=0); /*androd*/
+        appearance:none;  /*下拉框去掉右侧图标*/
+        -moz-appearance:none;
+        -webkit-appearance:none;
+        -webkit-tap-highlight-color:rgba(0,0,0,0);
     }
 
     .MyResentUse {
@@ -218,7 +287,75 @@
         box-sizing:border-box;
         border-bottom:4px solid #00AEFF;
     }
-    // .BODY {
-    //     position:relative;
-    // }
+    .My-dialog {
+        width: toRem(901);
+        background: #F8F8F8;
+    }
+
+    .My-title {
+        position: relative;
+        height: toRem(145);
+        line-height: toRem(145);
+        @include font-dpr(15px);
+        color:#00A6F4;
+
+      /*   border-bottom: 1px solid #B5B5B5; */
+    }
+    .My-title:after {
+        transform: scaleY(0.5);
+        content: " ";
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        right: 0;
+        height: 1px;
+        border-top: 1px solid #D5D5D6;
+        color: #D5D5D6;
+    }
+    .weui-dialog__hd {
+        box-sizing:border-box;
+        padding:0;
+    }
+
+    .My-PassWord,.My-PassWordOld,.My-PassWordNew,.My-PassWordMoreNew {
+        margin-top: toRem(70);
+        width: 100%;
+        height: toRem(120);
+        text-align: center;
+        @include font-dpr(15px);
+        color:#CCCCCC;
+    }
+    .My-PassWordOld,.My-PassWordNew,.My-PassWordMoreNew {
+        margin-top: toRem(32);
+        text-align: left;
+        color:#ccc;
+        padding-left:toRem(41);
+        box-sizing:border-box;
+    }
+    .MyChangePassWordBox {
+        display:flex;
+        justify-content:center;
+    }
+    .MyChangePassWord {
+        margin-top: toRem(65);
+        width: toRem(400);
+        height: toRem(80);
+        line-height: toRem(80);
+        border-radius: 40px;
+        border: 1px solid #0EAAF4;
+        color:#0EAAF4;
+    }
+    .My-dialogBottom {
+        height:toRem(140);
+        line-height:toRem(150);
+        display:flex;
+        justify-content:flex-starts;
+    }
+    .MyOk {
+        color:#0EAAF4;
+    }
+    .MyCancel {
+        color:#666666;
+    }
+
 </style>

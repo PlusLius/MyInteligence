@@ -1,40 +1,104 @@
+
 <template>
   <div>
+      <div>
+          <!-- 开始 -->
 
-      <GateWayDropBox v-for="i in 3"></GateWayDropBox>
+          <swipeout>
+              <swipeout-item @on-close="handleEvents('on-close')" @on-open="handleEvents('on-open')" transition-mode="follow"
+
+              >
+                <div slot="right-menu">
+                  <swipeout-button
+                    @click.native="onButtonClick('fav')"
+                    type="primary"
+                    :width="73"
+                    background-color="#00A6F4"
+                    >编辑</swipeout-button>
+                  <swipeout-button
+                    @click.native="onButtonClick('delete')"
+                    type="warn"
+                    :width="73"
+                    background-color="#E74C3C"
+                    >删除</swipeout-button>
+                </div>
+                <div slot="content" class="GateWayBox">
+                      <div class="GateWaySwiperBox">
+                        <img src="../../assets/qietu/盒子.png"/>
+                      </div>
+                      <div class="GateWayIDBox">
+                         <p class="GateWayName">乾元物联</p>
+                         <p class="GateWayID">ID: 01234567890123456789</p>
+                      </div>
+                      <div class="GateWayAdminBox">
+                          <div class="icon-Administrators"></div>
+                          管理员
+                      </div>
+                </div>
+              </swipeout-item>
+           </swipeout>
+           <ul class="GateWayDropBox">
+             <li class="GateWayEdit icon-edit">编辑</li>
+             <li class="GateWayUpDate icon-RemoteUpgrade">远程升级</li>
+             <li class="GateWayArrow icon-top"
+             @click="arrowTogle"
+             :class="{'arrowUp':arrowMove1,'arrowDown':arrowMove2}">
+
+             </li>
+           </ul>
+
+          <swipeout>
+           <transition name="fade">
+            <swipeout-item @on-close="handleEvents('on-close')" @on-open="handleEvents('on-open')" transition-mode="follow"  v-if="isTrue"            >
+              <div slot="right-menu">
+                 <swipeout-button
+                    @click.native="onButtonClick('fav')"
+                    type="primary"
+                    :width="73"
+                    background-color="#00A6F4"
+                    >编辑</swipeout-button>
+                  <swipeout-button
+                    @click.native="onButtonClick('delete')"
+                    type="warn"
+                    :width="73"
+                    background-color="#E74C3C"
+                    >删除</swipeout-button>
+              </div>
+              <div slot="content" class="GateWayDropChild vux-1px-b">
+                <div class="GateWayChildLock icon-lock"></div>
+                <div class="GateWayChildMore">
+                    <p class="GateWayChildLockTitle">智能锁2</p>
+                    <p class="GateWayChildLockID">ID: 12345678901234567890</p>
+                </div>
+              </div>
+            </swipeout-item>
+            </transition>
+        </swipeout>
 
 
-      <div class="AllListMenu">
-            <router-link to="/MyResentUse" class="MyHistoryUse icon-RecentUse">
-                最近使用
-            </router-link>
-            <router-link to="/MyInteligence" class="MyInteligen icon-MyInteligence">
-                我的智能
-            </router-link>
+          <!-- 结束 -->
       </div>
+
+
   </div>
 </template>
 
 
 <script>
 import { Swipeout, SwipeoutItem, SwipeoutButton, XButton } from 'vux'
-import GateWayDropBox from "../public/Pub-GateWayDropBox"
-
 export default {
    components: {
       Swipeout,
       SwipeoutItem,
       SwipeoutButton,
-      XButton,
-      GateWayDropBox
+      XButton
     },
    data () {
       return {
         disabled: false,
         arrowMove1: false,
         arrowMove2: true,
-        isTrue:false,
-
+        isTrue:false
       }
     },
    methods: {
@@ -66,6 +130,17 @@ export default {
   .GateWayBox {
     width: 100%;
     height: toRem(221);
+  }
+  .swipeout-1px:before {
+      transform: scaleY(0.5);
+      content: " ";
+      position: absolute;
+      left: 0;
+      top: -1px;
+      right: 0;
+      height: 1px;
+      border-top: 1px solid #D5D5D6;
+      color: #D5D5D6;
   }
 
   .GateWaySwiperBox {
@@ -205,38 +280,5 @@ export default {
 .fade-enter, .fade-leave-active {
   opacity: 0;
 }
-
-   .AllListMenu {
-        position: absolute;
-        display:flex;
-        align-items: center;
-        bottom:0;
-        width: 100%;
-        height: toRem(159);
-        background: #F8F8F8;
-        border-top: 1px solid #ccc;
-    }
-    .MyHistoryUse,.MyInteligen {
-        flex-grow:1;
-        text-align:center;
-        @include font-dpr(10px)
-        color:#999;
-    }
-    .icon-History:before,.icon-UserList:before {
-        position: relative;
-        top: 1px;
-        @include font-dpr(15px)
-        vertical-align: top;
-    }
-    .icon-RecentUse:before,.icon-MyInteligence:before {
-        display:block;
-        @include font-dpr(20px)
-        margin-bottom: 5px;
-    }
-    .colorBlue {
-        color:#00AEFF;
-        box-sizing:border-box;
-        border-bottom:4px solid #00AEFF;
-    }
 </style>
 
