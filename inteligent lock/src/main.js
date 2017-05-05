@@ -6,11 +6,11 @@ import VueRouter from 'vue-router'
 import App from './App'
 
 import MyInteligence from './components/pages/MyInteligence'
-import MyDynamicKey from './components/pages/MyDynamicKey'
-import MyKeyManagement from './components/pages/MyKeyManagement'
+// import MyDynamicKey from './components/pages/MyDynamicKey'
+// import MyKeyManagement from './components/pages/MyKeyManagement'
 import MyResentUse from './components/pages/MyResentUse'
-import MyHistory from './components/MyHistory'
-import MyUserList from './components/MyUserList'
+// import MyHistory from './components/MyHistory'
+// import MyUserList from './components/MyUserList'
 
 import cs from './components/pages/cs'
 
@@ -21,41 +21,49 @@ import rem from './assets/lib/flexible.js'
 Vue.use(VueRouter)
 
 const routes = [
-
-    {
-      path:'/',
-      meta: {title: 'MyDynamicKey'},
-      // component: MyInteligence
-      component: cs
-    },
-    {
-      path: '/MyDynamicKey',
-      meta: {title: 'MyDynamicKey'},
-      component: MyDynamicKey
-    },
-    {
-      path: '/MyDynamicKey/MyKeyManagement',
-      meta: {title: 'MyKeyManagement'},
-      component: MyKeyManagement
-    },
-    {
-      path: '/MyResentUse',
-      component:MyResentUse,
-      children: [
-        {
-          path: 'MyHistory',
-          component:MyHistory
-        },
-        {
-          path: 'MyUserList',
-          component:MyUserList
-        }
-      ]
-    },
+    // {
+    //   path:'/',
+    //   meta: {title: 'MyDynamicKey'},
+    //   component: MyInteligence
+    //   // component: cs
+    // },
+    // {
+    //   path: '/MyDynamicKey',
+    //   meta: {title: 'MyDynamicKey'},
+    //   component: MyDynamicKey
+    // },
+    // {
+    //   path: '/MyDynamicKey/MyKeyManagement',
+    //   meta: {title: 'MyKeyManagement'},
+    //   component: MyKeyManagement
+    // },
+    // {
+    //   path: '/MyResentUse',
+    //   component:MyResentUse,
+    //   children: [
+    //     {
+    //       path: 'MyHistory',
+    //       component:MyHistory
+    //     },
+    //     {
+    //       path: 'MyUserList',
+    //       component:MyUserList
+    //     }
+    //   ]
+    // },
     {
       path: '/MyInteligence',
       component: MyInteligence
     },
+    {
+      path: '/:id/V201_SMART',
+      component: MyInteligence
+    },
+    {
+      path: '/:id/V201_SYSTEMSECRET',
+      component: MyResentUse
+    },
+    { path: '*', component: cs},
 ]
 
 const router = new VueRouter({
@@ -80,5 +88,8 @@ Vue.config.productionTip = false
 /* eslint-disable no-new */
 new Vue({
   router,
+  created: function(){
+     router.replace({path: window.localStorage.getItem("order")})
+  },
   render: h => h(App)
 }).$mount('#app-box')

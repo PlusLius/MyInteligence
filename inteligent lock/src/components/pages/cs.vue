@@ -1,6 +1,17 @@
 <template>
   <div>
-        <div id="dialog1">
+        <div>
+           <div>
+                {{order}}
+           </div>
+            <div>
+                {{token}}
+            </div>
+            <div>
+                aaa
+            </div>
+        </div>
+    <!--     <div id="dialog1">
             <div class="weui-mask"></div>
             <div class="weui-dialog My-dialog ">
                 <div class="weui-dialog__hd My-title"><strong class="weui-dialog__title">远程开锁</strong></div>
@@ -18,7 +29,7 @@
                     <a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_primary MyCancel ">取消</a>
                 </div>
             </div>
-        </div>
+        </div> -->
   </div>
 </template>
 
@@ -28,8 +39,12 @@
 import Vux from 'vux'
 
 export default {
-
-
+    data() {
+        return {
+            order: window.localStorage.getItem("order"),
+            token: window.localStorage.getItem("token")
+        }
+    }
 }
 
 </script>

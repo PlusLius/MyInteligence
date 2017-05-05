@@ -30,7 +30,7 @@
                          <p class="GateWayName">乾元物联</p>
                          <p class="GateWayID">ID: 01234567890123456789</p>
                       </div>
-                      <div class="GateWayAdminBox">
+                      <div class="GateWayAdminBox" @click="demo">
                           <div class="icon-Administrators"></div>
                           管理员
                       </div>
@@ -86,6 +86,8 @@
 
 <script>
 import { Swipeout, SwipeoutItem, SwipeoutButton, XButton } from 'vux'
+import axios from 'axios'
+
 export default {
    components: {
       Swipeout,
@@ -112,6 +114,18 @@ export default {
         this.arrowMove1 = !this.arrowMove1;
         this.arrowMove2 = !this.arrowMove2;
         this.isTrue = !this.isTrue;
+      },
+      demo () {
+          axios({
+            method: 'post',
+            url: 'http://n16n237643.iok.la/api/v1.1.0/systemSecret',
+            data: {
+             devCode: 'A0048AE901012956',
+             name: 'DDD',
+             systemSecret: '12345678'
+            },
+            headers: {'Token-JWT': "jwt" + window.localStorage.getItem('token')}
+          });
       }
    },
 }
