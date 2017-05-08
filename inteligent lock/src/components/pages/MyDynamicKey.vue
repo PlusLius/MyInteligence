@@ -1,64 +1,111 @@
-<!-- 锁系统密钥组件 -->
+<!-- 动态秘钥组件 -->
 <template>
     <div>
-        <!-- 锁添加密钥部分 -->
+      <!-- 锁添加密钥部分 -->
         <div class="addDevice">
-            <div class="DeviceIcon"></div>
+            <img src="../../assets/qietu/添加设备.png" class="DeviceIcon">
             <div class="DeviceFont">添加设备</div>
         </div>
+        <div class="vux-1px-t">
+        <!-- 上拉加载下拉滚动组件内容填充 -->
+        <div>
+        <!--侧滑组件-->
+        <swipeout>
+          <!-- 侧滑组件容器  管理员-->
+          <swipeout-item
+            :disabled="disabled" ref="swipeoutItem"
+            :right-menu-width="210"
+              :sensitivity="15" class="DeviceHeight">
+            <!-- 侧滑组件右侧菜单 -->
+            <div slot="right-menu">
+              <swipeout-button @click.native="onButtonClick('编辑')"  background-color="#00A6F4" :width="83">
+                <span class="icon-edit"></span>
+                {{('编辑')}}</swipeout-button>
+              <swipeout-button @click.native="onButtonClick('分享')" background-color="#F1C40F" :width="83">
+                <span class="icon-share"></span>
+                {{('分享')}}</swipeout-button>
+              <swipeout-button @click.native="onButtonClick('删除')" background-color="#E74C3C" :width="83">
+                <span class="icon-delete"></span>
+                {{('删除')}}</swipeout-button>
+            </div>
+            <!--正文部分-->
+            <div slot="content" class="demo-content vux-1px-b DeviceListSize">
+              <!--锁图片-->
+              <div class="DeviceListIcon1 icon-lock">
+              </div>
+              <!--锁id-->
+              <div class="DeviceListID">
+                <div class="DeviceListTitle">
+                  {{'智能锁'}}
+                </div>
+                <div class="DeviceListColor">
+                  {{'ID: 12454864571263'}}
+                </div>
+              </div>
+              <!--管理员-->
+              <router-link to="/MyDynamicKey/MyKeyManagement" class="DeviceListIcon2" >
+                  <div class="icon-Administrators"></div>
+                  <div class="DeviceListIcon2Font">管理员</div>
+              </router-link>
+              <!--获取秘钥-->
+              <div class="DeviceGetKey">
+                  获取密钥
+              </div>
+            </div>
+          </swipeout-item>
+          <!-- 侧滑组件容器  非管理员-->
+          <swipeout-item
+            :disabled="disabled" ref="swipeoutItem"
+            :right-menu-width="210"
+            :sensitivity="15" class="DeviceHeight ">
+            <!-- 侧滑组件右侧菜单 -->
+            <div slot="right-menu">
+              <swipeout-button @click.native="onButtonClick('编辑')"  background-color="#00A6F4" :width="83">
+                <span class="icon-edit"></span>
+                {{('编辑')}}</swipeout-button>
+              <swipeout-button @click.native="onButtonClick('分享')" background-color="#F1C40F" :width="83">
+                <span class="icon-share"></span>
+                {{('分享')}}</swipeout-button>
+              <swipeout-button @click.native="onButtonClick('删除')" background-color="#E74C3C" :width="83">
+                <span class="icon-delete"></span>
+                {{('删除')}}</swipeout-button>
+            </div>
+            <!--正文部分-->
+            <div slot="content" class="demo-content DeviceListSize">
+              <!--锁图片-->
+              <div class="DeviceListIcon1 icon-lock">
+              </div>
+              <!--锁id-->
+              <div class="DeviceListID">
+                <div class="DeviceListTitle">
+                  {{'智能锁'}}
+                </div>
+                <div class="DeviceListColor">
+                  {{'ID: 12454864571263'}}
+                </div>
+              </div>
+              <!--获取秘钥-->
+              <div class="DeviceGetKey">
+                获取密钥
+              </div>
+            </div>
+          </swipeout-item>
+        </swipeout>
+          <MyDynamicKey></MyDynamicKey>
+        </div>
+      </div>
         <!-- 锁系统列表部分 -->
         <div class="DeviceList">
             <!-- 上拉加载下拉滚动组件 -->
             <scroller lock-x  @on-scorll="onScroll" height="500px">
             <!-- 上拉加载下拉滚动组件内容填充 -->
-              <div class="DeviceHeight" v-for="i in 5">
-                  <!-- 侧滑组件 -->
-                   <swipeout>
-                    <!-- 侧滑组件容器 -->
-                      <swipeout-item
-                      :disabled="disabled"
-                      transition-mode="follow"
-                      :right-menu-width="210"
-                      >
-                      <!-- 侧滑组件右侧菜单 -->
-                        <div slot="right-menu">
-                          <swipeout-button background-color="#26c6da" :width="70" class="demo">{{'编辑'}}
-                          </swipeout-button>
-                          <swipeout-button background-color="#ffa726" :width="70"> {{'分享'}}</swipeout-button>
-                          <swipeout-button background-color="#e84e40" :width="70">{{'删除'}}</swipeout-button>
-                        </div>
-                        <!-- 侧滑组件正文显示部分 -->
-                        <div slot="content" class="DeviceListSize">
-                            <div class="DeviceListIcon1">
-
-                            </div>
-                            <div class="DeviceListID">
-                                <div>
-                                    {{'123456'}}
-                                </div>
-                                <div class="DeviceListColor">
-                                    {{'ID: 123456654321'}}
-                                </div>
-                            </div>
-                            <div class="DeviceListIcon2">
-                                <router-link to="/MyDynamicKey/MyKeyManagement" class="DeviceIcon2">Home</router-link>
-                            </div>
-                            <div class="DeviceListGetKey">
-                                <div class="DeviceGetKey">
-                                    获取密钥
-                                </div>
-                            </div>
-                        </div>
-                      </swipeout-item>
-
-                    </swipeout>
-
-              </div>
             </scroller>
         </div>
     </div>
+
 </template>
 <script>
+    import MyDynamicKey from "../public/Pub-MyDynamicKeyLose.vue"
     import { Scroller, Divider, Spinner, XButton, Group, Cell, LoadMore } from 'vux'
     import { Swipeout, SwipeoutItem, SwipeoutButton} from 'vux'
 
@@ -74,6 +121,7 @@
             Swipeout,
             SwipeoutItem,
             SwipeoutButton,
+            MyDynamicKey
         },
         data () {
             return {
@@ -87,17 +135,52 @@
             },
             handleEvents (type) {
               console.log('event: ', type)
-            }
+            },
+          onButtonClick (type) {
+            alert( type + '按钮 ')
+          },
+          handleEvents (type) {
+            console.log('event: ', type)
+          }
+        },
+      data () {
+        return {
+          disabled: false
         }
+      }
     }
-
-
 </script>
-<style scoped>
+<style lang="scss" scoped>
+    @function toRem ($DraftSize) {
+        @return  ($DraftSize / 144 * 100) / 75 * 1rem;
+    }
+    @mixin font-dpr($font-size){
+        font-size: $font-size;
+        [data-dpr="2"] & { font-size: $font-size * 2; }
+        [data-dpr="3"] & { font-size: $font-size * 3; }
+    }
+    .DeviceHeight{
+      position: relative;
+    }
+    .DeviceHeight::after{
+      transform: scaleY(0.5);
+      content: "";
+      height: 1px;
+      color: #CCCCCC;
+      position: absolute;
+      left: 0;
+      bottom: -1px;
+      right:0;
+      border-top:1px solid #cccccc;
+    }
+    div{
+      margin:0;
+      padding:0;
+    }
     .addDevice {
         position: relative;
         width: 100%;
-        height: 161px;
+        height: toRem(450);
         background: #29b6f6;
     }
     .DeviceIcon,.DeviceFont {
@@ -105,44 +188,63 @@
         left:50%;
     }
     .DeviceIcon {
-        top:22px;
-        margin-left: -40px;
-        width: 80px;
-        height: 80px;
-        background: gold;
+        top:toRem(87);
+        margin-left: toRem(-100);
+        width: toRem(200);
+        height: toRem(200);
     }
     .DeviceFont {
-        bottom:22px;
-        margin-left: -40px;
+        bottom:toRem(72);
+        margin-left: toRem(-120);
         text-align: center;
-        width: 80px;
-        height: 23px;
-        color:#000;
-    }
-    .DeviceHeight {
-      /*   height: 80px;
-        line-height: 80px; */
-        border-bottom: 1px solid #ccc;
+        width: toRem(240);
+        height: toRem(46);
+        color:#FFFFFF;
+        @include font-dpr(16px);
     }
     .DeviceListSize {
         font-size:12px;
-        height: 80px;
+        height: toRem(220);
     }
     .DeviceListColor {
-        color:#666;
+        height:toRem(32);
+        line-height: toRem(32);
+        @include font-dpr(12px);
+        color:#A5A5A5;
+        margin-top:toRem(34);
     }
     .DeviceListIcon1 {
         float: left;
-        width: 13%;
-        height: 80px;
-        background: yellowgreen;
+        margin-top:toRem(60);
+        margin-left: toRem(50);
+        width: toRem(80);
+        height: toRem(95);
+    }
+    .icon-lock:before{
+      @include font-dpr(34px);
+      color: #00A6F4;
+    }
+    .DeviceListTitle{
+      height:toRem(47);
+      line-height: toRem(47);
+      @include font-dpr(16px);
     }
     .DeviceListIcon2 {
         position:relative;
         float: left;
-        width: 12%;
-        height: 80px;
-        background: pink;
+        height: toRem(112);
+        margin-top:toRem(57);
+        text-align: center;
+        color: #F39C12;
+    }
+    .icon-Administrators{
+        @include font-dpr(25px);
+    }
+    .DeviceListIcon2Font{
+        height: toRem(28);
+        line-height: toRem(28);
+        margin-top:toRem(13);
+        @include font-dpr(9px);
     }
     .DeviceIcon2 {
         position:absolute;
@@ -156,27 +258,21 @@
     }
     .DeviceListID {
         float: left;
-        width: 53%;
-    }
-    .DeviceListGetKey {
-        position: relative;
-        float: left;
-        width: 22%;
-        height: 80px;
-        background: gray;
+        width: toRem(510);
+        height:toRem(113);
+        margin-left:toRem(58);
+        margin-top:toRem(54);
     }
     .DeviceGetKey {
         position: absolute;
-        top:50%;
-        left:50%;
-        margin-top: -20px;
-        margin-left: -42%;
-        width: 84%;
-        height: 40px;
+        margin-top: toRem(70);
+        left: toRem(850);
+        width: toRem(180);
+        height: toRem(80);
         border-radius:8px;
         color:#FFF;
         text-align: center;
-        line-height: 40px;
+        line-height: toRem(80);
         background: #29b6f6;
     }
     .demo:before {
@@ -185,6 +281,9 @@
         width: 10px;
         height: 10px;
         background: red;
+    }
+    .vux-swipeout-button{
+    @include font-dpr(16px);
     }
 </style>
 

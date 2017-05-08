@@ -30,10 +30,10 @@
                          <p class="GateWayName">乾元物联</p>
                          <p class="GateWayID">ID: 01234567890123456789</p>
                       </div>
-                      <div class="GateWayAdminBox" @click="demo">
+                      <router-link class="GateWayAdminBox" to="/MyInteligence/GatewayManager">
                           <div class="icon-Administrators"></div>
                           管理员
-                      </div>
+                      </router-link>
                 </div>
               </swipeout-item>
            </swipeout>
@@ -124,7 +124,10 @@ export default {
              name: 'DDD',
              systemSecret: '12345678'
             },
-            headers: {'Token-JWT': "jwt" + window.localStorage.getItem('token')}
+            headers: {
+              'Token-JWT': "jwt" + window.localStorage.getItem('token'),
+              'Content-Type':'application/x-www-form-urlencoded'
+            }
           });
       }
    },

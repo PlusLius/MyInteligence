@@ -8,7 +8,7 @@
             <router-link to="/MyResentUse" class="MyHistoryUse icon-RecentUse">
                 最近使用
             </router-link>
-            <router-link to="/MyInteligence" class="MyInteligen icon-MyInteligence">
+            <router-link to="/MyInteligence" class="MyInteligen icon-MyInteligence ">
                 我的智能
             </router-link>
       </div>
@@ -19,6 +19,8 @@
 <script>
 import { Swipeout, SwipeoutItem, SwipeoutButton, XButton } from 'vux'
 import GateWayDropBox from "../public/Pub-GateWayDropBox"
+import API from "../../api/api"
+var api = new API();
 
 export default {
    components: {
@@ -50,6 +52,19 @@ export default {
         this.isTrue = !this.isTrue;
       }
    },
+   mounted(){
+      api.post("systemSecret",{
+        devCode:"222",
+        name:"ddd",
+        systemSecret:"fff"
+      })
+      .then(data => {
+        console.log(data.data.data.list);
+      })
+      .catch(err => {
+        console.log(err)
+      })
+   }
 }
 </script>
 
@@ -237,6 +252,9 @@ export default {
         color:#00AEFF;
         box-sizing:border-box;
         border-bottom:4px solid #00AEFF;
+    }
+    .router-link-active{
+       color:#00AEFF;
     }
 </style>
 
