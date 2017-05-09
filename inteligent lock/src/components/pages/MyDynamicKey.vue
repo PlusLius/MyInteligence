@@ -125,7 +125,7 @@
         },
         data () {
             return {
-              disabled: false
+              disabled: false,
             }
         },
         methods: {

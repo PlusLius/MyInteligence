@@ -20,7 +20,8 @@ class API {
     post (url,data) {
         return  axios({
             method: 'post',
-            url: 'http://n16n237643.iok.la/api/v1.1.0/' + url,
+            // url: 'http://n16n237643.iok.la/api/v1.1.0/' + url,
+            url: 'http://n16n237643.iok.la/' + url,
             data: data,
             headers: {
               'Token-JWT': "jwt" + window.localStorage.getItem('token'),

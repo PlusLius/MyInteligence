@@ -1,7 +1,21 @@
 <template>
   <div>
+      <div v-if="list.length === 0">
+          没有网关,请添加网关
+      </div>
+      <div v-for="item in list">
+          <GateWayDropBox
+             v-if = "item.level === 1"
+            @click.native = "SaveID(item.id)"
+            :name = "item.name"
+            :gatewayCode = "item.gatewayCode"
+            :online = "item.online"
+          ></GateWayDropBox>
+          <GateWayDropBox2  v-if = "item.level !== 1">
 
-      <GateWayDropBox v-for="i in 3"></GateWayDropBox>
+          </GateWayDropBox2>
+
+      </div>
 
 
       <div class="AllListMenu">
@@ -19,8 +33,11 @@
 <script>
 import { Swipeout, SwipeoutItem, SwipeoutButton, XButton } from 'vux'
 import GateWayDropBox from "../public/Pub-GateWayDropBox"
+import GateWayDropBox2 from "../public/Pub-GateWayDropBox2"
+
 import API from "../../api/api"
 var api = new API();
+
 
 export default {
    components: {
@@ -28,7 +45,8 @@ export default {
       SwipeoutItem,
       SwipeoutButton,
       XButton,
-      GateWayDropBox
+      GateWayDropBox,
+      GateWayDropBox2
     },
    data () {
       return {
@@ -36,7 +54,7 @@ export default {
         arrowMove1: false,
         arrowMove2: true,
         isTrue:false,
-
+        list:[]
       }
     },
    methods: {
@@ -50,16 +68,17 @@ export default {
         this.arrowMove1 = !this.arrowMove1;
         this.arrowMove2 = !this.arrowMove2;
         this.isTrue = !this.isTrue;
+      },
+      SaveID (id) {
+        window.localStorage.setItem("GateWayUserID",id)
       }
    },
    mounted(){
-      api.post("systemSecret",{
-        devCode:"222",
-        name:"ddd",
-        systemSecret:"fff"
-      })
+      api.get("gatewayUser")
       .then(data => {
-        console.log(data.data.data.list);
+        this.list = data.data.data.list;
+        // console.log(this.list[0].id)
+        // window.localStorage.setItem("GateWayUserID",this.list.id)
       })
       .catch(err => {
         console.log(err)

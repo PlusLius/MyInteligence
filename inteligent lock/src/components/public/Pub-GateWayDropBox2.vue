@@ -27,25 +27,20 @@
                         <img src="../../assets/qietu/盒子.png"/>
                       </div>
                       <div class="GateWayIDBox">
-                         <p class="GateWayName">{{name}}</p>
-                         <p class="GateWayID">ID: {{gatewayCode}}</p>
+                         <p class="GateWayName">乾元物联</p>
+                         <p class="GateWayID">ID: 01234567890123456789</p>
                       </div>
-                      <router-link class="GateWayAdminBox" to="/MyInteligence/GatewayManager">
-                          <div class="icon-Administrators"></div>
-                          管理员
-                      </router-link>
+                      <div class="GateWayArrow icon-top"
+                       @click="arrowTogle"
+                       :class="{'arrowUp':arrowMove1,'arrowDown':arrowMove2}">
+
+                      </div>
                 </div>
               </swipeout-item>
            </swipeout>
-           <ul class="GateWayDropBox">
-             <li class="GateWayEdit icon-share">分享</li>
-             <li class="GateWayUpDate icon-RemoteUpgrade">远程升级</li>
-             <li class="GateWayArrow icon-top"
-             @click="arrowTogle"
-             :class="{'arrowUp':arrowMove1,'arrowDown':arrowMove2}">
 
-             </li>
-           </ul>
+
+
 
           <swipeout>
            <transition name="fade">
@@ -95,7 +90,6 @@ export default {
       SwipeoutButton,
       XButton
     },
-   props: ['name','gatewayCode','online'],
    data () {
       return {
         disabled: false,
@@ -115,21 +109,6 @@ export default {
         this.arrowMove1 = !this.arrowMove1;
         this.arrowMove2 = !this.arrowMove2;
         this.isTrue = !this.isTrue;
-      },
-      demo () {
-          axios({
-            method: 'post',
-            url: 'http://n16n237643.iok.la/api/v1.1.0/systemSecret',
-            data: {
-             devCode: 'A0048AE901012956',
-             name: 'DDD',
-             systemSecret: '12345678'
-            },
-            headers: {
-              'Token-JWT': "jwt" + window.localStorage.getItem('token'),
-              'Content-Type':'application/x-www-form-urlencoded'
-            }
-          });
       }
    },
 }
@@ -197,7 +176,6 @@ export default {
     margin-right: toRem(58);
     text-align: center;
     color:#F39C12;
-    @include font-dpr(12px);
   }
 
   .GateWayDropBox {
@@ -218,7 +196,7 @@ export default {
   .GateWayEdit {
     flex:2;
   }
-  .icon-share:before {
+  .icon-edit:before {
     @include font-dpr(16px);
     margin-right: toRem(16);
     position:relative;
@@ -234,14 +212,16 @@ export default {
     top:3px;
   }
   .GateWayArrow {
-    flex:1;
+    float: right;
+    width: 20%;
     text-align: center;
+    height: toRem(221);
+    line-height: toRem(221);
+    color:#00A6F4;
   }
   .icon-top:before {
     @include font-dpr(16px);
     display: inline-block;
-    position:relative;
-    top:toRem(38);
     transform-origin: center center;
   }
 

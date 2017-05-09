@@ -2,9 +2,12 @@
 <template>
   <div>
     <!-- 锁添加密钥部分 -->
-    <div class="addDevice">
-      <img src="../../assets/qietu/添加设备.png" class="DeviceIcon">
-      <div class="DeviceFont">添加设备</div>
+    <div class="addDevice" >
+      <div @click="ScanQRcode">
+          <img src="../../assets/qietu/添加设备.png" class="DeviceIcon">
+          <div class="RichScan">扫一扫添加</div>
+      </div>
+      <div class="DeviceFont">手动添加</div>
     </div>
     <!--网关-->
     <GetwayDrop></GetwayDrop>
@@ -13,6 +16,7 @@
 </template>
 <script>
   import GetwayDrop from "../public/Pub-GatewayDrop.vue"
+
   export default {
     components: {
       GetwayDrop
@@ -21,6 +25,11 @@
       return {
         disabled: false,
         show: false
+      }
+    },
+    methods: {
+      ScanQRcode () {
+        console.log(this.$wechat.config);
       }
     }
   }
@@ -43,27 +52,40 @@
   .addDevice {
     position: relative;
     width: 100%;
-    height: toRem(450);
+    height: toRem(520);
     background: #29b6f6;
+  }
+  .RichScan{
+    position: absolute;
+    height:toRem(45);
+    line-height: toRem(45);
+    top:toRem(302);
+    width: 100%;
+    text-align: center;
+  @include font-dpr(16px);
+    color: #FFFFFF;
   }
   .DeviceIcon,.DeviceFont {
     position: absolute;
     left:50%;
   }
   .DeviceIcon {
-    top:toRem(87);
+    margin-top:toRem(58);
     margin-left: toRem(-100);
     width: toRem(200);
     height: toRem(200);
   }
   .DeviceFont {
-    bottom:toRem(72);
-    margin-left: toRem(-120);
+    bottom:toRem(53);
+    margin-left: toRem(-175);
+    width: toRem(350);
+    height: toRem(80);
+    line-height: toRem(82);
     text-align: center;
-    width: toRem(240);
-    height: toRem(46);
     color:#FFFFFF;
   @include font-dpr(16px);
+    border-radius: toRem(40);
+    border:1px solid white;
   }
   .fade-enter-active, .fade-leave-active {
     transition: opacity .5s
