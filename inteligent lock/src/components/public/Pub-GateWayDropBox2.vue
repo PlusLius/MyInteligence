@@ -24,11 +24,12 @@
                 </div>
                 <div slot="content" class="GateWayBox">
                       <div class="GateWaySwiperBox">
-                        <img src="../../assets/qietu/盒子.png"/>
+                        <img src="../../assets/qietu/盒子.png" v-if="online"/>
+                        <img src="../../assets/qietu/盒子灰.png" v-else >
                       </div>
                       <div class="GateWayIDBox">
-                         <p class="GateWayName">乾元物联</p>
-                         <p class="GateWayID">ID: 01234567890123456789</p>
+                         <p class="GateWayName">{{name}}</p>
+                         <p class="GateWayID">ID: {{gatewayCode}}</p>
                       </div>
                       <div class="GateWayArrow icon-top"
                        @click="arrowTogle"
@@ -84,12 +85,13 @@ import { Swipeout, SwipeoutItem, SwipeoutButton, XButton } from 'vux'
 import axios from 'axios'
 
 export default {
+   props: ['name','gatewayCode','online'],
    components: {
       Swipeout,
       SwipeoutItem,
       SwipeoutButton,
       XButton
-    },
+   },
    data () {
       return {
         disabled: false,

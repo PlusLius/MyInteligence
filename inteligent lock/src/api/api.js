@@ -10,7 +10,7 @@ class API {
             params: params,
             headers: {
               'Token-JWT': "jwt" + window.localStorage.getItem('token'),
-              'Content-Type':'application/x-www-form-urlencoded'
+              'Content-Type':'application/x-www-form-urlencoded;charset=utf-8'
             }
         });
 
@@ -20,12 +20,12 @@ class API {
     post (url,data) {
         return  axios({
             method: 'post',
-            // url: 'http://n16n237643.iok.la/api/v1.1.0/' + url,
-            url: 'http://n16n237643.iok.la/' + url,
-            data: data,
+            url: 'http://n16n237643.iok.la/api/v1.1.0/' + url,
+            // url: 'http://n16n237643.iok.la/' + url,
+            params: data,
             headers: {
               'Token-JWT': "jwt" + window.localStorage.getItem('token'),
-              'Content-Type':'application/x-www-form-urlencoded'
+              'Content-Type':'application/x-www-form-urlencoded;charset=utf-8'
             }
         });
     }

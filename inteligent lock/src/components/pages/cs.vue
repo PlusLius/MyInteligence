@@ -1,16 +1,9 @@
 <template>
   <div>
-        <div>
-           <div>
-                {{order}}
-           </div>
-            <div>
-                {{token}}
-            </div>
-            <div>
-                aaa
-            </div>
-        </div>
+
+
+
+
     <!--     <div id="dialog1">
             <div class="weui-mask"></div>
             <div class="weui-dialog My-dialog ">
