@@ -20,14 +20,37 @@ class API {
     post (url,data) {
         return  axios({
             method: 'post',
-            url: 'http://n16n237643.iok.la/api/v1.1.0/' + url,
+            url:  'http://n16n237643.iok.la/api/v1.1.0/' + url,
             // url: 'http://n16n237643.iok.la/' + url,
-            params: data,
+            data: data,
+            headers: {
+              'Token-JWT': "jwt" + window.localStorage.getItem('token'),
+              'Content-type':'application/x-www-form-urlencoded;charset=utf-8'
+            }
+        });
+    };
+
+    put (url,params) {
+        return axios({
+            method: 'put',
+            url: 'http://n16n237643.iok.la/api/v1.1.0/' + url,
+            params: params,
             headers: {
               'Token-JWT': "jwt" + window.localStorage.getItem('token'),
               'Content-Type':'application/x-www-form-urlencoded;charset=utf-8'
             }
-        });
+        })
+    };
+
+    deletes (url,params) {
+        return axios({
+            method: 'delete',
+            url: 'http://n16n237643.iok.la/api/v1.1.0/' + url,
+            headers: {
+              'Token-JWT': "jwt" + window.localStorage.getItem('token'),
+              'Content-Type':'application/x-www-form-urlencoded;charset=utf-8'
+            }
+        })
     }
 
 }

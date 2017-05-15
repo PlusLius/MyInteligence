@@ -24,10 +24,27 @@ import rem from './assets/lib/flexible.js'
 
 Vue.use(VueRouter)
 
+// let setDocumentTitle = function (title) {
+//     document.title = title;
+//     let ua = navigator.userAgent;
+//     if (/\bMicroMessenger\/([\d\.]+)/.test(ua) && /ip(hone|od|ad)/i.test(ua)) {
+//         var i = document.createElement('iframe');
+//         i.src = '/favicon.ico';
+//         i.style.display = 'none';
+//         i.onload = function () {
+//             setTimeout(function () {
+//                 i.remove();
+//             }, 9);
+//         };
+//         document.body.appendChild(i);
+//     }
+// };
+
+
 const routes = [
     {
       path:'/',
-      meta: {title: 'MyDynamicKey'},
+      meta: {title: '我的智能'},
       // component: MyInteligence
       component: cs
     },
@@ -76,6 +93,12 @@ const routes = [
 
 const router = new VueRouter({
   routes
+})
+
+router.beforeEach((to, from, next) => {
+  // alert(to.meta.pageTitle)
+  document.title = from.meta.title;
+  next();
 })
 
 FastClick.attach(document.body)

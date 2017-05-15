@@ -3,15 +3,20 @@
       <div v-if="list.length === 0">
           没有网关,请添加网关
       </div>
-      <div v-for="item in list">
+      <div v-for="(item,index) in list">
+             <!--  <div v-for= "item in item.Devlist">
 
-
+            {{item.code}}
+            </div> -->
           <GateWayDropBox
-             v-if = "item.level === 1"
+            v-if = "item.level === 1"
             :name = "item.name"
             :gatewayCode = "item.gatewayCode"
             :online = "item.online"
-            :gatewayLockList = "item.DevList"
+            :gatewayLockList = "item.Devlist"
+            :gatewayUserId = "item.id"
+            :index = "index"
+            :list = "list"
           ></GateWayDropBox>
 
           <GateWayDropBox2
@@ -19,6 +24,10 @@
             :name = "item.name"
             :gatewayCode = "item.gatewayCode"
             :online = "item.online"
+            :gatewayLockList = "item.Devlist"
+            :gatewayUserId = "item.id"
+            :index = "index"
+            :list = "list"
           >
           </GateWayDropBox2>
 
@@ -42,7 +51,7 @@ import { Swipeout, SwipeoutItem, SwipeoutButton, XButton } from 'vux'
 import GateWayDropBox from "../public/Pub-GateWayDropBox"
 import GateWayDropBox2 from "../public/Pub-GateWayDropBox2"
 import API from "../../api/api"
-// import Vue from "./vue"
+import Vue from "vue"
 
 var api = new API();
 
@@ -62,8 +71,7 @@ export default {
         arrowMove1: false,
         arrowMove2: true,
         isTrue:false,
-        list:[],
-        gatewayId:""
+        list:[]
       }
   },
   methods: {
@@ -81,30 +89,33 @@ export default {
    },
   mounted(){
 
-      var gatewayUserlist
+      // var gatewayUserlist
       //请求网关数据
       api.get("gatewayUser")
       .then(data => {
 
         //获取网关列表的list
         //{"list":[{"gatewayCode":"B00495A17D023149"}]}
-        gatewayUserlist = data.data.data.list;
+        // gatewayUserlist = data.data.data.list;
 
-        this.list = gatewayUserlist;
+        // this.list = gatewayUserlist;
+        this.list = data.data.data.list
         //保存第一次网关id
         //用户第一次进入网关列表,没有锁ID的情况
         if(!window.localStorage.getItem('gatewayUserId')){
             //没有网关ID的时候,默认将第一条数据的网关ID
-            window.localStorage.setItem('gatewayUserId',gatewayUserlist[0].id);
+            // window.localStorage.setItem('gatewayUserId',gatewayUserlist[0].id);
+            window.localStorage.setItem('gatewayUserId',this.list[0].id);
 
             //没有锁ID的时候,去请求锁ID
             //window.localStorage.getItem('gatewayUserId')是当前Id
-            api.get("gatewayUser/" + gatewayUserlist[0].id + "/deviceStatus")
+            api.get("gatewayUser/" + this.list[0].id + "/deviceStatus")
             .then(data => {
               //默认渲染第一条数据的id
+
               var devlist = data.data.data.list;
-              gatewayUserlist[0].Devlist = devlist;
-              this.list.splice(0,1,gatewayUserlist[0])
+              Vue.set(this.list[0],"Devlist",devlist)
+
             })
             .catch(err => {
               console.log(err)
@@ -113,29 +124,29 @@ export default {
         }
 
         else {
+           var index
           for(var i = 0; i < this.list.length; i++) {
-              if(gatewayUserlist[i].id == window.localStorage.getItem('gatewayUserId')){
+              if(this.list[i].id == window.localStorage.getItem('gatewayUserId')){
                 //不是第一次的时候,用用户点的网关列表去请求,网关锁数据
+                index = i
                 api.get("gatewayUser/" +  window.localStorage.getItem('gatewayUserId') + "/deviceStatus")
                 .then(data => {
+                    var devlist = data.data.data.list;
                     //网关id用来证明,是当前id
                     //用户点击后存储当前数据下的网关id,
                     //根据网关id与当前网关id比对后将锁列表加入当前网关数据列表后面
-
-
                     //进入这里说明是当前网关列表,将lock数据放入当前网关列表下面
-                    // this.list[i].gatewayLockList = data.data.data.list;
-                    gatewayUserlist[i].Devlist = data.data.data.list;
-                    console.log(this.list[i])
+                     Vue.set(this.list[index],"Devlist",devlist)
+
+                })
+                .catch( err => {
+                  console.log(err)
                 })
               }
 
             }
-
         }
-
-        this.list = gatewayUserlist;
-        console.log(this.list)
+        // console.log(this.list)
         //然后用户网关ID请求锁信息,如果没有锁,提示添加锁,如果有锁
 
         //点击的时候保存锁ID,和网关ID

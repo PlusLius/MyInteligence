@@ -22,7 +22,7 @@
                     background-color="#E74C3C"
                     >删除</swipeout-button>
                 </div>
-                <div slot="content" class="GateWayBox">
+                <div slot="content" class="GateWayBox" @click="saveGatewayUserId(gatewayUserId)">
                       <div class="GateWaySwiperBox">
                         <img src="../../assets/qietu/盒子.png" v-if="online"/>
                         <img src="../../assets/qietu/盒子灰.png" v-else >
@@ -32,7 +32,7 @@
                          <p class="GateWayID">ID: {{gatewayCode}}</p>
                       </div>
                       <div class="GateWayArrow icon-top"
-                       @click="arrowTogle"
+                       @click="arrowTogle(gatewayUserId)"
                        :class="{'arrowUp':arrowMove1,'arrowDown':arrowMove2}">
 
                       </div>
@@ -42,10 +42,21 @@
 
 
 
-
-          <swipeout>
+          <div v-if="!gatewayLockList">
+            请添加锁 {{gatewayLockList}}
+          </div>
+          <swipeout
+            v-for="item in gatewayLockList"
+            @click.native="SaveId(item.id,item.gatewayUserId)"
+          >
            <transition name="fade">
-            <swipeout-item @on-close="handleEvents('on-close')" @on-open="handleEvents('on-open')" transition-mode="follow"  v-if="isTrue"            >
+            <swipeout-item
+            @on-close="handleEvents('on-close')"
+            @on-open="handleEvents('on-open')"
+            transition-mode="follow"
+            v-if="item.id ? !isTrue : isTrue"
+            @click = "router"
+            >
               <div slot="right-menu">
                  <swipeout-button
                     @click.native="onButtonClick('fav')"
@@ -63,8 +74,8 @@
               <div slot="content" class="GateWayDropChild vux-1px-b">
                 <div class="GateWayChildLock icon-lock"></div>
                 <div class="GateWayChildMore">
-                    <p class="GateWayChildLockTitle">智能锁2</p>
-                    <p class="GateWayChildLockID">ID: 12345678901234567890</p>
+                    <p class="GateWayChildLockTitle">{{item.name}}</p>
+                    <p class="GateWayChildLockID">ID:  {{item.code}}</p>
                 </div>
               </div>
             </swipeout-item>
@@ -74,18 +85,26 @@
 
           <!-- 结束 -->
       </div>
-
-
   </div>
 </template>
 
 
 <script>
 import { Swipeout, SwipeoutItem, SwipeoutButton, XButton } from 'vux'
-import axios from 'axios'
+import API from '../../api/api'
+import Vue from 'vue'
+var api = new API();
 
 export default {
-   props: ['name','gatewayCode','online'],
+   props: [
+          'name',
+          'gatewayCode',
+          'gatewayLockList',
+          'online',
+          'gatewayUserId',
+          'index',
+          'list'
+   ],
    components: {
       Swipeout,
       SwipeoutItem,
@@ -107,12 +126,43 @@ export default {
       handleEvents (type) {
         console.log('event: ', type)
       },
-      arrowTogle (){
+      arrowTogle (id){
+        if(!window.localStorage.getItem("currentUserId")){
+          window.localStorage.setItem("currentUserId",id)
+          var historyId = window.localStorage.getItem("currentUserId")
+          window.localStorage.setItem("gatewayUserId",historyId)
+        }
+        if(this.arrowMove2){
+          api.get("gatewayUser/" + window.localStorage.getItem('currentUserId') + "/deviceStatus")
+          .then(data => {
+              var currentLockList = data.data.data.list;
+              Vue.set(this.list[this.index],"Devlist",currentLockList)
+          })
+          .catch( err => {
+            console.log(err)
+          })
+        }
         this.arrowMove1 = !this.arrowMove1;
         this.arrowMove2 = !this.arrowMove2;
-        this.isTrue = !this.isTrue;
+        this.isTrue = ! this.arrowMove2
+      },
+      SaveId (LockId,UserId) {
+        window.localStorage.setItem("gatewayUserId",UserId);
+        window.localStorage.setItem("gatewayLockId",LockId);
+      },
+      saveGatewayUserId (id) {
+        window.localStorage.setItem("currentUserId",id)
+      },
+      router (){
+        this.$router.push('/MyResentUse');
       }
+
    },
+   mounted() {
+      this.arrowMove1 = !this.arrowMove1;
+      this.arrowMove2 = !this.arrowMove2;
+      this.isTrue = ! this.arrowMove2
+   }
 }
 </script>
 
