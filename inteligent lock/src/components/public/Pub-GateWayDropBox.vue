@@ -2,13 +2,13 @@
 <template>
   <div>
 
-      <div>
+      <div v-if="gatewayShow">
           <!-- 开始 -->
 
           <swipeout>
               <swipeout-item
-                @on-close="handleEvents('on-close')"
-                @on-open="handleEvents('on-open')"
+                @on-close="handleEvents('gateway-on-close')"
+                @on-open="handleEvents('gateway-on-open',gatewayUserId)"
                 transition-mode="follow"
               >
                 <div slot="right-menu">
@@ -42,8 +42,8 @@
               </swipeout-item>
            </swipeout>
            <ul class="GateWayDropBox">
-             <li class="GateWayEdit icon-share">分享</li>
-             <li class="GateWayUpDate icon-RemoteUpgrade">远程升级</li>
+             <li class="GateWayEdit icon-share" @click="gatewayShare(gatewayUserId)">分享</li>
+             <li class="GateWayUpDate icon-RemoteUpgrade" @click="remoteUpdate">远程升级</li>
              <li class="GateWayArrow icon-top"
              @click="arrowTogle(gatewayUserId)"
              :class="{'arrowUp':arrowMove1,'arrowDown':arrowMove2}">
@@ -55,14 +55,14 @@
             请添加锁 {{gatewayLockList}}
           </div>
           <swipeout
-              v-for="item in gatewayLockList"
-              @click.native="SaveId(item.id,item.gatewayUserId)"
-
            >
            <transition name="fade" >
             <swipeout-item
-              @on-close="handleEvents('on-close')"
-              @on-open="handleEvents('on-open')"
+              v-for="(item,index) in gatewayLockList"
+              v-model="lockIndex = index"
+              @click.native="SaveId(item.id,item.gatewayUserId)"
+              @on-close="handleEvents('gatewayLock-on-close')"
+              @on-open="handleEvents('gatewayLock-on-open')"
               transition-mode="follow"
               v-if="item.id ? isTrue : !isTrue"
             >
@@ -136,14 +136,14 @@
                   type="text"
                   name="text"
                   class="editLockMsg"
-                  placeholder="请输入想要编辑的网关"
+                  placeholder="请输入想要编辑的设备名字"
                   v-model="gatewayLockNameMsg"
                   >
                   <input
                   type="text"
                   name="text"
                   class="editRemote"
-                  placeholder="请输入想要编辑的网关"
+                  placeholder="请输入远程密码"
                   v-model="remoteSecret"
                   >
 
@@ -165,27 +165,89 @@
             </div>
         </div>
 
+        <div id="dialog3" v-if="remoteUpdateShow">
+            <div class="weui-mask"></div>
+            <div class="weui-dialog editDialog">
+                <div class="weui-dialog__hd"><strong class="weui-dialog__title">网关升级</strong></div>
+                <div class="weui-dialog__bd">
+                  <div class="remoteUpdateMore">
+                     <p>软件版本: {{remoteUpdateMsg.softwareVersion}}</p>
+                     <p>硬件版本: {{remoteUpdateMsg.hardwareVersion}}</p>
+                     <p>可升级的最新软件版本: {{remoteUpdateMsg.newSoftwareVersion}}</p>
+                     <a href="#">更新简介</a>
+                  </div>
+
+                  <button
+                  class="pressUpdate"
+                  @click="pressUpdate"
+                  v-if="remoteUpdateMsg.canUpgrade"
+                  >点击升级</button>
+                </div>
+                <div class="weui-dialog__ft">
+                    <a
+                    href="javascript:;"
+                    class="weui-dialog__btn weui-dialog__btn_default gatewaySure"
+                    @click="gatewayRemoteUpdateOk"
+                    v-if="remoteUpdateMsg.canUpgrade"
+                    >升级
+                    </a>
+
+                    <a
+                    href="javascript:;"
+                    class="weui-dialog__btn weui-dialog__btn_default gatewaySure"
+                    @click="!gatewayRemoteUpdateOk"
+                    v-else
+                    >确定
+                    </a>
+
+                    <a
+                    href="javascript:;"
+                    class="weui-dialog__btn weui-dialog__btn_primary gatewayDel"
+                    @click="gatewayRemoteUpdateCancel"
+                    >取消
+                    </a>
+                </div>
+            </div>
+        </div>
 
           <!-- 结束 -->
+
+        <div v-transfer-dom>
+          <x-dialog v-model="shareDialogStyle" hide-on-blur :dialog-style="{'max-width': '80%', width: '80%', height: '50%', 'background-color': 'white'}">
+            <p style="color:#cccccc;text-align:center;">
+              <img :src="ticket" class="shareImg">
+              <p class="shareFont">
+                长按二维码可发送给朋友<br>此二维码分享仅一次有效
+              </p >
+
+            </p >
+          </x-dialog>
+        </div>
+
       </div>
-
-
   </div>
 </template>
 
 
 <script>
 import { Swipeout, SwipeoutItem, SwipeoutButton, XButton} from 'vux'
+import { XDialog, Group, XSwitch, TransferDomDirective as TransferDom } from 'vux'
 import API from '../../api/api'
 import Vue from 'vue'
 var api = new API();
 
 export default {
+  directives: {
+    TransferDom
+  },
    components: {
       Swipeout,
       SwipeoutItem,
       SwipeoutButton,
       XButton,
+      XDialog,
+      Group,
+      XSwitch,
     },
    props: [
             'name',
@@ -204,10 +266,16 @@ export default {
         isTrue:false,
         show: false,
         lockShow:false,
+        lockIndex:'',
         gatewayNameMsg: '',
         gatewayLockNameMsg:'',
         remoteSecret:'',
-        currentLockList:'',
+        currentLockList:[],
+        gatewayShow:true,
+        remoteUpdateShow:false,
+        remoteUpdateMsg: {},
+        shareDialogStyle: false,
+        ticket:""
       }
     },
    methods: {
@@ -219,7 +287,9 @@ export default {
         if(type == 'gatewayDelete'){
           api.deletes('gatewayUser/'+window.localStorage.getItem('currentUserId'))
           .then( data => {
-            console.log(data)
+            if(data.data.data == true){
+                this.gatewayShow = false
+            }
           })
           .catch( err => {
             console.log(err)
@@ -229,11 +299,39 @@ export default {
           this.lockShow = true;
         }
         if(type == 'deviceDelete'){
-          alert(type)
+          api.deletes('gatewayUser/'+window.localStorage.getItem('currentUserId')+"/deviceStatus/" + this.gatewayLockList[this.lockIndex].id)
+          .then( data => {
+            console.log(data)
+            if(data.data.data == true){
+                this.lockShow = false
+            }
+          })
+          .catch( err => {
+            console.log(err)
+          })
         }
       },
-      handleEvents (type) {
-        console.log('event: ', type)
+      handleEvents (type,id) {
+
+        if(type == "gateway-on-open"){
+
+            if(!window.localStorage.getItem("currentUserId")){
+              window.localStorage.setItem("currentUserId",id)
+              var historyId = window.localStorage.getItem("currentUserId")
+              window.localStorage.setItem("gatewayUserId",historyId)
+            }
+            api.get("gatewayUser/" + window.localStorage.getItem('currentUserId') + "/deviceStatus")
+            .then(data => {
+                var currentLockList = data.data.data.list;
+                this.currentLockList = data.data.data.list;
+                Vue.set(this.list[this.index],"Devlist",currentLockList)
+            })
+            .catch( err => {
+              console.log(err)
+            })
+
+        }
+
       },
       arrowTogle (id) {
         if(!window.localStorage.getItem("currentUserId")){
@@ -245,7 +343,7 @@ export default {
           api.get("gatewayUser/" + window.localStorage.getItem('currentUserId') + "/deviceStatus")
           .then(data => {
               var currentLockList = data.data.data.list;
-              this.currentLockList = data.data.data.list;
+
               Vue.set(this.list[this.index],"Devlist",currentLockList)
           })
           .catch( err => {
@@ -265,7 +363,7 @@ export default {
 
       },
       router() {
-        this.$router.replace('/MyInteligence');
+        this.$router.replace('/MyResentUse');
       },
       editGatewayOk(){
         api.put('gatewayUser/'+window.localStorage.getItem('currentUserId'),{
@@ -273,39 +371,83 @@ export default {
         })
         .then( data => {
           if(data.data.data == true){
-            Vue.set(this.list[this.index],"Devlist",this.currentLockList)
+            Vue.set(this.list[this.index],"name",this.gatewayNameMsg)
+            this.gatewayNameMsg = '';
           }
         })
         .catch( err => {
           console.log(err)
         })
-        this.gatewayNameMsg = '';
+
         this.show = false;
       },
       editGatewayCancel(){
         this.gatewayNameMsg = '';
         this.show = false;
+      },
+      editGatewayLockOk(){
+        api.put('gatewayUser/'+window.localStorage.getItem('currentUserId'),{
+          name: this.gatewayLockNameMsg,
+          remoteSecret:this.remoteSecret
+        })
+        .then( data => {
+          if(data.data.data == true){
+            Vue.set(this.gatewayLockList[this.lockIndex],"name",this.gatewayLockNameMsg);
+            this.gatewayLockNameMsg = '';
+            this.remoteSecret = '';
+          }
+        })
+        .catch( err => {
+          console.log(err)
+        })
+        this.lockShow = false;
+      },
+      editGatewayLockCancel(){
+        this.gatewayLockNameMsg = '';
+        this.remoteSecret = '';
+        this.lockShow = false;
+      },
+      remoteUpdate(){
+        this.remoteUpdateShow = true;
+        api.get("gatewayUser/"+ window.localStorage.getItem("currentUserId") +"/version")
+        .then(res=>{
+          this.remoteUpdateMsg = res.data.data
+        })
+        .catch(err=>{
+          console.log(err)
+        })
+      },
+      gatewayRemoteUpdateOk(){
+        this.remoteUpdateShow = false
+      },
+      gatewayRemoteUpdateCancel(){
+        this.remoteUpdateShow = false
+      },
+      pressUpdate(){
+        var qs = require('qs');
+        api.post("gatewayUser/"+window.localStorage.getItem("currentUserId")+"/version",qs.stringify({
+           verCode:this.remoteUpdateMsg.verCode,
+           softwareVersion:this.remoteUpdateMsg.softwareVersion,
+           newSoftwareVersion:this.remoteUpdateMsg.newSoftwareVersion
+        }))
+        .then(res=>{
+          console.log(res)
+        })
+        .catch(err=>{
+          console.log(err)
+        })
+      },
+      gatewayShare(id){
+        window.localStorage.setItem("currentUserId",id)
+        api.post("gatewayUser/"+window.localStorage.getItem("currentUserId")+"/share")
+        .then(res=>{
+             this.ticket = "https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=" + res.data.data.ticket;
+            this.shareDialogStyle = true;
+        })
+        .catch(err=>{
+          console.log(err)
+        })
       }
-      // editGatewayLockOk(){
-      //   api.put('gatewayUser/'+window.localStorage.getItem('currentUserId'),{
-      //     name: this.gatewayNameMsg,
-      //     remoteSecret:this.remoteSecret
-      //   })
-      //   .then( data => {
-      //     if(data){
-      //       this.$router.replace()
-      //     }
-      //   })
-      //   .catch( err => {
-      //     console.log(err)
-      //   })
-      //   this.gatewayLockNameMsg = '';
-      //   this.lockShow = false;
-      // },
-      // editGatewayLockCancel(){
-      //   this.gatewayLockNameMsg = '';
-      //   this.lockShow = false;
-      // }
    },
    mounted() {
       this.arrowMove1 = !this.arrowMove1;
@@ -323,6 +465,11 @@ export default {
       font-size: $font-size;
       [data-dpr="2"] & { font-size: $font-size * 2; }
       [data-dpr="3"] & { font-size: $font-size * 3; }
+  }
+  .shareImg{
+    width:toRem(650);
+    height:toRem(650);
+    margin-top:toRem(86);
   }
 
   .GateWayBox {
@@ -489,6 +636,12 @@ export default {
     color:#00A6F4;
   }
 
+  .remoteUpdateMore {
+    line-height: 1.8;
+    padding-top: toRem(30);
+    box-sizing:border-box;
+  }
+
   .weui-dialog__hd:after {
     content: " ";
     position: absolute;
@@ -505,17 +658,33 @@ export default {
   }
 
   .weui-dialog__bd {
-    height:toRem(409);
+    min-height:toRem(409);
     display:flex;
+    flex-wrap:wrap;
     justify-content:center;
     align-items:center;
   }
 
-  .editMsg {
+  .editMsg,.editLockMsg,.editRemote {
 
     width: toRem(762);
     height: toRem(120);
     text-align: center;
+  }
+
+  .editLockMsg {
+    margin-top: toRem(50)
+  }
+
+  .pressUpdate {
+    width: toRem(400);
+    height: toRem(80);
+    border-radius: 40px;
+    border: 1px solid #0EAAF4;
+    color:#0EAAF4;
+    background: #fff;
+    @include font-dpr(16px);
+    font-family:"微软雅黑";
   }
 
  input[type=text] {
