@@ -55,20 +55,22 @@
             请添加锁 {{gatewayLockList}}
           </div>
           <swipeout
+
+
            >
-           <transition name="fade" >
+           <transition-group name="fade">
             <swipeout-item
+             @click.native="SaveId(item.id,item.gatewayUserId)"
               v-for="(item,index) in gatewayLockList"
-              v-model="lockIndex = index"
-              @click.native="SaveId(item.id,item.gatewayUserId)"
               @on-close="handleEvents('gatewayLock-on-close')"
               @on-open="handleEvents('gatewayLock-on-open')"
               transition-mode="follow"
               v-if="item.id ? isTrue : !isTrue"
+              :key="item.id"
             >
               <div slot="right-menu">
                  <swipeout-button
-                    @click.native="onButtonClick('deviceEdit')"
+                    @click.native="onButtonClick('deviceEdit',index)"
                     type="primary"
                     :width="73"
                     background-color="#00A6F4"
@@ -93,7 +95,7 @@
                 </div>
               </div>
             </swipeout-item>
-            </transition>
+            </transition-group>
         </swipeout>
 
 
@@ -279,7 +281,7 @@ export default {
       }
     },
    methods: {
-      onButtonClick (type) {
+      onButtonClick (type,index) {
         // alert('on button click ' + type)
         if(type == 'gatewayEdit'){
           this.show = true;
@@ -297,6 +299,7 @@ export default {
         }
         if(type == 'deviceEdit') {
           this.lockShow = true;
+          this.lockIndex = index
         }
         if(type == 'deviceDelete'){
           api.deletes('gatewayUser/'+window.localStorage.getItem('currentUserId')+"/deviceStatus/" + this.gatewayLockList[this.lockIndex].id)
@@ -315,11 +318,9 @@ export default {
 
         if(type == "gateway-on-open"){
 
-            if(!window.localStorage.getItem("currentUserId")){
-              window.localStorage.setItem("currentUserId",id)
-              var historyId = window.localStorage.getItem("currentUserId")
-              window.localStorage.setItem("gatewayUserId",historyId)
-            }
+            window.localStorage.setItem("currentUserId",id);
+            window.localStorage.setItem("gatewayUserId",window.localStorage.getItem("currentUserId"));
+
             api.get("gatewayUser/" + window.localStorage.getItem('currentUserId') + "/deviceStatus")
             .then(data => {
                 var currentLockList = data.data.data.list;
@@ -359,8 +360,10 @@ export default {
         window.localStorage.setItem("gatewayLockId",LockId);
       },
       saveGatewayUserId (id) {
-        window.localStorage.setItem("currentUserId",id)
 
+       window.localStorage.setItem("currentUserId",id)
+
+       window.localStorage.setItem("gatewayUserId", window.localStorage.getItem("currentUserId"))
       },
       router() {
         this.$router.replace('/MyResentUse');
@@ -386,11 +389,12 @@ export default {
         this.show = false;
       },
       editGatewayLockOk(){
-        api.put('gatewayUser/'+window.localStorage.getItem('currentUserId'),{
+        api.put('gatewayUser/'+window.localStorage.getItem('currentUserId')+'/deviceStatus/'+window.localStorage.getItem('gatewayLockId'),{
           name: this.gatewayLockNameMsg,
           remoteSecret:this.remoteSecret
         })
         .then( data => {
+          console.log(this.lockIndex)
           if(data.data.data == true){
             Vue.set(this.gatewayLockList[this.lockIndex],"name",this.gatewayLockNameMsg);
             this.gatewayLockNameMsg = '';
