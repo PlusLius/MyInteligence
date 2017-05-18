@@ -46,7 +46,7 @@
              <li class="GateWayUpDate icon-RemoteUpgrade" @click="remoteUpdate">远程升级</li>
              <li class="GateWayArrow icon-top"
              @click="arrowTogle(gatewayUserId)"
-             :class="{'arrowUp':arrowMove1,'arrowDown':arrowMove2}">
+             :class="{'arrowUp':arrowMove2,'arrowDown':arrowMove1}">
 
              </li>
            </ul>
@@ -54,10 +54,7 @@
           <div v-if="!gatewayLockList">
             请添加锁 {{gatewayLockList}}
           </div>
-          <swipeout
-
-
-           >
+          <swipeout>
            <transition-group name="fade">
             <swipeout-item
              @click.native="SaveId(item.id,item.gatewayUserId)"
@@ -86,7 +83,7 @@
               <div
               slot="content"
               class="GateWayDropChild vux-1px-b"
-              @click="router"
+             @click="router(item.name,item.code,item.functionCode,item.power,item.mode,item.remoteSecretSetted)"
               >
                 <div class="GateWayChildLock icon-lock"></div>
                 <div class="GateWayChildMore">
@@ -335,11 +332,13 @@ export default {
 
       },
       arrowTogle (id) {
-        if(!window.localStorage.getItem("currentUserId")){
-          window.localStorage.setItem("currentUserId",id)
-          var historyId = window.localStorage.getItem("currentUserId")
-          window.localStorage.setItem("gatewayUserId",historyId)
-        }
+        // if(!window.localStorage.getItem("currentUserId")){
+        //   window.localStorage.setItem("currentUserId",id)
+        //   var historyId = window.localStorage.getItem("currentUserId")
+        //   window.localStorage.setItem("gatewayUserId",historyId)
+        // }
+       window.localStorage.setItem("currentUserId",id);
+       window.localStorage.setItem("gatewayUserId", window.localStorage.getItem("currentUserId"));
         if(this.arrowMove2){
           api.get("gatewayUser/" + window.localStorage.getItem('currentUserId') + "/deviceStatus")
           .then(data => {
@@ -353,7 +352,7 @@ export default {
         }
         this.arrowMove1 = !this.arrowMove1;
         this.arrowMove2 = !this.arrowMove2;
-        this.isTrue = ! this.arrowMove2
+        this.isTrue = this.arrowMove2
       },
       SaveId (LockId,UserId) {
         window.localStorage.setItem("gatewayUserId",UserId);
@@ -365,8 +364,19 @@ export default {
 
        window.localStorage.setItem("gatewayUserId", window.localStorage.getItem("currentUserId"))
       },
-      router() {
-        this.$router.replace('/MyResentUse');
+      router (name,code,functionCode,power,mode,remoteSecretSetted){
+        this.$router.replace(
+          { path: '/MyResentUse',
+            query: {
+                name: name,
+                code: code,
+                functionCode: functionCode,
+                power: power,
+                mode: mode,
+                remoteSecretSetted: remoteSecretSetted
+            }
+          }
+        );
       },
       editGatewayOk(){
         api.put('gatewayUser/'+window.localStorage.getItem('currentUserId'),{
@@ -456,7 +466,7 @@ export default {
    mounted() {
       this.arrowMove1 = !this.arrowMove1;
       this.arrowMove2 = !this.arrowMove2;
-      this.isTrue = ! this.arrowMove2
+      this.isTrue = ! this.arrowMove1
    }
 }
 </script>

@@ -5,18 +5,21 @@
           <!-- 开始 -->
 
           <swipeout>
-              <swipeout-item @on-close="handleEvents('on-close')" @on-open="handleEvents('on-open')" transition-mode="follow"
+              <swipeout-item
+              @on-close="handleEvents('gateway-on-close')"
+              @on-open="handleEvents('gateway-on-open',gatewayUserId)"
+              transition-mode="follow"
 
               >
                 <div slot="right-menu">
-                  <swipeout-button
-                    @click.native="onButtonClick('fav')"
+                   <swipeout-button
+                    @click.native="onButtonClick('gatewayEdit')"
                     type="primary"
                     :width="73"
                     background-color="#00A6F4"
                     >编辑</swipeout-button>
                   <swipeout-button
-                    @click.native="onButtonClick('delete')"
+                    @click.native="onButtonClick('gatewayDelete')"
                     type="warn"
                     :width="73"
                     background-color="#E74C3C"
@@ -45,42 +48,114 @@
           <div v-if="!gatewayLockList">
             请添加锁 {{gatewayLockList}}
           </div>
-          <swipeout
-            v-for="item in gatewayLockList"
-            @click.native="SaveId(item.id,item.gatewayUserId)"
-          >
-           <transition name="fade">
+              <swipeout>
+           <transition-group name="fade">
             <swipeout-item
-            @on-close="handleEvents('on-close')"
-            @on-open="handleEvents('on-open')"
-            transition-mode="follow"
-            v-if="item.id ? !isTrue : isTrue"
-            @click = "router"
+             @click.native="SaveId(item.id,item.gatewayUserId)"
+              v-for="(item,index) in gatewayLockList"
+              @on-close="handleEvents('gatewayLock-on-close')"
+              @on-open="handleEvents('gatewayLock-on-open')"
+              transition-mode="follow"
+              v-if="item.id ? isTrue : !isTrue"
+              :key="item.id"
             >
               <div slot="right-menu">
-                 <swipeout-button
-                    @click.native="onButtonClick('fav')"
+               <!--   <swipeout-button
+                    @click.native="onButtonClick('deviceEdit',index)"
                     type="primary"
                     :width="73"
                     background-color="#00A6F4"
-                    >编辑</swipeout-button>
+                    v-model="show"
+                    >编辑</swipeout-button> -->
                   <swipeout-button
-                    @click.native="onButtonClick('delete')"
+                    @click.native="onButtonClick('deviceDelete')"
                     type="warn"
                     :width="73"
                     background-color="#E74C3C"
                     >删除</swipeout-button>
               </div>
-              <div slot="content" class="GateWayDropChild vux-1px-b">
+              <div
+              slot="content"
+              class="GateWayDropChild vux-1px-b"
+              @click="router(item.name,item.code,item.functionCode,item.power,item.mode,item.remoteSecretSetted)"
+              >
                 <div class="GateWayChildLock icon-lock"></div>
                 <div class="GateWayChildMore">
                     <p class="GateWayChildLockTitle">{{item.name}}</p>
-                    <p class="GateWayChildLockID">ID:  {{item.code}}</p>
+                    <p class="GateWayChildLockID">ID: {{item.code}}</p>
                 </div>
               </div>
             </swipeout-item>
-            </transition>
+            </transition-group>
         </swipeout>
+
+            <div id="dialog1" v-if="show">
+            <div class="weui-mask"></div>
+            <div class="weui-dialog editDialog">
+                <div class="weui-dialog__hd"><strong class="weui-dialog__title">编辑网关</strong></div>
+                <div class="weui-dialog__bd">
+                  <input
+                  type="text"
+                  name="text"
+                  class="editMsg"
+                  placeholder="请输入想要编辑的网关"
+                  v-model="gatewayNameMsg"
+                  >
+                </div>
+                <div class="weui-dialog__ft">
+                    <a
+                    href="javascript:;"
+                    class="weui-dialog__btn weui-dialog__btn_default gatewaySure"
+                    @click="editGatewayOk"
+                    >确定
+                    </a>
+                    <a
+                    href="javascript:;"
+                    class="weui-dialog__btn weui-dialog__btn_primary gatewayDel"
+                    @click="editGatewayCancel"
+                    >取消
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div id="dialog2" v-if="lockShow">
+            <div class="weui-mask"></div>
+            <div class="weui-dialog editDialog">
+                <div class="weui-dialog__hd"><strong class="weui-dialog__title">编辑锁信息</strong></div>
+                <div class="weui-dialog__bd">
+                  <input
+                  type="text"
+                  name="text"
+                  class="editLockMsg"
+                  placeholder="请输入想要编辑的设备名字"
+                  v-model="gatewayLockNameMsg"
+                  >
+                  <input
+                  type="text"
+                  name="text"
+                  class="editRemote"
+                  placeholder="请输入远程密码"
+                  v-model="remoteSecret"
+                  >
+
+                </div>
+                <div class="weui-dialog__ft">
+                    <a
+                    href="javascript:;"
+                    class="weui-dialog__btn weui-dialog__btn_default gatewaySure"
+                    @click="editGatewayLockOk"
+                    >确定
+                    </a>
+                    <a
+                    href="javascript:;"
+                    class="weui-dialog__btn weui-dialog__btn_primary gatewayDel"
+                    @click="editGatewayLockCancel"
+                    >取消
+                    </a>
+                </div>
+            </div>
+        </div>
 
 
           <!-- 结束 -->
@@ -116,26 +191,86 @@ export default {
         disabled: false,
         arrowMove1: false,
         arrowMove2: true,
-        isTrue:false
+        isTrue:false,
+        show: false,
+        lockShow:false,
+        lockIndex:'',
+        gatewayNameMsg: '',
+        gatewayLockNameMsg:'',
+        remoteSecret:'',
+        currentLockList:[],
+        gatewayShow:true,
+        remoteUpdateShow:false,
+        remoteUpdateMsg: {},
       }
     },
    methods: {
-      onButtonClick (type) {
-        alert('on button click ' + type)
-      },
-      handleEvents (type) {
-        console.log('event: ', type)
-      },
-      arrowTogle (id){
-        if(!window.localStorage.getItem("currentUserId")){
-          window.localStorage.setItem("currentUserId",id)
-          var historyId = window.localStorage.getItem("currentUserId")
-          window.localStorage.setItem("gatewayUserId",historyId)
+      onButtonClick (type,index) {
+        // alert('on button click ' + type)
+        if(type == 'gatewayEdit'){
+          this.show = true;
         }
+        if(type == 'gatewayDelete'){
+          api.deletes('gatewayUser/'+window.localStorage.getItem('currentUserId'))
+          .then( data => {
+            if(data.data.data == true){
+                this.gatewayShow = false
+            }
+          })
+          .catch( err => {
+            console.log(err)
+          })
+        }
+        if(type == 'deviceEdit') {
+          this.lockShow = true;
+          this.lockIndex = index
+        }
+        if(type == 'deviceDelete'){
+          api.deletes('gatewayUser/'+window.localStorage.getItem('currentUserId')+"/deviceStatus/" + this.gatewayLockList[this.lockIndex].id)
+          .then( data => {
+            console.log(data)
+            if(data.data.data == true){
+                this.lockShow = false
+            }
+          })
+          .catch( err => {
+            console.log(err)
+          })
+        }
+      },
+      handleEvents (type,id) {
+
+        if(type == "gateway-on-open"){
+
+            window.localStorage.setItem("currentUserId",id);
+            window.localStorage.setItem("gatewayUserId",window.localStorage.getItem("currentUserId"));
+
+            api.get("gatewayUser/" + window.localStorage.getItem('currentUserId') + "/deviceStatus")
+            .then(data => {
+                var currentLockList = data.data.data.list;
+                this.currentLockList = data.data.data.list;
+                Vue.set(this.list[this.index],"Devlist",currentLockList)
+            })
+            .catch( err => {
+              console.log(err)
+            })
+
+        }
+
+      },
+      arrowTogle (id) {
+        window.localStorage.setItem("currentUserId",id)
+        window.localStorage.setItem("gatewayUserId", window.localStorage.getItem("currentUserId"))
+        // if(!window.localStorage.getItem("currentUserId")){
+        //   window.localStorage.setItem("currentUserId",id)
+        //   var historyId = window.localStorage.getItem("currentUserId")
+        //   window.localStorage.setItem("gatewayUserId",historyId)
+        // }
         if(this.arrowMove2){
           api.get("gatewayUser/" + window.localStorage.getItem('currentUserId') + "/deviceStatus")
           .then(data => {
               var currentLockList = data.data.data.list;
+
               Vue.set(this.list[this.index],"Devlist",currentLockList)
           })
           .catch( err => {
@@ -151,12 +286,70 @@ export default {
         window.localStorage.setItem("gatewayLockId",LockId);
       },
       saveGatewayUserId (id) {
-        window.localStorage.setItem("currentUserId",id)
-      },
-      router (){
-        this.$router.push('/MyResentUse');
-      }
 
+       window.localStorage.setItem("currentUserId",id)
+
+       window.localStorage.setItem("gatewayUserId", window.localStorage.getItem("currentUserId"))
+      },
+      router (name,code,functionCode,power,mode,remoteSecretSetted){
+
+
+        this.$router.replace(
+          { path: '/MyResentUse',
+            query: {
+                name: name,
+                code: code,
+                functionCode: functionCode,
+                power: power,
+                mode: mode,
+                remoteSecretSetted: remoteSecretSetted
+            }
+          }
+        );
+      },
+      editGatewayOk(){
+        api.put('gatewayUser/'+window.localStorage.getItem('currentUserId'),{
+          name: this.gatewayNameMsg
+        })
+        .then( data => {
+          if(data.data.data == true){
+            Vue.set(this.list[this.index],"name",this.gatewayNameMsg)
+            this.gatewayNameMsg = '';
+          }
+        })
+        .catch( err => {
+          console.log(err)
+        })
+
+        this.show = false;
+      },
+      editGatewayCancel(){
+        this.gatewayNameMsg = '';
+        this.show = false;
+      },
+      editGatewayLockOk(){
+        api.put('gatewayUser/'+window.localStorage.getItem('currentUserId')+'/deviceStatus/'+window.localStorage.getItem('gatewayLockId'),{
+          name: this.gatewayLockNameMsg,
+          remoteSecret:this.remoteSecret
+        })
+        .then( data => {
+          console.log(this.lockIndex)
+          if(data.data.data == true){
+            Vue.set(this.gatewayLockList[this.lockIndex],"name",this.gatewayLockNameMsg);
+            this.gatewayLockNameMsg = '';
+            this.remoteSecret = '';
+          }
+        })
+        .catch( err => {
+          console.log(err)
+        })
+        this.lockShow = false;
+      },
+      editGatewayLockCancel(){
+        this.gatewayLockNameMsg = '';
+        this.remoteSecret = '';
+        this.lockShow = false;
+      },
    },
    mounted() {
       this.arrowMove1 = !this.arrowMove1;
@@ -324,6 +517,86 @@ export default {
       @include font-dpr(12px);
       color:#A5A5A5;
   }
+
+   .editDialog {
+    width: toRem(901);
+  }
+
+  .weui-dialog__hd {
+    color:#00A6F4;
+  }
+
+  .gatewayDel {
+    color:#666666;
+  }
+
+  .gatewaySure {
+    color:#00A6F4;
+  }
+
+  .remoteUpdateMore {
+    line-height: 1.8;
+    padding-top: toRem(30);
+    box-sizing:border-box;
+  }
+
+  .weui-dialog__hd:after {
+    content: " ";
+    position: absolute;
+    left: 0;
+    top:55px;
+    right: 0;
+    height: 1px;
+    border-top: 1px solid #D5D5D6;
+    color: #D5D5D6;
+    -webkit-transform-origin: 0 0;
+    transform-origin: 0 0;
+    -webkit-transform: scaleY(0.5);
+    transform: scaleY(0.5);
+  }
+
+  .weui-dialog__bd {
+    min-height:toRem(409);
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
+    align-items:center;
+  }
+
+  .editMsg,.editLockMsg,.editRemote {
+
+    width: toRem(762);
+    height: toRem(120);
+    text-align: center;
+  }
+
+  .editLockMsg {
+    margin-top: toRem(50)
+  }
+
+  .pressUpdate {
+    width: toRem(400);
+    height: toRem(80);
+    border-radius: 40px;
+    border: 1px solid #0EAAF4;
+    color:#0EAAF4;
+    background: #fff;
+    @include font-dpr(16px);
+    font-family:"微软雅黑";
+  }
+
+ input[type=text] {
+    border: 1px solid #ccc;
+    background-color:transparent;
+    color:black;
+    @include font-dpr(15px);
+    FILTER: alpha(opacity=0); /*androd*/
+    appearance:none;  /*下拉框去掉右侧图标*/
+    -moz-appearance:none;
+    -webkit-appearance:none;
+    -webkit-tap-highlight-color:rgba(0,0,0,0);
+  }
+
 
 .fade-enter-active, .fade-leave-active {
   transition: opacity .5s;

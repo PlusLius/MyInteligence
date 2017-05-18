@@ -5,15 +5,15 @@
         <!-- 电量头部部分 -->
         <div class="MyResentUse">
             <div class="Electricity">
-                <img src="../../assets/qietu/100%.png" class="ElectricityImg">
+                <img :src="ComputedPowerImg" height="160" width="90" class="ElectricityImg">
                 <div class="ElectricityMore">
                     <p class="ElectricityS">电量</p>
-                    <p class="ElectricityNumber">20%</p>
+                    <p class="ElectricityNumber">{{power}}%</p>
                 </div>
             </div>
             <div class="RemoteUnlockBox">
                 <div class="MyDynamicKey">
-                    {{"智能锁: 1245484811122234"}}
+                    {{name}}: {{code}}
                 </div>
                 <div class="RemoteUnlock" @click="RemoteUnlock">
                     {{"远程开锁"}}
@@ -99,6 +99,36 @@
                 ShowLog:false,
                 MyChangePassWordBox:true,
                 MyChangePassWordBox2:false,
+                code:'',
+                functionCode:'',
+                mode:'',
+                name:'',
+                power:'',
+                remoteSecretSetted:'',
+                powerImg:''
+            }
+        },
+        computed: {
+            ComputedPowerImg(){
+                if(this.power <= 0){
+                    this.powerImg = require('../../assets/qietu/0%.png')
+                }
+                else if(this.power <= 30){
+                    this.powerImg = require('../../assets/qietu/20%.png')
+                }
+                else if(this.power <= 50){
+                    this.powerImg = require('../../assets/qietu/40%.png')
+                }
+                else if(this.power <= 70){
+                    this.powerImg = require('../../assets/qietu/60%.png')
+                }
+                else if(this.power <= 90){
+                    this.powerImg = require('../../assets/qietu/80%.png')
+                }
+                else if(this.power == 100){
+                    this.powerImg = require('../../assets/qietu/100%.png')
+                }
+                return this.powerImg;
             }
         },
         components: {
@@ -137,6 +167,13 @@
         },
         mounted(){
             this.MyHistory();
+            this.code = this.$route.query.code;
+            this.functionCode = this.$route.query.functionCode;
+            this.mode = this.$route.query.mode;
+            this.name = this.$route.query.name;
+            this.power = this.$route.query.power;
+            this.remoteSecretSetted = this.$route.query.remoteSecretSetted;
+
         }
     }
 </script>
