@@ -8,7 +8,7 @@
             <scroller lock-x height="9.5rem">
             <!-- 上拉加载下拉滚动组件内容填充 -->
               <div class="DeviceHeight" >
-                    <div class="MyAdmin" v-for="i in 300">
+                   <!--  <div class="MyAdmin" v-for="i in 300">
                         <div class="MyIcon icon-edit" @click="editName">
                         </div>
                         <div class="MyMessage">
@@ -21,7 +21,32 @@
                         <div class="MySwitch weui-cell__ft">
                             <input class="weui-switch" type="checkbox">
                         </div>
+                    </div> -->
+
+                  <swipeout-item :disabled="disabled" ref="swipeoutItem" :right-menu-width="210" :sensitivity="15" v-for="(item,index) in list" v-if="!item.userListHide">
+                    <div slot="right-menu">
+                      <swipeout-button @click.native="onButtonClick('delLock',item.id,index)" type="warn" :width="73" class="delUser">{{'删除'}}</swipeout-button>
                     </div>
+
+                    <div slot="content" class="userList vux-1px-b">
+                         <div class="MyIcon icon-edit" @click="editName(item.sendNormalMsg,index,item.id)">
+                        </div>
+                        <div class="userMsg">
+                            <p class="userAdmin">{{item.userName}}</p>
+                            <p>ID: {{item.userCode}} {{item.unlockWayName}}</p>
+                        </div>
+                        <div class="pushOpen">
+                           <div class="MySendMsg">
+                              推送开门信息
+                            </div>
+                            <div class="MySwitch weui-cell__ft"
+                            @click="pushOpenMsg(item.sendNormalMsg,item.id)">
+                                <input class="weui-switch" type="checkbox">
+                            </div>
+                        </div>
+                    </div>
+                  </swipeout-item>
+
               </div>
             </scroller>
         </div>
@@ -33,10 +58,10 @@
                     编辑锁用户信息
                 </strong></div>
                 <div class="weui-dialog__bd">
-                    <input type="text" name="text" class="editLockMsg" placeholder="请编辑锁用户信息">
+                    <input type="text" name="text" class="editLockMsg" placeholder="请编辑锁用户信息" v-model="userMsg">
                 </div>
                 <div class="weui-dialog__ft">
-                    <a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_default editLockOk" @click="editLockOK">确定</a>
+                    <a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_default editLockOk" @click="editLockOK()">确定</a>
                     <a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_primary editLockCancel"  @click="editLockCancel">取消</a>
                 </div>
             </div>
@@ -46,36 +71,91 @@
 </template>
 <script>
     import { XSwitch, Group, Scroller} from 'vux'
+    import { Swipeout, SwipeoutItem, SwipeoutButton } from 'vux'
     import API from "../api/api"
+    import Vue from "vue"
     var api = new API()
 
     export default {
         components: {
             Group,
             XSwitch,
-            Scroller
+            Scroller,
+            Swipeout,
+            SwipeoutItem,
+            SwipeoutButton
         },
         data () {
             return {
               disabled: false,
-              show: false
+              show: false,
+              list:[],
+              userMsg:'',
+              sendNormalMsg: '',
+              index:0,
+              id:0
             }
         },
         methods: {
-            editName () {
+            editName (sendNormalMsg,index,id) {
+               this.sendNormalMsg = sendNormalMsg
+               this.userMsg = '';
+               this.index = index
                this.show = true;
+               this.id = id;
             },
             editLockOK(){
+                var qs = require('qs')
+                api.put("gatewayUser/"+window.localStorage.getItem("currentUserId")+"/deviceStatus/"+window.localStorage.getItem("gatewayLockId")+"/lockUser/"+this.id,qs.stringify({
+                    userName:this.userMsg,
+                }))
+                .then( res =>{
+                    Vue.set(this.list[this.index],"userName",this.userMsg)
+                })
+                .catch( err =>{
+                    console.log(err)
+                })
+
                 this.show = false;
             },
             editLockCancel(){
                 this.show = false;
+            },
+            onButtonClick (type,id,index) {
+                if(type == "delLock"){
+                    var qs = require('qs')
+                    api.deletes("gatewayUser/"+window.localStorage.getItem("currentUserId")+"/deviceStatus/"+window.localStorage.getItem("gatewayLockId")+"/lockUser/"+id)
+                    .then( res =>{
+                        if(res.data.data == true){
+                            Vue.set(this.list[index],"userListHide",true)
+                        }
+                    })
+                    .catch( err =>{
+                        console.log(err)
+                    })
+                }
+            },
+            handleEvents (type) {
+              console.log('event: ', type)
+            },
+            pushOpenMsg(sendNormalMsg,id){
+                var qs = require('qs')
+                api.put("gatewayUser/"+window.localStorage.getItem("currentUserId")+"/deviceStatus/"+window.localStorage.getItem("gatewayLockId")+"/lockUser/"+id,qs.stringify({
+                    sendNormalMsg:sendNormalMsg
+                }))
+                .then( res =>{
+                   console.log(res)
+                })
+                .catch( err =>{
+                    console.log(err)
+                })
             }
         },
         mounted(){
             api.get("gatewayUser/"+window.localStorage.getItem("gatewayUserId")+"/deviceStatus/"+window.localStorage.getItem("gatewayLockId")+"/lockUser")
             .then(res =>{
-                console.log(res)
+               this.list = res.data.data.list
+               console.log(res)
             })
             .catch(err => {
                 console.log(err)
@@ -88,6 +168,9 @@
 
 </script>
 <style lang="scss" scoped>
+    .demo-content {
+      padding: 10px 10px;
+    }
     @function toRem ($DraftSize) {
         @return  ($DraftSize / 144 * 100) / 75 * 1rem;
     }
@@ -144,6 +227,11 @@
     .MySwitch {
         float: right;
         margin-right: toRem(20);
+        margin-left: toRem(33);
+    }
+    .userAdmin {
+      @include font-dpr(16px);
+      color:#444;
     }
     .weui-cell__ft {
         margin-top: toRem(60);
@@ -226,6 +314,30 @@
 
   .editLockCancel {
     color:#666;
+  }
+
+  .userList {
+    width: 100%;
+    min-height: toRem(221);
+
+    box-sizing:border-box;
+  }
+  .userMsg {
+     padding-top:toRem(50);
+    float: left;
+    color: #A5A5A5;
+    // width: toRem(550);
+  }
+  .pushOpen {
+    float: right;
+  }
+
+  .editUser {
+    background-color:#00A6F4;
+  }
+
+  .delUser {
+    background-color:#E74C3C;
   }
 
  input[type=text] {

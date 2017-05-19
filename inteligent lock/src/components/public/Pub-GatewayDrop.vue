@@ -1,15 +1,12 @@
-<!-- 动态密码组件 -->
+<!-- 网关管理员组件 -->
 <template>
   <div>
     <!--用户-->
-    <div class="SharePeople">
-      <img src="../../assets/userpc.png" class="ShareImg">
-      <div class="shareName">王某某</div>
-      <div class="down"
-           @click="arrowTogle"
-           :class="{'arrowUp':arrowMove1,'arrowDown':arrowMove2}"
-           v-on:click="show = !show">
-        <div class="icon-down">
+    <div class="SharePeople" @click="arrowTogle"  v-on:click="show = !show">
+      <img :src="src" class="ShareImg">
+      <div class="shareName">{{ userName }}</div>
+      <div class="down">
+        <div class="icon-down" :class="{'arrowUp':arrowMove1,'arrowDown':arrowMove2}">
         </div>
       </div>
 
@@ -19,49 +16,26 @@
       <swipeout-item
         :disabled="disabled" ref="swipeoutItem"
         :right-menu-width="73"
-        :sensitivity="15">
+        :sensitivity="15" v-for="shareItem in shareInfo">
         <!--侧滑的按钮 -->
         <div slot="right-menu">
-          <swipeout-button @click.native="" background-color="#E74C3C" :width="73">{{('删除')}}</swipeout-button>
+          <swipeout-button @click.native="deleteFun(gatewayUserId,id)" background-color="#E74C3C" :width="73">{{('删除')}}</swipeout-button>
         </div>
       <!--正文部分-->
       <div slot="content" class="demo-content vux-1px-b">
         <!--分享的网关-->
         <transition name="fade">
           <div v-if="show" class="ShareList">
-            <div class="icon-box"></div>
+            <div class="icon-box" v-if="shareType==2"></div>
+            <div class="icon-lock" v-if="shareType==3"></div>
             <div class="ShareFont">
-              <div class="ShareFontName">乾元害羞</div>
-              <div class="ShareFontId">ID: 0125896547895201</div>
+              <div class="ShareFontName">{{ shareItem.name }}</div>
+              <div class="ShareFontId">ID: {{ shareItem.code }}</div>
             </div>
           </div>
         </transition>
 
       </div>
-      </swipeout-item>
-
-      <swipeout-item
-        :disabled="disabled" ref="swipeoutItem"
-        :right-menu-width="73"
-        :sensitivity="15">
-        <!--侧滑的按钮 -->
-        <div slot="right-menu">
-          <swipeout-button @click.native="" background-color="#E74C3C" :width="73">{{('删除')}}</swipeout-button>
-        </div>
-        <!--正文部分-->
-        <div slot="content" class="demo-content vux-1px-b">
-          <!--分享的锁设备-->
-          <transition name="fade">
-            <div v-if="show" class="ShareList">
-              <div class="icon-lock"></div>
-              <div class="ShareFont">
-                <div class="ShareFontName">智能锁2</div>
-                <div class="ShareFontId">ID: 1256321251345621</div>
-              </div>
-            </div>
-          </transition>
-
-        </div>
       </swipeout-item>
     </swipeout>
 
@@ -71,7 +45,17 @@
 </template>
 <script>
   import { Swipeout, SwipeoutItem, SwipeoutButton } from 'vux'
+  import api from "../../api/api"
+  let Api = new api();
   export default {
+      props:[
+        "src" ,
+        "userName",
+        "shareType",
+        "shareInfo",
+        "id",
+        "gatewayUserId"
+      ],
     components: {
       Swipeout,
       SwipeoutItem,
@@ -90,6 +74,17 @@
         this.arrowMove1 = !this.arrowMove1;
         this.arrowMove2 = !this.arrowMove2;
         this.isTrue = !this.isTrue;
+      },
+      deleteFun(gatewayUserId,id){
+          Api.del("gatewayUser/"+gatewayUserId+"/share/"+id)
+            .then(data =>{
+              if (data.data.status == 0){
+                alert("删除成功");
+                this.$emit('upup','hehe');
+              }else{
+                alert(data.data.msg)
+              }
+            })
       }
     }
   }
@@ -107,10 +102,10 @@
   }
   .arrowUp{
     transform:rotate(-180deg);
-    transition: all 0.3s linear;
+    transition: all 0.2s linear;
   }
   .arrowDown {
-    transition: all 0.3s linear;
+    transition: all 0.2s linear;
   }
   div{
     margin:0;
@@ -171,9 +166,9 @@
     color: #00A6F4;
     position: absolute;
     left:50%;
-    margin-left:toRem(-27);
+    margin-left:toRem(-27.5);
     top:50%;
-    margin-top:toRem(-27);
+    margin-top:toRem(-27.5);
     @include font-dpr(18px);
   }
   .ShareList{

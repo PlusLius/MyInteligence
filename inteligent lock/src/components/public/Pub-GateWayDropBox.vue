@@ -54,11 +54,11 @@
           <div v-if="!gatewayLockList">
             请添加锁 {{gatewayLockList}}
           </div>
-          <swipeout>
+          <swipeout v-for="(item,index) in gatewayLockList">
            <transition-group name="fade">
             <swipeout-item
              @click.native="SaveId(item.id,item.gatewayUserId)"
-              v-for="(item,index) in gatewayLockList"
+
               @on-close="handleEvents('gatewayLock-on-close')"
               @on-open="handleEvents('gatewayLock-on-open')"
               transition-mode="follow"
@@ -74,7 +74,7 @@
                     v-model="show"
                     >编辑</swipeout-button>
                   <swipeout-button
-                    @click.native="onButtonClick('deviceDelete')"
+                    @click.native="onButtonClick('deviceDelete',index)"
                     type="warn"
                     :width="73"
                     background-color="#E74C3C"
@@ -194,7 +194,7 @@
                     <a
                     href="javascript:;"
                     class="weui-dialog__btn weui-dialog__btn_default gatewaySure"
-                    @click="!gatewayRemoteUpdateOk"
+                    @click="gatewayRemoteUpdateOk"
                     v-else
                     >确定
                     </a>
@@ -212,7 +212,7 @@
           <!-- 结束 -->
 
         <div v-transfer-dom>
-          <x-dialog v-model="shareDialogStyle" hide-on-blur :dialog-style="{'max-width': '80%', width: '80%', height: '50%', 'background-color': 'white'}">
+          <x-dialog v-model="shareDialogStyle" hide-on-blur :dialog-style="{'max-width': '80%', width: '80%', 'background-color': 'white'}">
             <p style="color:#cccccc;text-align:center;">
               <img :src="ticket" class="shareImg">
               <p class="shareFont">
@@ -299,7 +299,8 @@ export default {
           this.lockIndex = index
         }
         if(type == 'deviceDelete'){
-          api.deletes('gatewayUser/'+window.localStorage.getItem('currentUserId')+"/deviceStatus/" + this.gatewayLockList[this.lockIndex].id)
+          // alert( this.gatewayLockList[index].id)
+          api.deletes('gatewayUser/'+window.localStorage.getItem('currentUserId')+"/deviceStatus/" + this.gatewayLockList[index].id)
           .then( data => {
             console.log(data)
             if(data.data.data == true){
@@ -391,7 +392,6 @@ export default {
         .catch( err => {
           console.log(err)
         })
-
         this.show = false;
       },
       editGatewayCancel(){

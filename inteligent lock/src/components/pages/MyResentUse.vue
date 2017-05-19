@@ -25,31 +25,103 @@
         <div id="dialog1" v-show="ShowLog">
             <div class="weui-mask"></div>
             <div class="weui-dialog My-dialog ">
-                <div class="weui-dialog__hd My-title"><strong class="weui-dialog__title">远程开锁</strong></div>
+                <div class="weui-dialog__hd My-title" v-if="remoteSecretSetted" v-show="!setPassWord"><strong class="weui-dialog__title" >远程开锁</strong></div>
+                <div class="weui-dialog__hd My-title" v-if="!remoteSecretSetted"><strong class="weui-dialog__title" >设置密码</strong></div>
+                <div class="weui-dialog__hd My-title" v-if="setPassWord"><strong class="weui-dialog__title" >修改密码</strong></div>
                 <div class="weui-dialog__bd My-dialogBody">
-                    <input class="My-PassWord" type="password" name="password" placeholder="请输入您的远程开锁密码" v-show="MyChangePassWordBox">
-                    <div class="MyChangePassWordBox" v-show="MyChangePassWordBox">
-                         <div class="MyChangePassWord" @click="ChangePassWord">
-                            修改密码
+                    <div v-if="!remoteSecretSetted">
+                        <input
+                        type="password"
+                        name="password"
+                        placeholder="请输入您的远程开锁密码"
+                        minlength="6"
+                        class="My-PassWord"
+                        v-model="firstPassWord"
+                        >
+                        <input
+                        type="password"
+                        name="password"
+                        placeholder="请再次输入您的远程开锁密码"
+                        minlength="6"
+                        class="My-PassWord"
+                        v-model="morePassWord"
+                        @blur="verifyPassWord"
+                        >
+
+                    </div>
+                    <div v-if="remoteSecretSetted">
+                        <input
+                        class="My-PassWord"
+                        type="password"
+                        name="password"
+                        placeholder="请输入您的远程开锁密码"
+                        v-show="MyChangePassWordBox"
+                        minlength="6"
+                        v-model="remoteOpenLock"
+                        >
+                       <div
+                       class="MyChangePassWordBox"
+                       v-show="MyChangePassWordBox">
+                            <div class="MyChangePassWord" @click="ChangePassWord">
+                                修改密码
+                            </div>
                         </div>
                     </div>
-
                     <div class="MyChangePassWordBox2"  v-show="MyChangePassWordBox2">
-                        <input class="My-PassWordOld" type="password" name="password" placeholder="请输入您的旧密码">
+                        <input
+                        class="My-PassWordOld"
+                        type="password"
+                        name="password"
+                        placeholder="请输入您的旧密码"
+                        v-model="oldPasWord"
+                        >
 
-                        <input class="My-PassWordNew" type="password" name="password" placeholder="请输入您的新密码">
+                        <input
+                        class="My-PassWordNew"
+                        type="password"
+                        name="password"
+                        placeholder="请输入您的新密码"
+                        v-model="newPasWord"
+                        >
 
-                        <input class="My-PassWordMoreNew" type="password" name="password" placeholder="请再次输入您的新密码">
+                        <input
+                        class="My-PassWordMoreNew"
+                        type="password"
+                        name="password"
+                        placeholder="请再次输入您的新密码"
+                        v-model="newMorePasWord"
+                        >
                     </div>
                 </div>
-                <div class="weui-dialog__ft My-dialogBottom">
+
+                <div class="weui-dialog__ft My-dialogBottom" v-if="remoteSecretSetted" v-show="!setPassWord">
                     <a href="javascript:;"
                     class="weui-dialog__btn weui-dialog__btn_default MyOk"
                     @click="DialogOK"
-                    >确定</a>
+                    >开锁</a>
                     <a href="javascript:;"
                     class="weui-dialog__btn weui-dialog__btn_primary MyCancel "
                     @click="DialogCancel"
+                    >取消</a>
+                </div>
+                <div class="weui-dialog__ft My-dialogBottom" v-if="!remoteSecretSetted">
+                    <a href="javascript:;"
+                    class="weui-dialog__btn weui-dialog__btn_default MyOk"
+                    @click="setRemotePasOk"
+                    >确定</a>
+                    <a href="javascript:;"
+                    class="weui-dialog__btn weui-dialog__btn_primary MyCancel "
+                    @click="setRemotePasCancel"
+                    >取消</a>
+                </div>
+                <div class="weui-dialog__ft My-dialogBottom" v-if="setPassWord">
+                    <a href="javascript:;"
+                    class="weui-dialog__btn weui-dialog__btn_default MyOk"
+                    @click="setPasOk"
+                    >确定 </a>
+                    <a href="javascript:;"
+                    class="weui-dialog__btn weui-dialog__btn_primary MyCancel "
+                    @click="setPasCancel"
                     >取消</a>
                 </div>
             </div>
@@ -90,6 +162,10 @@
 <script>
     import MyHistory from '../MyHistory'
     import MyUserList from '../MyUserList'
+    import API from '../../api/api'
+    import { md5 } from 'vux'
+    var api = new API()
+
     export default {
         data(){
             return {
@@ -105,7 +181,16 @@
                 name:'',
                 power:'',
                 remoteSecretSetted:'',
-                powerImg:''
+                powerImg:'',
+                remoteOpenLock:'',
+                firstPassWord:'',
+                morePassWord:'',
+                setPassWord:false,
+                verifyBol:false,
+                oldPasWord:'',
+                newPasWord:'',
+                newMorePasWord:'',
+                verifySetPasBol:false
             }
         },
         computed: {
@@ -147,10 +232,51 @@
                 this.Active2 = true;
             },
             RemoteUnlock () {
+                this.firstPassWord = '';
+                this.morePassWord = '';
                 this.ShowLog = true;
                 this.MyChangePassWordBox2 = false;
             },
             DialogOK () {
+
+                var qs = require('qs');
+                api.post("gatewayUser/"+window.localStorage.getItem("currentUserId")+"/deviceStatus/"+window.localStorage.getItem("gatewayLockId")+"/control",qs.stringify({
+                    remoteSecret:md5(this.remoteOpenLock,"remoteSecret")
+                }))
+                .then(res => {
+                    if(res.data.status == 0){
+                         var index = 0;
+                         var timer = null;
+                         var flag = true;
+                         timer = setInterval(function(){
+                            if(index == 6){
+                                clearInterval(timer)
+                            }
+                            if(index == 3 || index == 5){
+                                api.get("gatewayUser/"+window.localStorage.getItem("currentUserId")+"/deviceStatus/"+window.localStorage.getItem("gatewayLockId")+"/control")
+                                .then(res => {
+                                    if(res.data.data.success && flag){
+                                        alert("开锁成功!")
+                                        flag = false;
+                                        clearInterval(timer)
+                                    }
+                                })
+                                .catch(err => {
+                                    console.log(err)
+                                })
+                             }
+                             index++
+                        },1000)
+                    }
+                    else {
+                        alert("开锁失败")
+                    }
+                })
+                .catch(err => {
+                    console.log(err)
+                })
+
+                this.remoteOpenLock = ''
                 this.ShowLog = false;
                 this.MyChangePassWordBox = true;
             },
@@ -163,7 +289,62 @@
                     this.MyChangePassWordBox2 = true;
                     this.MyChangePassWordBox = false;
                 }
+                this.setPassWord = true;
+            },
+            setRemotePasOk(){
+                var qs = require('qs');
+                api.put("gatewayUser/"+window.localStorage.getItem("currentUserId")+"/deviceStatus/"+window.localStorage.getItem("gatewayLockId"),qs.stringify({
+                    remoteSecret:md5(this.morePassWord,"remoteSecret")
+                }))
+                .then(res => {
+                    console.log(res)
+                })
+                .catch(err => {
+                    console.log(err)
+                })
+                if(this.verifyBol){
+                    this.ShowLog = false;
+                    this.MyChangePassWordBox = true;
+                    this.remoteOpenLock = '';
+                    this.remoteSecretSetted = true;
+                }
+            },
+            setRemotePasCancel(){
+                this.ShowLog = false;
+                this.MyChangePassWordBox = true;
+            },
+            verifyPassWord(){
+                if(this.firstPassWord == this.morePassWord){
+                    this.verifyBol = true;
+                }
+                else {
+                    alert("2次密码输入不一致,请重新输入")
+                    this.verifyBol = false;
+                }
+            },
+            setPasOk(){
+                if(this.newPasWord == this.newMorePasWord){
+                    this.verifySetPasBol = true;
+                }
+                else {
+                    alert("2次密码输入不一致,请重新输入")
+                    this.verifySetPasBol = false;
+                }
+                if(this.verifySetPasBol){
+                    this.oldPasWord = '';
+                    this.newPasWord = '';
+                    this.newMorePasWord = '';
+                    this.ShowLog = false;
+                    this.MyChangePassWordBox = true;
+                    this.setPassWord = false;
+                }
+            },
+            setPasCancel(){
+                this.setPassWord = false;
+                this.ShowLog = false;
+                this.MyChangePassWordBox = true;
             }
+
         },
         mounted(){
             this.MyHistory();
@@ -173,7 +354,8 @@
             this.name = this.$route.query.name;
             this.power = this.$route.query.power;
             this.remoteSecretSetted = this.$route.query.remoteSecretSetted;
-
+            // this.remoteSecretSetted = false;
+            // alert(this.remoteSecretSetted)
         }
     }
 </script>

@@ -2,24 +2,32 @@
 <template>
   <div>
     <!-- 锁添加密钥部分 -->
-    <div class="addDevice" >
-      <div @click="ScanQRcode">
-          <img src="../../assets/qietu/添加设备.png" class="DeviceIcon">
-          <div class="RichScan">扫一扫添加</div>
-      </div>
-      <div class="DeviceFont">手动添加</div>
+    <div class="addDevice">
+      <img src="../../assets/qietu/添加设备.png" class="DeviceIcon">
+      <div class="RichScan">扫一扫添加</div>
+      <div class="DeviceFont" @click="addKeyFun">手动添加</div>
     </div>
-    <!--网关-->
-    <GetwayDrop></GetwayDrop>
-    <GetwayDrop></GetwayDrop>
+    <!---->
+    <GetwayDrop v-for="item in Lis" :userName="item.name" :src="item.headUrl" :shareType="item. shareType" :shareInfo="item.shareInfo" :id="item.id" :gatewayUserId="item.gatewayUserId" @upup="change"></GetwayDrop>
+    <!--手动输入id弹出框-->
+    <div v-if="addKey">
+      <div class="weui-mask"></div>
+      <div class="weui-dialog addKeyBox">
+        <div class="weui-dialog__hd addCancelTitle">手动添加</div>
+        <div class="weui-dialog__bd addBd"><input type="text" class="allInput" placeholder="请输入设备编码" v-model="DevCode"><input type="text" class="allInput" placeholder="请输入设备名字" v-model="DeviceName"></div>
+        <div class="weui-dialog__ft">
+          <a class="weui-dialog__btn weui-dialog__btn_primary" @click="addConfirmFun">确定</a>
+          <a class="weui-dialog__btn weui-dialog__btn_default" @click="addCancelFun">取消</a>
+        </div>
+      </div>
+    </div>
     </div>
 </template>
 <script>
   import GetwayDrop from "../public/Pub-GatewayDrop.vue"
-  import API from "../../api/api.js"
-  var api = new API()
+  import api from "../../api/api"
 
-
+  let Api = new api();
   export default {
     components: {
       GetwayDrop
@@ -27,33 +35,56 @@
     data () {
       return {
         disabled: false,
-        show: false
+        show: false,
+        Lis: "",
+        addKey:false,
+        DevCode:"",
+        DeviceName:"",
       }
     },
-    methods: {
-      ScanQRcode () {
-        wx.scanQRCode({
-              needResult: 1, // 默认为0，扫描结果由微信处理，1则直接返回扫描结果，
-              scanType: ["qrCode","barCode"], // 可以指定扫二维码还是一维码，默认二者都有
-              success: function (res) {
-                 var qs = require('qs');
-                 var deviceCode = res.resultStr; // 当needResult 为 1 时，扫码返回的结果
-                 api.post("gatewayUser/"+window.localStorage.getItem('currentUserId')+"/deviceStatus",qs.stringify({
-                  deviceCode:deviceCode,
-                  deviceName: 'MyInteligenceLock'
-                 }))
-                 .then(data => {
-                  console.log(data);
-                 })
-                 .catch(data => {
-                   console.log(data)
-                 })
+    methods:{
+      addKeyFun(){
+          this.addKey = true;
+      },
+      //确定
+      addConfirmFun(){
+        let qs = require('qs');
+        if (this.DevCode.length < 15){
+            alert("请输入正确的设备编码")
+        }else{
+          Api.post("gatewayUser/139/deviceStatus",qs.stringify({
+            deviceCode : this.DevCode,
+            deviceName : this.DeviceName
+          }))
+            .then(data =>{
+              if (data.data.status == 0){
+                this.addKey= false;
+                alert("添加成功")
+              }else{
+                alert(data.data.msg)
               }
-        })
+            })
+        }
+      },
+      //取消
+      addCancelFun(){
+          this.addKey= false;
+      },
+      change(){
+        Api.get("gatewayUser/"+139+"/share")
+          .then(data =>{
+            this.Lis = data.data.data.list;
+          })
       }
+    },
+    mounted(){
+        Api.get("gatewayUser/"+139+"/share")
+        .then(data =>{
+            this.Lis = data.data.data.list;
+            console.log(this.Lis);
+        })
     }
   }
-
 
 </script>
 <style lang="scss" scoped>
@@ -112,6 +143,45 @@
   }
   .fade-enter, .fade-leave-active {
     opacity: 0
+  }
+  .allInput{
+    width:toRem(762);
+    height:toRem(120);
+    margin-bottom:toRem(32);
+    box-sizing:border-box;
+    padding-left:toRem(41);
+    border: 1px #CCCCCC solid;
+  @include font-dpr(16px);
+  }
+  .addCancelTitle{
+    position: relative;
+    color: #00A6F4;
+    height:toRem(145);
+    line-height:toRem(145);
+  @include font-dpr(16px);
+  }
+  .addCancelTitle::after{
+    transform: scaleY(0.5);
+    content: "";
+    height: 1px;
+    color: #CCCCCC;
+    position: absolute;
+    left: 0;
+    bottom: -1px;
+    right:0;
+    border-top:1px solid #cccccc;
+  }
+  .addBd{
+    margin-top:toRem(48);
+    margin-bottom: toRem(16);
+  }
+  .weui-dialog__btn_default{
+    color: #666666;
+  @include font-dpr(16px);
+  }
+  .weui-dialog__btn_primary{
+    color: #00A6F4;
+  @include font-dpr(16px);
   }
 </style>
 

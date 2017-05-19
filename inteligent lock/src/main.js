@@ -45,6 +45,7 @@ const routes = [
     {
       path:'/',
       meta: {title: '我的智能'},
+      // component: MyDynamicKey
       component: MyInteligence
       // component: cs
     },
@@ -89,6 +90,7 @@ const routes = [
       component: MyDynamicKey
     },
     { path: '*', component: MyInteligence},
+    // { path: '*', component: MyDynamicKey},
 ]
 
 const router = new VueRouter({
