@@ -8,14 +8,17 @@
                 <img :src="ComputedPowerImg" height="160" width="90" class="ElectricityImg">
                 <div class="ElectricityMore">
                     <p class="ElectricityS">电量</p>
-                    <p class="ElectricityNumber">{{power}}%</p>
+                    <p class="ElectricityNumber">{{power || 100}}%</p>
                 </div>
             </div>
             <div class="RemoteUnlockBox">
                 <div class="MyDynamicKey">
-                    {{name}}: {{code}}
+                    {{name || "模拟数据"}}: {{code || "没有设备请添加设备"}}
                 </div>
-                <div class="RemoteUnlock" @click="RemoteUnlock">
+                <div class="RemoteUnlock" @click="RemoteUnlock" v-if="name">
+                    {{"远程开锁"}}
+                </div>
+                <div class="RemoteUnlock" v-else>
                     {{"远程开锁"}}
                 </div>
             </div>
@@ -211,6 +214,9 @@
                     this.powerImg = require('../../assets/qietu/80%.png')
                 }
                 else if(this.power == 100){
+                    this.powerImg = require('../../assets/qietu/100%.png')
+                }
+                else {
                     this.powerImg = require('../../assets/qietu/100%.png')
                 }
                 return this.powerImg;

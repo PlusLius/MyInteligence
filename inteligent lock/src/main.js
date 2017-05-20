@@ -5,6 +5,8 @@ import FastClick from 'fastclick'
 import VueRouter from 'vue-router'
 import App from './App'
 import API from './api/api.js'
+import VueScroller from 'vue-scroller'
+Vue.use(VueScroller)
 var api = new API()
 
 import MyInteligence from './components/pages/MyInteligence'
@@ -46,8 +48,8 @@ const routes = [
       path:'/',
       meta: {title: '我的智能'},
       // component: MyDynamicKey
-      component: MyInteligence
-      // component: cs
+      // component: MyInteligence
+      component: cs
     },
     {
       path: '/MyDynamicKey',

@@ -1,7 +1,7 @@
 
 <template>
   <div>
-      <div>
+      <div v-if="gatewayShow">
           <!-- 开始 -->
 
           <swipeout>
@@ -36,7 +36,7 @@
                       </div>
                       <div class="GateWayArrow icon-top"
                        @click="arrowTogle(gatewayUserId)"
-                       :class="{'arrowUp':arrowMove1,'arrowDown':arrowMove2}">
+                       :class="{'arrowUp':arrowMoveUp,'arrowDown':!arrowMoveUp}">
 
                       </div>
                 </div>
@@ -56,7 +56,8 @@
               @on-close="handleEvents('gatewayLock-on-close')"
               @on-open="handleEvents('gatewayLock-on-open')"
               transition-mode="follow"
-              v-if="item.id ? isTrue : !isTrue"
+              v-if="!arrowMoveUp"
+              v-show="!item.lockListHide"
               :key="item.id"
             >
               <div slot="right-menu">
@@ -68,7 +69,7 @@
                     v-model="show"
                     >编辑</swipeout-button> -->
                   <swipeout-button
-                    @click.native="onButtonClick('deviceDelete')"
+                    @click.native="onButtonClick('deviceDelete',index)"
                     type="warn"
                     :width="73"
                     background-color="#E74C3C"
@@ -189,9 +190,7 @@ export default {
    data () {
       return {
         disabled: false,
-        arrowMove1: false,
-        arrowMove2: true,
-        isTrue:false,
+        arrowMoveUp: false,
         show: false,
         lockShow:false,
         lockIndex:'',
@@ -211,31 +210,31 @@ export default {
           this.show = true;
         }
         if(type == 'gatewayDelete'){
-          api.deletes('gatewayUser/'+window.localStorage.getItem('currentUserId'))
-          .then( data => {
-            if(data.data.data == true){
+          // api.deletes('gatewayUser/'+window.localStorage.getItem('currentUserId'))
+          // .then( data => {
+          //   if(data.data.data == true){
                 this.gatewayShow = false
-            }
-          })
-          .catch( err => {
-            console.log(err)
-          })
+          //   }
+          // })
+          // .catch( err => {
+          //   console.log(err)
+          // })
         }
         if(type == 'deviceEdit') {
           this.lockShow = true;
           this.lockIndex = index
         }
         if(type == 'deviceDelete'){
-          api.deletes('gatewayUser/'+window.localStorage.getItem('currentUserId')+"/deviceStatus/" + this.gatewayLockList[this.lockIndex].id)
-          .then( data => {
-            console.log(data)
-            if(data.data.data == true){
-                this.lockShow = false
-            }
-          })
-          .catch( err => {
-            console.log(err)
-          })
+          // api.deletes('gatewayUser/'+window.localStorage.getItem('currentUserId')+"/deviceStatus/" + this.gatewayLockList[this.lockIndex].id)
+          // .then( data => {
+          //   console.log(data)
+          //   if(data.data.data == true){
+                Vue.set(this.gatewayLockList[index],"lockListHide",true)
+          //   }
+          // })
+          // .catch( err => {
+          //   console.log(err)
+          // })
         }
       },
       handleEvents (type,id) {
@@ -266,20 +265,19 @@ export default {
         //   var historyId = window.localStorage.getItem("currentUserId")
         //   window.localStorage.setItem("gatewayUserId",historyId)
         // }
-        if(this.arrowMove2){
+        if(this.arrowMoveUp){
           api.get("gatewayUser/" + window.localStorage.getItem('currentUserId') + "/deviceStatus")
           .then(data => {
               var currentLockList = data.data.data.list;
 
               Vue.set(this.list[this.index],"Devlist",currentLockList)
+              console.log(this.list[this.index]["Devlist"])
           })
           .catch( err => {
             console.log(err)
           })
         }
-        this.arrowMove1 = !this.arrowMove1;
-        this.arrowMove2 = !this.arrowMove2;
-        this.isTrue = ! this.arrowMove2
+         this.arrowMoveUp = !this.arrowMoveUp;
       },
       SaveId (LockId,UserId) {
         window.localStorage.setItem("gatewayUserId",UserId);
@@ -352,9 +350,7 @@ export default {
       },
    },
    mounted() {
-      this.arrowMove1 = !this.arrowMove1;
-      this.arrowMove2 = !this.arrowMove2;
-      this.isTrue = ! this.arrowMove2
+
    }
 }
 </script>
@@ -470,11 +466,11 @@ export default {
     transform-origin: center center;
   }
 
-  .arrowUp{
+  .arrowDown{
      transform:rotate(180deg);
      transition: all 0.5s linear;
   }
-  .arrowDown {
+  .arrowUp {
      transition: all 0.5s linear;
   }
 

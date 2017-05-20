@@ -123,16 +123,17 @@
             },
             onButtonClick (type,id,index) {
                 if(type == "delLock"){
-                    var qs = require('qs')
-                    api.deletes("gatewayUser/"+window.localStorage.getItem("currentUserId")+"/deviceStatus/"+window.localStorage.getItem("gatewayLockId")+"/lockUser/"+id)
-                    .then( res =>{
-                        if(res.data.data == true){
+                    // var qs = require('qs')
+                    // api.deletes("gatewayUser/"+window.localStorage.getItem("currentUserId")+"/deviceStatus/"+window.localStorage.getItem("gatewayLockId")+"/lockUser/"+id)
+                    // .then( res =>{
+                    //     if(res.data.data == true){
                             Vue.set(this.list[index],"userListHide",true)
-                        }
-                    })
-                    .catch( err =>{
-                        console.log(err)
-                    })
+                            // console.log(this.list[index])
+                    //     }
+                    // })
+                    // .catch( err =>{
+                    //     console.log(err)
+                    // })
                 }
             },
             handleEvents (type) {

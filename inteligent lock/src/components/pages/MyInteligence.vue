@@ -1,38 +1,45 @@
 <template>
   <div>
-      <div v-if="list.length === 0">
-          没有网关,请添加网关
-      </div>
-      <div v-for="(item,index) in list">
-             <!--  <div v-for= "item in item.Devlist">
 
-            {{item.code}}
-            </div> -->
-          <GateWayDropBox
-            v-if = "item.level === 1"
-            :name = "item.name"
-            :gatewayCode = "item.gatewayCode"
-            :online = "item.online"
-            :gatewayLockList = "item.Devlist"
-            :gatewayUserId = "item.id"
-            :index = "index"
-            :list = "list"
-          ></GateWayDropBox>
+      <scroller>
+        <!-- content goes here -->
 
-          <GateWayDropBox2
-            v-if = "item.level !== 1"
-            :name = "item.name"
-            :gatewayCode = "item.gatewayCode"
-            :online = "item.online"
-            :gatewayLockList = "item.Devlist"
-            :gatewayUserId = "item.id"
-            :index = "index"
-            :list = "list"
-          >
-          </GateWayDropBox2>
+            <div v-if="list.length === 0">
+                没有网关,请添加网关
+            </div>
+            <div v-for="(item,index) in list">
+                   <!--  <div v-for= "item in item.Devlist">
 
-      </div>
+                  {{item.code}}
+                  </div> -->
+                <GateWayDropBox
+                  v-if = "item.level === 1"
+                  :name = "item.name"
+                  :gatewayCode = "item.gatewayCode"
+                  :online = "item.online"
+                  :gatewayLockList = "item.Devlist"
+                  :gatewayUserId = "item.id"
+                  :index = "index"
+                  :list = "list"
+                  :flag = "item.flag"
+                ></GateWayDropBox>
 
+                <GateWayDropBox2
+                  v-if = "item.level !== 1"
+                  :name = "item.name"
+                  :gatewayCode = "item.gatewayCode"
+                  :online = "item.online"
+                  :gatewayLockList = "item.Devlist"
+                  :gatewayUserId = "item.id"
+                  :index = "index"
+                  :list = "list"
+                >
+                </GateWayDropBox2>
+
+            </div>
+            <div class="hidenHeight"></div>
+
+      </scroller>
 
       <div class="AllListMenu">
             <router-link to="/MyResentUse" class="MyHistoryUse icon-RecentUse">
@@ -48,6 +55,7 @@
 
 <script>
 import { Swipeout, SwipeoutItem, SwipeoutButton, XButton } from 'vux'
+
 import GateWayDropBox from "../public/Pub-GateWayDropBox"
 import GateWayDropBox2 from "../public/Pub-GateWayDropBox2"
 import API from "../../api/api"
@@ -63,7 +71,7 @@ export default {
       SwipeoutButton,
       XButton,
       GateWayDropBox,
-      GateWayDropBox2
+      GateWayDropBox2,
     },
    data () {
       return {
@@ -313,6 +321,9 @@ export default {
 }
 .fade-enter, .fade-leave-active {
   opacity: 0;
+}
+.hidenHeight{
+  height: toRem(159);
 }
 
    .AllListMenu {

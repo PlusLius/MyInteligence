@@ -9,7 +9,7 @@ class API {
             url: 'http://n16n237643.iok.la/api/v1.1.0/' + url,
             params: params,
             headers: {
-              'Token-JWT': "jwteyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJqd3QiLCJpYXQiOjE0OTUxODU1NjQsInN1YiI6IntcIm9wZW5JZFwiOlwib1czUDF3ME83LWoxQ18zR2s5Y1lNV1NZX1lyOFwiLFwiYXBwSWRcIjpcInd4MDgzYjQ5NDMzMDIxMjA2NFwifSIsImV4cCI6MTQ5NTIyODc2NH0.eFgMF75x4_MC3pzp8b85fntTVxYbmVI0PRZUGbQLs5E",
+              'Token-JWT': "jwteyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJqd3QiLCJpYXQiOjE0OTUyNDUwMzQsInN1YiI6IntcIm9wZW5JZFwiOlwib1czUDF3ME83LWoxQ18zR2s5Y1lNV1NZX1lyOFwiLFwiYXBwSWRcIjpcInd4MDgzYjQ5NDMzMDIxMjA2NFwifSIsImV4cCI6MTQ5NTI4ODIzNH0.V1NFA6SLaPeXn7bRzEL2YUpreFXMxv-BA7NnhcBbVNI",
               'Content-Type':'application/x-www-form-urlencoded;charset=utf-8'
             }
         });
@@ -24,7 +24,7 @@ class API {
             // url: 'http://n16n237643.iok.la/' + url,
             data: data,
             headers: {
-              'Token-JWT': "jwteyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJqd3QiLCJpYXQiOjE0OTUxODU1NjQsInN1YiI6IntcIm9wZW5JZFwiOlwib1czUDF3ME83LWoxQ18zR2s5Y1lNV1NZX1lyOFwiLFwiYXBwSWRcIjpcInd4MDgzYjQ5NDMzMDIxMjA2NFwifSIsImV4cCI6MTQ5NTIyODc2NH0.eFgMF75x4_MC3pzp8b85fntTVxYbmVI0PRZUGbQLs5E",
+              'Token-JWT': "jwteyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJqd3QiLCJpYXQiOjE0OTUyNDUwMzQsInN1YiI6IntcIm9wZW5JZFwiOlwib1czUDF3ME83LWoxQ18zR2s5Y1lNV1NZX1lyOFwiLFwiYXBwSWRcIjpcInd4MDgzYjQ5NDMzMDIxMjA2NFwifSIsImV4cCI6MTQ5NTI4ODIzNH0.V1NFA6SLaPeXn7bRzEL2YUpreFXMxv-BA7NnhcBbVNI",
               'Content-type':'application/x-www-form-urlencoded;charset=utf-8'
             }
         });
@@ -36,7 +36,7 @@ class API {
             url: 'http://n16n237643.iok.la/api/v1.1.0/' + url,
             data: params,
             headers: {
-              'Token-JWT': "jwteyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJqd3QiLCJpYXQiOjE0OTUxODU1NjQsInN1YiI6IntcIm9wZW5JZFwiOlwib1czUDF3ME83LWoxQ18zR2s5Y1lNV1NZX1lyOFwiLFwiYXBwSWRcIjpcInd4MDgzYjQ5NDMzMDIxMjA2NFwifSIsImV4cCI6MTQ5NTIyODc2NH0.eFgMF75x4_MC3pzp8b85fntTVxYbmVI0PRZUGbQLs5E",
+              'Token-JWT': "jwteyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJqd3QiLCJpYXQiOjE0OTUyNDUwMzQsInN1YiI6IntcIm9wZW5JZFwiOlwib1czUDF3ME83LWoxQ18zR2s5Y1lNV1NZX1lyOFwiLFwiYXBwSWRcIjpcInd4MDgzYjQ5NDMzMDIxMjA2NFwifSIsImV4cCI6MTQ5NTI4ODIzNH0.V1NFA6SLaPeXn7bRzEL2YUpreFXMxv-BA7NnhcBbVNI",
               'Content-Type':'application/x-www-form-urlencoded;charset=utf-8'
             }
         })
@@ -71,7 +71,7 @@ class API {
         url: 'http://n16n237643.iok.la/api/v1.1.0/' + url,
         data: data,
         headers: {
-          'Token-JWT': "jwteyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJqd3QiLCJpYXQiOjE0OTUxODU1NjQsInN1YiI6IntcIm9wZW5JZFwiOlwib1czUDF3ME83LWoxQ18zR2s5Y1lNV1NZX1lyOFwiLFwiYXBwSWRcIjpcInd4MDgzYjQ5NDMzMDIxMjA2NFwifSIsImV4cCI6MTQ5NTIyODc2NH0.eFgMF75x4_MC3pzp8b85fntTVxYbmVI0PRZUGbQLs5E",
+          'Token-JWT': "jwteyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJqd3QiLCJpYXQiOjE0OTUyNDUwMzQsInN1YiI6IntcIm9wZW5JZFwiOlwib1czUDF3ME83LWoxQ18zR2s5Y1lNV1NZX1lyOFwiLFwiYXBwSWRcIjpcInd4MDgzYjQ5NDMzMDIxMjA2NFwifSIsImV4cCI6MTQ5NTI4ODIzNH0.V1NFA6SLaPeXn7bRzEL2YUpreFXMxv-BA7NnhcBbVNI",
           'Content-Type':'application/x-www-form-urlencoded;charset=utf-8'
         }
     });

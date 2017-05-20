@@ -46,8 +46,8 @@
              <li class="GateWayUpDate icon-RemoteUpgrade" @click="remoteUpdate">远程升级</li>
              <li class="GateWayArrow icon-top"
              @click="arrowTogle(gatewayUserId)"
-             :class="{'arrowUp':arrowMove2,'arrowDown':arrowMove1}">
-
+             :class="{'arrowUp':arrowMoveUp,'arrowDown':!arrowMoveUp}"
+             >
              </li>
            </ul>
 
@@ -56,13 +56,14 @@
           </div>
           <swipeout v-for="(item,index) in gatewayLockList">
            <transition-group name="fade">
+
             <swipeout-item
              @click.native="SaveId(item.id,item.gatewayUserId)"
-
               @on-close="handleEvents('gatewayLock-on-close')"
               @on-open="handleEvents('gatewayLock-on-open')"
               transition-mode="follow"
-              v-if="item.id ? isTrue : !isTrue"
+              v-if="!arrowMoveUp"
+               v-show="!item.lockListHide"
               :key="item.id"
             >
               <div slot="right-menu">
@@ -94,7 +95,6 @@
             </swipeout-item>
             </transition-group>
         </swipeout>
-
 
         <div id="dialog1" v-if="show">
             <div class="weui-mask"></div>
@@ -255,14 +255,12 @@ export default {
             'online',
             'gatewayUserId',
             'index',
-            'list'
+            'list',
           ],
    data () {
       return {
         disabled: false,
-        arrowMove1: false,
-        arrowMove2: true,
-        isTrue:false,
+        arrowMoveUp: true,
         show: false,
         lockShow:false,
         lockIndex:'',
@@ -284,15 +282,15 @@ export default {
           this.show = true;
         }
         if(type == 'gatewayDelete'){
-          api.deletes('gatewayUser/'+window.localStorage.getItem('currentUserId'))
-          .then( data => {
-            if(data.data.data == true){
+          // api.deletes('gatewayUser/'+window.localStorage.getItem('currentUserId'))
+          // .then( data => {
+          //   if(data.data.data == true){
                 this.gatewayShow = false
-            }
-          })
-          .catch( err => {
-            console.log(err)
-          })
+          //   }
+          // })
+          // .catch( err => {
+          //   console.log(err)
+          // })
         }
         if(type == 'deviceEdit') {
           this.lockShow = true;
@@ -300,16 +298,19 @@ export default {
         }
         if(type == 'deviceDelete'){
           // alert( this.gatewayLockList[index].id)
-          api.deletes('gatewayUser/'+window.localStorage.getItem('currentUserId')+"/deviceStatus/" + this.gatewayLockList[index].id)
-          .then( data => {
-            console.log(data)
-            if(data.data.data == true){
-                this.lockShow = false
-            }
-          })
-          .catch( err => {
-            console.log(err)
-          })
+          // api.deletes('gatewayUser/'+window.localStorage.getItem('currentUserId')+"/deviceStatus/" + this.gatewayLockList[index].id)
+          // .then( data => {
+            // console.log(data)
+            // if(data.data.data == true){
+                // alert(1)
+                // this.lockShow = false
+                 Vue.set(this.gatewayLockList[index],"lockListHide",true)
+                 // console.log(this.gatewayLockList[index])
+          //   }
+          // })
+          // .catch( err => {
+          //   console.log(err)
+          // })
         }
       },
       handleEvents (type,id) {
@@ -340,20 +341,19 @@ export default {
         // }
        window.localStorage.setItem("currentUserId",id);
        window.localStorage.setItem("gatewayUserId", window.localStorage.getItem("currentUserId"));
-        if(this.arrowMove2){
+        if(this.arrowMoveUp){
           api.get("gatewayUser/" + window.localStorage.getItem('currentUserId') + "/deviceStatus")
           .then(data => {
               var currentLockList = data.data.data.list;
 
               Vue.set(this.list[this.index],"Devlist",currentLockList)
+              // console.log(this.list[this.index]["Devlist"])
           })
           .catch( err => {
             console.log(err)
           })
         }
-        this.arrowMove1 = !this.arrowMove1;
-        this.arrowMove2 = !this.arrowMove2;
-        this.isTrue = this.arrowMove2
+         this.arrowMoveUp = !this.arrowMoveUp;
       },
       SaveId (LockId,UserId) {
         window.localStorage.setItem("gatewayUserId",UserId);
@@ -464,9 +464,7 @@ export default {
       }
    },
    mounted() {
-      this.arrowMove1 = !this.arrowMove1;
-      this.arrowMove2 = !this.arrowMove2;
-      this.isTrue = ! this.arrowMove1
+
    }
 }
 </script>
@@ -586,11 +584,11 @@ export default {
     transform-origin: center center;
   }
 
-  .arrowUp{
+  .arrowDown{
      transform:rotate(180deg);
      transition: all 0.5s linear;
   }
-  .arrowDown {
+  .arrowUp {
      transition: all 0.5s linear;
   }
 
@@ -600,7 +598,7 @@ export default {
   }
 
   .GateWayDropChild {
-      height: toRem(150);
+      min-height: toRem(170);
       background: #F8F8F8;
   }
 
