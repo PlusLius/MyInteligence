@@ -46,7 +46,7 @@
              <li class="GateWayUpDate icon-RemoteUpgrade" @click="remoteUpdate">远程升级</li>
              <li class="GateWayArrow icon-top"
              @click="arrowTogle(gatewayUserId)"
-             :class="{'arrowUp':arrowMoveUp,'arrowDown':!arrowMoveUp}"
+             :class="{'arrowUp':!flag,'arrowDown':flag}"
              >
              </li>
            </ul>
@@ -62,7 +62,7 @@
               @on-close="handleEvents('gatewayLock-on-close')"
               @on-open="handleEvents('gatewayLock-on-open')"
               transition-mode="follow"
-              v-if="!arrowMoveUp"
+              v-if="flag"
                v-show="!item.lockListHide"
               :key="item.id"
             >
@@ -96,6 +96,7 @@
             </transition-group>
         </swipeout>
 
+      <div v-transfer-dom>
         <div id="dialog1" v-if="show">
             <div class="weui-mask"></div>
             <div class="weui-dialog editDialog">
@@ -125,7 +126,9 @@
                 </div>
             </div>
         </div>
+      </div>
 
+      <div v-transfer-dom>
         <div id="dialog2" v-if="lockShow">
             <div class="weui-mask"></div>
             <div class="weui-dialog editDialog">
@@ -163,7 +166,9 @@
                 </div>
             </div>
         </div>
+      </div>
 
+      <div v-transfer-dom>
         <div id="dialog3" v-if="remoteUpdateShow">
             <div class="weui-mask"></div>
             <div class="weui-dialog editDialog">
@@ -208,7 +213,7 @@
                 </div>
             </div>
         </div>
-
+      </div>
           <!-- 结束 -->
 
         <div v-transfer-dom>
@@ -256,11 +261,11 @@ export default {
             'gatewayUserId',
             'index',
             'list',
+            'flag'
           ],
    data () {
       return {
         disabled: false,
-        arrowMoveUp: true,
         show: false,
         lockShow:false,
         lockIndex:'',
@@ -272,7 +277,7 @@ export default {
         remoteUpdateShow:false,
         remoteUpdateMsg: {},
         shareDialogStyle: false,
-        ticket:""
+        ticket:"",
       }
     },
    methods: {
@@ -341,19 +346,22 @@ export default {
         // }
        window.localStorage.setItem("currentUserId",id);
        window.localStorage.setItem("gatewayUserId", window.localStorage.getItem("currentUserId"));
-        if(this.arrowMoveUp){
+        if(!this.flag){
           api.get("gatewayUser/" + window.localStorage.getItem('currentUserId') + "/deviceStatus")
           .then(data => {
               var currentLockList = data.data.data.list;
 
               Vue.set(this.list[this.index],"Devlist",currentLockList)
-              // console.log(this.list[this.index]["Devlist"])
+               // Vue.set(this.list[this.index],"flag",this.arrowMoveUp)
+              // console.log(this.list[this.index])
           })
           .catch( err => {
             console.log(err)
           })
         }
-         this.arrowMoveUp = !this.arrowMoveUp;
+
+        Vue.set(this.list[this.index],"flag",!this.flag)
+
       },
       SaveId (LockId,UserId) {
         window.localStorage.setItem("gatewayUserId",UserId);
@@ -366,6 +374,8 @@ export default {
        window.localStorage.setItem("gatewayUserId", window.localStorage.getItem("currentUserId"))
       },
       router (name,code,functionCode,power,mode,remoteSecretSetted){
+        window.localStorage.setItem("currentUserId",this.gatewayUserId);
+       window.localStorage.setItem("gatewayUserId", window.localStorage.getItem("currentUserId"));
         this.$router.replace(
           { path: '/MyResentUse',
             query: {
@@ -380,9 +390,10 @@ export default {
         );
       },
       editGatewayOk(){
-        api.put('gatewayUser/'+window.localStorage.getItem('currentUserId'),{
+        var qs = require("qs")
+        api.put('gatewayUser/'+window.localStorage.getItem('currentUserId'),qs.stringify({
           name: this.gatewayNameMsg
-        })
+        }))
         .then( data => {
           if(data.data.data == true){
             Vue.set(this.list[this.index],"name",this.gatewayNameMsg)
@@ -399,10 +410,11 @@ export default {
         this.show = false;
       },
       editGatewayLockOk(){
-        api.put('gatewayUser/'+window.localStorage.getItem('currentUserId')+'/deviceStatus/'+window.localStorage.getItem('gatewayLockId'),{
+        var qs = require("qs")
+        api.put('gatewayUser/'+window.localStorage.getItem('currentUserId')+'/deviceStatus/'+window.localStorage.getItem('gatewayLockId'),qs.stringify({
           name: this.gatewayLockNameMsg,
           remoteSecret:this.remoteSecret
-        })
+        }))
         .then( data => {
           console.log(this.lockIndex)
           if(data.data.data == true){
@@ -453,6 +465,7 @@ export default {
       },
       gatewayShare(id){
         window.localStorage.setItem("currentUserId",id)
+        window.localStorage.setItem("gatewayUserId", window.localStorage.getItem("currentUserId"));
         api.post("gatewayUser/"+window.localStorage.getItem("currentUserId")+"/share")
         .then(res=>{
              this.ticket = "https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=" + res.data.data.ticket;
@@ -464,7 +477,10 @@ export default {
       }
    },
    mounted() {
-
+        // if(window.localStorage.getItem("currentUserId") == window.localStorage.getItem("gatewayUserId") ){
+        //   alert(1)
+        //    Vue.set(this.list[this.index],"flag",false)
+        // }
    }
 }
 </script>

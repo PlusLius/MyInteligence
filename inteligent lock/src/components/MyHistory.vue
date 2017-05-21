@@ -3,9 +3,9 @@
     <div>
 
         <!-- 历史记录列表部分 -->
-        <div class="DeviceList">
+        <!-- <div class="DeviceList"> -->
             <!-- 上拉加载下拉滚动组件 -->
-            <scroller lock-x  @on-scorll="onScroll"
+          <!--   <scroller lock-x  @on-scorll="onScroll"
              height="9.5rem"
             :use-pulldown='true'
             :use-pullup='true'
@@ -14,30 +14,44 @@
             @on-pullup-loading="pullupLoading"
             @on-pulldown-loading="pulldownLoading"
             ref="scrollerBottom"
-            >
+            > -->
             <!-- 上拉加载下拉滚动组件内容填充 -->
-              <div class="DeviceHeight" >
+              <!-- <div class="DeviceHeight" > -->
                     <!-- 侧滑组件 -->
-                   <swipeout v-for="i in count">
+                <scroller
+                  :on-refresh="refresh"
+                  :on-infinite="infinite"
+                   refresh-layer-color="#4b8bf4"
+                   loading-layer-color="#4b8bf4"
+                >
+                   <swipeout>
+                    <transition-group name="fade">
                     <!-- 侧滑组件容器 -->
                       <swipeout-item
+                       v-for="(item,index) in list"
                       :disabled="disabled"
                       transition-mode="follow"
                       :right-menu-width="83"
+                      :key="item"
                       >
                       <!-- 侧滑组件右侧菜单 -->
                         <div slot="right-menu">
-                          <swipeout-button background-color="#e84e40" :width="83">{{'删除'}}
+                          <swipeout-button
+                          background-color="#e84e40"
+                          :width="83"
+                          @click.native="onButtonClick('delLock',index)"
+                          >{{'删除'}}
                           </swipeout-button>
                         </div>
+
                         <!-- 侧滑组件正文显示部分 -->
                         <div slot="content" class="DeviceListSize">
                             <!-- <div class="DeviceListIcon1"> -->
-                                <img src="../assets/qietu/icon/zhiwen@3x.png" class="DeviceListImg1">
+                                <img :src="lockImg(item.unlockWayName)" class="DeviceListImg1">
                             <!-- </div> -->
                             <div class="DeviceListID">
                                 <div class="DeviceOpenLock">
-                                    {{'指纹开锁'}}
+                                    {{item.unlockWayName}}
                                 </div>
                                 <div class="DeviceListColor">
                                     {{'开锁人: 003'}}
@@ -45,36 +59,37 @@
                             </div>
                             <div class="DeviceListGetKey">
                                 <div class="DeviceListDate">
-                                    {{'2016-09-22'}}
+                                    {{item.unlockTime.split(" ")[0]}}
                                 </div>
                                 <div class="DeviceListTime">
-                                    {{'11:44:00'}}
+                                    {{item.unlockTime.split(" ")[1]}}
                                 </div>
                             </div>
                         </div>
+
                       </swipeout-item>
-
+                      </transition-group>
                     </swipeout>
-                    <!-- <load-more tip="loading"></load-more> -->
-              </div>
-            </scroller>
-        </div>
-
+                 </scroller>
     </div>
 </template>
 <script>
-    import { Scroller, Divider, Spinner, XButton, Group, Cell, LoadMore } from 'vux'
+    // import { Scroller, Divider, Spinner, XButton, Group, Cell, LoadMore } from 'vux'
     import { Swipeout, SwipeoutItem, SwipeoutButton} from 'vux'
+    import Vue from "vue"
+    import API from "../api/api"
+    import { dateFormat } from 'vux'
+    var api = new API ()
 
     export default {
         components: {
-            Scroller,
-            Divider,
-            Spinner,
-            XButton,
-            Group,
-            Cell,
-            LoadMore,
+            // Scroller,
+            // Divider,
+            // Spinner,
+            // XButton,
+            // Group,
+            // Cell,
+            // LoadMore,
             Swipeout,
             SwipeoutItem,
             SwipeoutButton,
@@ -82,27 +97,33 @@
         data () {
             return {
               disabled: false,
-              pulldownConfig: {
-                  content: '',
-                  height: 40,
-                  autoRefresh: false,
-                  downContent: '下拉刷新 ↓',
-                  upContent: '释放刷新 ↑',
-                  loadingContent: '<div class="weui-cell__ft" style="text-align:center"><span class="vux-spinner vux-spinner-ios"><svg viewBox="0 0 64 64"><g stroke-width="4" stroke-linecap="round"><line y1="17" y2="29" transform="translate(32,32) rotate(180)"><animate attributeName="stroke-opacity" dur="750ms" values="1;.85;.7;.65;.55;.45;.35;.25;.15;.1;0;1" repeatCount="indefinite"></animate></line><line y1="17" y2="29" transform="translate(32,32) rotate(210)"><animate attributeName="stroke-opacity" dur="750ms" values="0;1;.85;.7;.65;.55;.45;.35;.25;.15;.1;0" repeatCount="indefinite"></animate></line><line y1="17" y2="29" transform="translate(32,32) rotate(240)"><animate attributeName="stroke-opacity" dur="750ms" values=".1;0;1;.85;.7;.65;.55;.45;.35;.25;.15;.1" repeatCount="indefinite"></animate></line><line y1="17" y2="29" transform="translate(32,32) rotate(270)"><animate attributeName="stroke-opacity" dur="750ms" values=".15;.1;0;1;.85;.7;.65;.55;.45;.35;.25;.15" repeatCount="indefinite"></animate></line><line y1="17" y2="29" transform="translate(32,32) rotate(300)"><animate attributeName="stroke-opacity" dur="750ms" values=".25;.15;.1;0;1;.85;.7;.65;.55;.45;.35;.25" repeatCount="indefinite"></animate></line><line y1="17" y2="29" transform="translate(32,32) rotate(330)"><animate attributeName="stroke-opacity" dur="750ms" values=".35;.25;.15;.1;0;1;.85;.7;.65;.55;.45;.35" repeatCount="indefinite"></animate></line><line y1="17" y2="29" transform="translate(32,32) rotate(0)"><animate attributeName="stroke-opacity" dur="750ms" values=".45;.35;.25;.15;.1;0;1;.85;.7;.65;.55;.45" repeatCount="indefinite"></animate></line><line y1="17" y2="29" transform="translate(32,32) rotate(30)"><animate attributeName="stroke-opacity" dur="750ms" values=".55;.45;.35;.25;.15;.1;0;1;.85;.7;.65;.55" repeatCount="indefinite"></animate></line><line y1="17" y2="29" transform="translate(32,32) rotate(60)"><animate attributeName="stroke-opacity" dur="750ms" values=".65;.55;.45;.35;.25;.15;.1;0;1;.85;.7;.65" repeatCount="indefinite"></animate></line><line y1="17" y2="29" transform="translate(32,32) rotate(90)"><animate attributeName="stroke-opacity" dur="750ms" values=".7;.65;.55;.45;.35;.25;.15;.1;0;1;.85;.7" repeatCount="indefinite"></animate></line><line y1="17" y2="29" transform="translate(32,32) rotate(120)"><animate attributeName="stroke-opacity" dur="750ms" values=".85;.7;.65;.55;.45;.35;.25;.15;.1;0;1;.85" repeatCount="indefinite"></animate></line><line y1="17" y2="29" transform="translate(32,32) rotate(150)"><animate attributeName="stroke-opacity" dur="750ms" values="1;.85;.7;.65;.55;.45;.35;.25;.15;.1;0;1" repeatCount="indefinite"></animate></line></g></svg></span>  <!----></div>',
-                  clsPrefix: 'xs-plugin-pulldown-'
-              },
-              pullupConfig: {
-                  content: '',
-                  pullUpHeight: 60,
-                  height: 0,
-                  autoRefresh: false,
-                  downContent: '释放刷新 ↓',
-                  upContent: '上拉刷新 ↑',
-                  loadingContent: '加载中 ...',
-                  clsPrefix: 'xs-plugin-pullup-'
-              },
-              count: 1,
-              onFetching: false
+              // pulldownConfig: {
+              //     content: '',
+              //     height: 40,
+              //     autoRefresh: false,
+              //     downContent: '下拉刷新 ↓',
+              //     upContent: '释放刷新 ↑',
+              //     loadingContent: '<div class="weui-cell__ft" style="text-align:center"><span class="vux-spinner vux-spinner-ios"><svg viewBox="0 0 64 64"><g stroke-width="4" stroke-linecap="round"><line y1="17" y2="29" transform="translate(32,32) rotate(180)"><animate attributeName="stroke-opacity" dur="750ms" values="1;.85;.7;.65;.55;.45;.35;.25;.15;.1;0;1" repeatCount="indefinite"></animate></line><line y1="17" y2="29" transform="translate(32,32) rotate(210)"><animate attributeName="stroke-opacity" dur="750ms" values="0;1;.85;.7;.65;.55;.45;.35;.25;.15;.1;0" repeatCount="indefinite"></animate></line><line y1="17" y2="29" transform="translate(32,32) rotate(240)"><animate attributeName="stroke-opacity" dur="750ms" values=".1;0;1;.85;.7;.65;.55;.45;.35;.25;.15;.1" repeatCount="indefinite"></animate></line><line y1="17" y2="29" transform="translate(32,32) rotate(270)"><animate attributeName="stroke-opacity" dur="750ms" values=".15;.1;0;1;.85;.7;.65;.55;.45;.35;.25;.15" repeatCount="indefinite"></animate></line><line y1="17" y2="29" transform="translate(32,32) rotate(300)"><animate attributeName="stroke-opacity" dur="750ms" values=".25;.15;.1;0;1;.85;.7;.65;.55;.45;.35;.25" repeatCount="indefinite"></animate></line><line y1="17" y2="29" transform="translate(32,32) rotate(330)"><animate attributeName="stroke-opacity" dur="750ms" values=".35;.25;.15;.1;0;1;.85;.7;.65;.55;.45;.35" repeatCount="indefinite"></animate></line><line y1="17" y2="29" transform="translate(32,32) rotate(0)"><animate attributeName="stroke-opacity" dur="750ms" values=".45;.35;.25;.15;.1;0;1;.85;.7;.65;.55;.45" repeatCount="indefinite"></animate></line><line y1="17" y2="29" transform="translate(32,32) rotate(30)"><animate attributeName="stroke-opacity" dur="750ms" values=".55;.45;.35;.25;.15;.1;0;1;.85;.7;.65;.55" repeatCount="indefinite"></animate></line><line y1="17" y2="29" transform="translate(32,32) rotate(60)"><animate attributeName="stroke-opacity" dur="750ms" values=".65;.55;.45;.35;.25;.15;.1;0;1;.85;.7;.65" repeatCount="indefinite"></animate></line><line y1="17" y2="29" transform="translate(32,32) rotate(90)"><animate attributeName="stroke-opacity" dur="750ms" values=".7;.65;.55;.45;.35;.25;.15;.1;0;1;.85;.7" repeatCount="indefinite"></animate></line><line y1="17" y2="29" transform="translate(32,32) rotate(120)"><animate attributeName="stroke-opacity" dur="750ms" values=".85;.7;.65;.55;.45;.35;.25;.15;.1;0;1;.85" repeatCount="indefinite"></animate></line><line y1="17" y2="29" transform="translate(32,32) rotate(150)"><animate attributeName="stroke-opacity" dur="750ms" values="1;.85;.7;.65;.55;.45;.35;.25;.15;.1;0;1" repeatCount="indefinite"></animate></line></g></svg></span>  <!----></div>',
+              //     clsPrefix: 'xs-plugin-pulldown-'
+              // },
+              // pullupConfig: {
+              //     content: '',
+              //     pullUpHeight: 60,
+              //     height: 0,
+              //     autoRefresh: false,
+              //     downContent: '释放刷新 ↓',
+              //     upContent: '上拉刷新 ↑',
+              //     loadingContent: '加载中 ...',
+              //     clsPrefix: 'xs-plugin-pullup-'
+              // },
+              // count: 1,
+              // onFetching: false,
+              list:[],
+              nowDate:"",
+              oldData:"",
+              num:1,
+              flagRefresh:true,
+              flagInfinite:true
             }
         },
         methods: {
@@ -144,7 +165,119 @@
                       this.onFetching = false
                     }, 2000)
                 }
-            }
+            },
+            lockImg(name){
+              switch(name){
+                case "指纹开锁":
+                return require("../assets/qietu/icon/zhiwen@3x.png")
+                break;
+                case "远程开锁":
+                return require("../assets/qietu/icon/remoteOpen@3x.png")
+                break;
+                case "动态密码开锁":
+                return require("../assets/qietu/icon/dynamicOpen@3x.png")
+                break;
+                case "IC卡开锁":
+                return require("../assets/qietu/icon/ICCard@3x.png")
+                break;
+              }
+            },
+            refresh(done) {
+
+              if(this.flagRefresh){
+                  this.flagRefresh = false;
+                  var timer = null;
+                   timer = setTimeout(() => {
+                    api.get("gatewayUser/"+window.localStorage.getItem("currentUserId")+"/deviceStatus/"+window.localStorage.getItem("gatewayLockId")+"/lockRecord",{
+                        unlockTime: this.oldData,
+                        direction: true
+                    })
+                    .then(res => {
+                      for(var k in res.data.data.content){
+                         this.list.unshift(res.data.data.content[k])
+                      }
+                       this.flagRefresh = true
+                       clearTimeout(timer)
+                       done()
+                    })
+                    .catch(err => {
+                      clearTimeout(timer)
+                      console.log(err)
+                    })
+                  }, 1500)
+              }
+            },
+            infinite(done) {
+              if(this.flagInfinite){
+                this.flagInfinite = false;
+                this.nowDate = dateFormat(new Date(), 'YYYY-MM-DD HH:mm:ss');
+                var timer = null;
+                timer = setTimeout(() => {
+                      if(this.num == 1){
+                        api.get("gatewayUser/"+window.localStorage.getItem("currentUserId")+"/deviceStatus/"+window.localStorage.getItem("gatewayLockId")+"/lockRecord",{
+                           unlockTime: this.nowDate
+                        })
+                        .then(res => {
+                          this.oldData = res.data.data.content[0]["unlockTime"];
+                          console.log(this.oldData)
+                          this.list = res.data.data.content
+                          this.flagInfinite = true;
+                          done(true)
+                          this.num++
+                          clearTimeout(timer)
+                          console.log(res)
+                        })
+                        .catch(err => {
+                          console.log(err)
+                          clearTimeout(timer)
+                        })
+                      }
+                      else {
+                        api.get("gatewayUser/"+window.localStorage.getItem("currentUserId")+"/deviceStatus/"+window.localStorage.getItem("gatewayLockId")+"/lockRecord",{
+                           unlockTime: this.nowDate,
+                           pageNum:this.num
+                        })
+                        .then(res => {
+                          this.oldData = res.data.data.content[0]["unlockTime"];
+                          console.log(this.oldData)
+                          for (var k in res.data.data.content){
+                             this.list.push( res.data.data.content[k])
+                          }
+                          this.num++
+                          this.flagInfinite = true;
+                          done(true)
+                          clearTimeout(timer)
+                          console.log(res)
+                        })
+                        .catch(err => {
+                          clearTimeout(timer)
+                          console.log(err)
+                        })
+                      }
+                }, 1500)
+              }
+            },
+           onButtonClick(type,index){
+              if(type == "delLock"){
+                this.list.splice(index, 1)
+                 console.log(this.list[index])
+              }
+           }
+        },
+        mounted(){
+          // var qs = require("qs")
+          // this.nowDate = dateFormat(new Date(), 'YYYY-MM-DD HH:mm:ss')
+          // api.get("gatewayUser/"+window.localStorage.getItem("currentUserId")+"/deviceStatus/"+window.localStorage.getItem("gatewayLockId")+"/lockRecord",qs.stringify({
+          //   unlockTime:this.nowDate
+          // }))
+          // .then(res => {
+          //   this.list = res.data.data.content
+          //   console.log(res)
+          // })
+          // .catch(err => {
+          //   console.log(err);
+          // })
+          //
         }
     }
 
@@ -188,7 +321,7 @@
         float: left;
         margin-top: toRem(50);
         margin-left: toRem(53);
-        width: toRem(229);
+        // width: toRem(229);
     }
     .DeviceListGetKey {
         position: relative;
@@ -219,6 +352,12 @@
         height: 10px;
         background: red;
     }
+    .fade-enter-active, .fade-leave-active {
+  transition: opacity .5s;
+}
+.fade-enter, .fade-leave-active {
+  opacity: 0;
+}
 </style>
 
 

@@ -48,8 +48,8 @@ const routes = [
       path:'/',
       meta: {title: '我的智能'},
       // component: MyDynamicKey
-      // component: MyInteligence
-      component: cs
+      component: MyInteligence
+      // component: cs
     },
     {
       path: '/MyDynamicKey',

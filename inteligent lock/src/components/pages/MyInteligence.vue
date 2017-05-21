@@ -33,6 +33,7 @@
                   :gatewayUserId = "item.id"
                   :index = "index"
                   :list = "list"
+                  :flag = "item.flag"
                 >
                 </GateWayDropBox2>
 
@@ -123,7 +124,7 @@ export default {
 
               var devlist = data.data.data.list;
               Vue.set(this.list[0],"Devlist",devlist)
-
+              Vue.set(this.list[0],"flag",true)
             })
             .catch(err => {
               console.log(err)
@@ -145,7 +146,7 @@ export default {
                     //根据网关id与当前网关id比对后将锁列表加入当前网关数据列表后面
                     //进入这里说明是当前网关列表,将lock数据放入当前网关列表下面
                      Vue.set(this.list[index],"Devlist",devlist)
-
+                     Vue.set(this.list[index],"flag",true)
                 })
                 .catch( err => {
                   console.log(err)

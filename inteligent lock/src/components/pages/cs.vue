@@ -1,163 +1,83 @@
 <template>
   <div>
+    <!-- <nav-bar title="Custom Spinner"></nav-bar> -->
 
+    <scroller style="top: 44px;"
+      :on-refresh="refresh"
+      :on-infinite="infinite"
+      refresh-layer-color="#4b8bf4"
+      loading-layer-color="#ec4949"
+    >
+      <!-- custom refresh spinner, use default `spinner` & viewBox 0,0,64,64 class -->
+<!--       <svg class="spinner" style="stroke: #4b8bf4;" slot="refresh-spinner" viewBox="0 0 64 64">
+        <g stroke-width="7" stroke-linecap="round"><line x1="10" x2="10" y1="27.3836" y2="36.4931"><animate attributeName="y1" dur="750ms" values="16;18;28;18;16;16" repeatCount="indefinite"></animate><animate attributeName="y2" dur="750ms" values="48;46;36;44;48;48" repeatCount="indefinite"></animate><animate attributeName="stroke-opacity" dur="750ms" values="1;.4;.5;.8;1;1" repeatCount="indefinite"></animate></line><line x1="24" x2="24" y1="18.6164" y2="45.3836"><animate attributeName="y1" dur="750ms" values="16;16;18;28;18;16" repeatCount="indefinite"></animate><animate attributeName="y2" dur="750ms" values="48;48;46;36;44;48" repeatCount="indefinite"></animate><animate attributeName="stroke-opacity" dur="750ms" values="1;1;.4;.5;.8;1" repeatCount="indefinite"></animate></line><line x1="38" x2="38" y1="16.1233" y2="47.8767"><animate attributeName="y1" dur="750ms" values="18;16;16;18;28;18" repeatCount="indefinite"></animate><animate attributeName="y2" dur="750ms" values="44;48;48;46;36;44" repeatCount="indefinite"></animate><animate attributeName="stroke-opacity" dur="750ms" values=".8;1;1;.4;.5;.8" repeatCount="indefinite"></animate></line><line x1="52" x2="52" y1="16" y2="48"><animate attributeName="y1" dur="750ms" values="28;18;16;16;18;28" repeatCount="indefinite"></animate><animate attributeName="y2" dur="750ms" values="36;44;48;48;46;36" repeatCount="indefinite"></animate><animate attributeName="stroke-opacity" dur="750ms" values=".5;.8;1;1;.4;.5" repeatCount="indefinite"></animate></line></g></svg> -->
 
- <scroller :on-refresh="refresh"
-            :on-infinite="infinite"
-            style="padding-top: 44px;">
-    <div v-for="(item, index) in items" class="row" :class="{'grey-bg': index % 2 == 0}">
-      {{ item }}
-    </div>
-  </scroller>
+      <div v-for="(item, index) in items"
+          class="row"
+          :class="{'grey-bg': index % 2 == 0}">
+        {{ item }}
+      </div>
 
-    <!--     <div id="dialog1">
-            <div class="weui-mask"></div>
-            <div class="weui-dialog My-dialog ">
-                <div class="weui-dialog__hd My-title"><strong class="weui-dialog__title">远程开锁</strong></div>
-                <div class="weui-dialog__bd My-dialogBody">
-                    <input class="My-PassWord" type="password" name="password" placeholder="请输入您的远程开锁密码">
-                    <div class="MyChangePassWordBox">
-                         <div class="MyChangePassWord">
-                            修改密码
-                        </div>
-                    </div>
-
-                </div>
-                <div class="weui-dialog__ft My-dialogBottom">
-                    <a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_default MyOk">确定</a>
-                    <a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_primary MyCancel ">取消</a>
-                </div>
-            </div>
-        </div> -->
+      <!-- custom infinite spinner -->
+<!--       <svg class="spinner" style="fill: #ec4949;" slot="infinite-spinner" viewBox="0 0 64 64">
+        <g><circle cx="16" cy="32" stroke-width="0" r="3"><animate attributeName="fill-opacity" dur="750ms" values=".5;.6;.8;1;.8;.6;.5;.5" repeatCount="indefinite"></animate><animate attributeName="r" dur="750ms" values="3;3;4;5;6;5;4;3" repeatCount="indefinite"></animate></circle><circle cx="32" cy="32" stroke-width="0" r="3.09351"><animate attributeName="fill-opacity" dur="750ms" values=".5;.5;.6;.8;1;.8;.6;.5" repeatCount="indefinite"></animate><animate attributeName="r" dur="750ms" values="4;3;3;4;5;6;5;4" repeatCount="indefinite"></animate></circle><circle cx="48" cy="32" stroke-width="0" r="4.09351"><animate attributeName="fill-opacity" dur="750ms" values=".6;.5;.5;.6;.8;1;.8;.6" repeatCount="indefinite"></animate><animate attributeName="r" dur="750ms" values="5;4;3;3;4;5;6;5" repeatCount="indefinite"></animate></circle></g></svg> -->
+    </scroller>
   </div>
 </template>
 
-
-
 <script>
-import Vux from 'vux'
+  // import NavBar from './NavBar.vue'
 
-export default {
-    data() {
-        return {
-            order: window.localStorage.getItem("order"),
-            token: window.localStorage.getItem("token"),
-            items: []
-        }
+  export default {
+    components: {
+
     },
-    mounted: function () {
-        for (var i = 1; i <= 20; i++) {
-          this.items.push(i + ' - keep walking, be 2 with you.');
-        }
-        this.top = 1;
-        this.bottom = 20;
+
+    data () {
+      return {
+        items: []
+      }
     },
+
+    mounted() {
+      for (let i = 1; i <= 20; i++) {
+        this.items.push(i + ' - keep walking, be 2 with you.')
+      }
+      this.top = 1
+      this.bottom = 20
+    },
+
     methods: {
-        refresh: function (done) {
-          var self = this
-          setTimeout(function () {
-            var start = self.top - 1
-            for (var i = start; i > start - 10; i--) {
-              self.items.splice(0, 0, i + ' - keep walking, be 2 with you.');
-            }
-            self.top = self.top - 10;
-            done();
+      refresh(done) {
+        setTimeout(() => {
+          let start = this.top - 1
+          for (let i = start; i > start - 10; i--) {
+            this.items.splice(0, 0, i + ' - keep walking, be 2 with you.')
+          }
+          this.top = this.top - 10;
+          done()
+        }, 1500)
+      },
+
+      infinite(done) {
+        if (this.bottom >= 30) {
+          setTimeout(() => {
+            done(true)
           }, 1500)
-        },
-        // infinite: function (done) {
-        //   var self = this
-        //   setTimeout(function () {
-        //     var start = self.bottom + 1;
-        //     for (var i = start; i < start + 10; i++) {
-        //       self.items.push(i + ' - keep walking, be 2 with you.');
-        //     }
-        //     self.bottom = self.bottom + 10;
-        //     done();
-        //   }, 1500)
-        // }
-    },
+          return;
+        }
 
-}
-
+        setTimeout(() => {
+          let start = this.bottom + 1
+          for (let i = start; i < start + 10; i++) {
+            this.items.push(i + ' - keep walking, be 2 with you.')
+          }
+          this.bottom = this.bottom + 10;
+          setTimeout(() => {
+            done()
+          })
+        }, 1500)
+      }
+    }
+  }
 </script>
-
-
-<style lang='scss' scoped >
-    @function toRem ($DraftSize) {
-      @return  ($DraftSize / 144 * 100) / 75 * 1rem;
-    }
-    @mixin font-dpr($font-size){
-      font-size: $font-size;
-      [data-dpr="2"] & { font-size: $font-size * 2; }
-      [data-dpr="3"] & { font-size: $font-size * 3; }
-    }
-
-    .My-dialog {
-        width: toRem(901);
-        height: toRem(723);
-        background: #F8F8F8;
-    }
-
-    .My-title {
-        position: relative;
-        height: toRem(145);
-        line-height: toRem(145);
-        @include font-dpr(15px);
-        color:#00A6F4;
-
-      /*   border-bottom: 1px solid #B5B5B5; */
-    }
-    .My-title:after {
-        transform: scaleY(0.5);
-        content: " ";
-        position: absolute;
-        left: 0;
-        bottom: 0;
-        right: 0;
-        height: 1px;
-        border-top: 1px solid #D5D5D6;
-        color: #D5D5D6;
-    }
-    .weui-dialog__hd {
-        box-sizing:border-box;
-        padding:0;
-    }
-    .My-dialogBody {
-        height:toRem(409);
-    }
-    .My-PassWord {
-        margin-top: toRem(70);
-        width: 100%;
-        height: toRem(120);
-        text-align: center;
-        @include font-dpr(15px);
-        color:#CCCCCC;
-    }
-    .MyChangePassWordBox {
-        display:flex;
-        justify-content:center;
-    }
-    .MyChangePassWord {
-        margin-top: toRem(65);
-        width: toRem(400);
-        height: toRem(80);
-        line-height: toRem(80);
-        border-radius: 40px;
-        border: 1px solid #0EAAF4;
-        color:#0EAAF4;
-    }
-    .My-dialogBottom {
-        height:toRem(140);
-        line-height:toRem(150);
-        display:flex;
-        justify-content:flex-starts;
-    }
-    .MyOk {
-        color:#0EAAF4;
-    }
-    .MyCancel {
-        color:#666666;
-    }
-</style>
-
-

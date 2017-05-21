@@ -142,7 +142,7 @@
             </div>
         </div>
 
-        <div v-if="type == 'MyHistory'">
+        <div v-if="type == 'MyHistory'"  class="MyHistory">
             <MyHistory></MyHistory>
         </div>
         <div v-else-if="type == 'MyUserList'">
@@ -198,7 +198,7 @@
         },
         computed: {
             ComputedPowerImg(){
-                if(this.power <= 0){
+                if(this.power == 0){
                     this.powerImg = require('../../assets/qietu/0%.png')
                 }
                 else if(this.power <= 30){
@@ -582,5 +582,8 @@
     .MyCancel {
         color:#666666;
     }
-
+    .MyHistory{
+        position:relative;
+        min-height:toRem(1056)
+    }
 </style>

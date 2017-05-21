@@ -36,7 +36,7 @@
                       </div>
                       <div class="GateWayArrow icon-top"
                        @click="arrowTogle(gatewayUserId)"
-                       :class="{'arrowUp':arrowMoveUp,'arrowDown':!arrowMoveUp}">
+                       :class="{'arrowUp':!flag,'arrowDown':flag}">
 
                       </div>
                 </div>
@@ -56,7 +56,7 @@
               @on-close="handleEvents('gatewayLock-on-close')"
               @on-open="handleEvents('gatewayLock-on-open')"
               transition-mode="follow"
-              v-if="!arrowMoveUp"
+              v-if="flag"
               v-show="!item.lockListHide"
               :key="item.id"
             >
@@ -90,6 +90,7 @@
             </transition-group>
         </swipeout>
 
+        <div v-transfer-dom>
             <div id="dialog1" v-if="show">
             <div class="weui-mask"></div>
             <div class="weui-dialog editDialog">
@@ -119,7 +120,9 @@
                 </div>
             </div>
         </div>
+      </div>
 
+      <div v-transfer-dom>
         <div id="dialog2" v-if="lockShow">
             <div class="weui-mask"></div>
             <div class="weui-dialog editDialog">
@@ -157,7 +160,7 @@
                 </div>
             </div>
         </div>
-
+      </div>
 
           <!-- 结束 -->
       </div>
@@ -167,6 +170,7 @@
 
 <script>
 import { Swipeout, SwipeoutItem, SwipeoutButton, XButton } from 'vux'
+import {TransferDom } from 'vux'
 import API from '../../api/api'
 import Vue from 'vue'
 var api = new API();
@@ -179,8 +183,12 @@ export default {
           'online',
           'gatewayUserId',
           'index',
-          'list'
+          'list',
+          'flag'
    ],
+   directives: {
+    TransferDom
+   },
    components: {
       Swipeout,
       SwipeoutItem,
@@ -190,7 +198,6 @@ export default {
    data () {
       return {
         disabled: false,
-        arrowMoveUp: false,
         show: false,
         lockShow:false,
         lockIndex:'',
@@ -265,19 +272,20 @@ export default {
         //   var historyId = window.localStorage.getItem("currentUserId")
         //   window.localStorage.setItem("gatewayUserId",historyId)
         // }
-        if(this.arrowMoveUp){
+        if(!this.flag){
           api.get("gatewayUser/" + window.localStorage.getItem('currentUserId') + "/deviceStatus")
           .then(data => {
               var currentLockList = data.data.data.list;
 
               Vue.set(this.list[this.index],"Devlist",currentLockList)
-              console.log(this.list[this.index]["Devlist"])
+              // Vue.set(this.list[this.index],"flag",!this.arrowMoveUp)
+              // console.log(this.list[this.index]["Devlist"])
           })
           .catch( err => {
             console.log(err)
           })
         }
-         this.arrowMoveUp = !this.arrowMoveUp;
+          Vue.set(this.list[this.index],"flag",!this.flag)
       },
       SaveId (LockId,UserId) {
         window.localStorage.setItem("gatewayUserId",UserId);
@@ -291,7 +299,7 @@ export default {
       },
       router (name,code,functionCode,power,mode,remoteSecretSetted){
 
-
+        console.log(power)
         this.$router.replace(
           { path: '/MyResentUse',
             query: {
@@ -306,9 +314,10 @@ export default {
         );
       },
       editGatewayOk(){
-        api.put('gatewayUser/'+window.localStorage.getItem('currentUserId'),{
+        var qs = require("qs")
+        api.put('gatewayUser/'+window.localStorage.getItem('currentUserId'),qs.stringify({
           name: this.gatewayNameMsg
-        })
+        }))
         .then( data => {
           if(data.data.data == true){
             Vue.set(this.list[this.index],"name",this.gatewayNameMsg)
@@ -326,10 +335,11 @@ export default {
         this.show = false;
       },
       editGatewayLockOk(){
-        api.put('gatewayUser/'+window.localStorage.getItem('currentUserId')+'/deviceStatus/'+window.localStorage.getItem('gatewayLockId'),{
+        var qs = rquire("qs")
+        api.put('gatewayUser/'+window.localStorage.getItem('currentUserId')+'/deviceStatus/'+window.localStorage.getItem('gatewayLockId'),qs.stringify({
           name: this.gatewayLockNameMsg,
           remoteSecret:this.remoteSecret
-        })
+        }))
         .then( data => {
           console.log(this.lockIndex)
           if(data.data.data == true){

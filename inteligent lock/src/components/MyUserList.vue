@@ -22,8 +22,9 @@
                             <input class="weui-switch" type="checkbox">
                         </div>
                     </div> -->
-
-                  <swipeout-item :disabled="disabled" ref="swipeoutItem" :right-menu-width="210" :sensitivity="15" v-for="(item,index) in list" v-if="!item.userListHide">
+                <swipeout>
+                  <transition-group name="fade">
+                  <swipeout-item :disabled="disabled" ref="swipeoutItem" :right-menu-width="210" :sensitivity="15" v-for="(item,index) in list" v-if="!item.userListHide" :key="item">
                     <div slot="right-menu">
                       <swipeout-button @click.native="onButtonClick('delLock',item.id,index)" type="warn" :width="73" class="delUser">{{'删除'}}</swipeout-button>
                     </div>
@@ -46,7 +47,8 @@
                         </div>
                     </div>
                   </swipeout-item>
-
+                </transition-group>
+              </swipeout>
               </div>
             </scroller>
         </div>
@@ -352,6 +354,12 @@
     -webkit-appearance:none;
     -webkit-tap-highlight-color:rgba(0,0,0,0);
   }
+      .fade-enter-active, .fade-leave-active {
+  transition: opacity .5s;
+}
+.fade-enter, .fade-leave-active {
+  opacity: 0;
+}
 </style>
 
 
