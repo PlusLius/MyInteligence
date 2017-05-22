@@ -3,9 +3,9 @@
     <div>
 
         <!-- 历史记录列表部分 -->
-        <div class="DeviceList">
+        <!-- <div class="DeviceList"> -->
             <!-- 上拉加载下拉滚动组件 -->
-            <scroller lock-x height="9.5rem">
+            <scroller>
             <!-- 上拉加载下拉滚动组件内容填充 -->
               <div class="DeviceHeight" >
                    <!--  <div class="MyAdmin" v-for="i in 300">
@@ -42,7 +42,7 @@
                             </div>
                             <div class="MySwitch weui-cell__ft"
                             @click="pushOpenMsg(item.sendNormalMsg,item.id)">
-                                <input class="weui-switch" type="checkbox">
+                                <input class="weui-switch" type="checkbox" :checked="checkedR(item.sendNormalMsg)">
                             </div>
                         </div>
                     </div>
@@ -51,7 +51,7 @@
               </swipeout>
               </div>
             </scroller>
-        </div>
+        <!-- </div> -->
 
         <div id="dialog1" v-if="show">
             <div class="weui-mask"></div>
@@ -72,7 +72,7 @@
     </div>
 </template>
 <script>
-    import { XSwitch, Group, Scroller} from 'vux'
+    // import { XSwitch, Group, Scroller} from 'vux'
     import { Swipeout, SwipeoutItem, SwipeoutButton } from 'vux'
     import API from "../api/api"
     import Vue from "vue"
@@ -80,9 +80,9 @@
 
     export default {
         components: {
-            Group,
-            XSwitch,
-            Scroller,
+            // Group,
+            // XSwitch,
+            // Scroller,
             Swipeout,
             SwipeoutItem,
             SwipeoutButton
@@ -95,7 +95,8 @@
               userMsg:'',
               sendNormalMsg: '',
               index:0,
-              id:0
+              id:0,
+              result:"checked"
             }
         },
         methods: {
@@ -125,23 +126,25 @@
             },
             onButtonClick (type,id,index) {
                 if(type == "delLock"){
-                    // var qs = require('qs')
-                    // api.deletes("gatewayUser/"+window.localStorage.getItem("currentUserId")+"/deviceStatus/"+window.localStorage.getItem("gatewayLockId")+"/lockUser/"+id)
-                    // .then( res =>{
-                    //     if(res.data.data == true){
+                    var qs = require('qs')
+                    api.deletes("gatewayUser/"+window.localStorage.getItem("currentUserId")+"/deviceStatus/"+window.localStorage.getItem("gatewayLockId")+"/lockUser/"+id)
+                    .then( res =>{
+                        if(res.data.data == true){
                             Vue.set(this.list[index],"userListHide",true)
                             // console.log(this.list[index])
-                    //     }
-                    // })
-                    // .catch( err =>{
-                    //     console.log(err)
-                    // })
+                        }
+                    })
+                    .catch( err =>{
+                        console.log(err)
+                    })
                 }
             },
             handleEvents (type) {
               console.log('event: ', type)
             },
             pushOpenMsg(sendNormalMsg,id){
+                sendNormalMsg = !sendNormalMsg;
+                // this.result = !this.result;
                 var qs = require('qs')
                 api.put("gatewayUser/"+window.localStorage.getItem("currentUserId")+"/deviceStatus/"+window.localStorage.getItem("gatewayLockId")+"/lockUser/"+id,qs.stringify({
                     sendNormalMsg:sendNormalMsg
@@ -152,6 +155,14 @@
                 .catch( err =>{
                     console.log(err)
                 })
+            },
+            checkedR(check){
+              if(check == true){
+                return this.result
+              }
+              else {
+                return ""
+              }
             }
         },
         mounted(){

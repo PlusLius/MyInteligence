@@ -43,7 +43,7 @@
            </swipeout>
            <ul class="GateWayDropBox">
              <li class="GateWayEdit icon-share" @click="gatewayShare(gatewayUserId)">分享</li>
-             <li class="GateWayUpDate icon-RemoteUpgrade" @click="remoteUpdate">远程升级</li>
+             <li class="GateWayUpDate icon-RemoteUpgrade" @click="remoteUpdate(gatewayUserId)">远程升级</li>
              <li class="GateWayArrow icon-top"
              @click="arrowTogle(gatewayUserId)"
              :class="{'arrowUp':!flag,'arrowDown':flag}"
@@ -141,14 +141,14 @@
                   placeholder="请输入想要编辑的设备名字"
                   v-model="gatewayLockNameMsg"
                   >
-                  <input
+                <!--   <input
                   type="text"
                   name="text"
                   class="editRemote"
                   placeholder="请输入远程密码"
                   v-model="remoteSecret"
                   >
-
+ -->
                 </div>
                 <div class="weui-dialog__ft">
                     <a
@@ -287,15 +287,15 @@ export default {
           this.show = true;
         }
         if(type == 'gatewayDelete'){
-          // api.deletes('gatewayUser/'+window.localStorage.getItem('currentUserId'))
-          // .then( data => {
-          //   if(data.data.data == true){
+          api.deletes('gatewayUser/'+window.localStorage.getItem('currentUserId'))
+          .then( data => {
+            if(data.data.data == true){
                 this.gatewayShow = false
-          //   }
-          // })
-          // .catch( err => {
-          //   console.log(err)
-          // })
+            }
+          })
+          .catch( err => {
+            console.log(err)
+          })
         }
         if(type == 'deviceEdit') {
           this.lockShow = true;
@@ -303,19 +303,19 @@ export default {
         }
         if(type == 'deviceDelete'){
           // alert( this.gatewayLockList[index].id)
-          // api.deletes('gatewayUser/'+window.localStorage.getItem('currentUserId')+"/deviceStatus/" + this.gatewayLockList[index].id)
-          // .then( data => {
-            // console.log(data)
-            // if(data.data.data == true){
+          api.deletes('gatewayUser/'+window.localStorage.getItem('currentUserId')+"/deviceStatus/" + this.gatewayLockList[index].id)
+          .then( data => {
+          //   console.log(data)
+            if(data.data.data == true){
                 // alert(1)
                 // this.lockShow = false
                  Vue.set(this.gatewayLockList[index],"lockListHide",true)
-                 // console.log(this.gatewayLockList[index])
-          //   }
-          // })
-          // .catch( err => {
-          //   console.log(err)
-          // })
+                // console.log(this.gatewayLockList[index])
+            }
+          })
+          .catch( err => {
+            console.log(err)
+          })
         }
       },
       handleEvents (type,id) {
@@ -433,7 +433,9 @@ export default {
         this.remoteSecret = '';
         this.lockShow = false;
       },
-      remoteUpdate(){
+      remoteUpdate(id){
+        window.localStorage.setItem("currentUserId",id)
+        window.localStorage.setItem("gatewayUserId", window.localStorage.getItem("currentUserId"));
         this.remoteUpdateShow = true;
         api.get("gatewayUser/"+ window.localStorage.getItem("currentUserId") +"/version")
         .then(res=>{

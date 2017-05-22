@@ -9,13 +9,23 @@ import VueScroller from 'vue-scroller'
 Vue.use(VueScroller)
 var api = new API()
 
-import MyInteligence from './components/pages/MyInteligence'
-import MyDynamicKey from './components/pages/MyDynamicKey'
-import MyKeyManagement from './components/pages/MyKeyManagement'
-import MyResentUse from './components/pages/MyResentUse'
-import MyHistory from './components/MyHistory'
-import MyUserList from './components/MyUserList'
-import GatewayManager from './components/pages/GatewayManager'
+// import MyInteligence from './components/pages/MyInteligence'
+// import MyDynamicKey from './components/pages/MyDynamicKey'
+// import MyKeyManagement from './components/pages/MyKeyManagement'
+// import MyResentUse from './components/pages/MyResentUse'
+// import MyHistory from './components/MyHistory'
+// import MyUserList from './components/MyUserList'
+// import GatewayManager from './components/pages/GatewayManager'
+
+
+const MyInteligence = resolve => {require(['./components/pages/MyInteligence'],resolve)}
+const MyDynamicKey = resolve => {require(['./components/pages/MyDynamicKey'],resolve)}
+const MyKeyManagement = resolve => {require(['./components/pages/MyKeyManagement'],resolve)}
+const MyResentUse = resolve => {require(['./components/pages/MyResentUse'],resolve)}
+const MyHistory = resolve => {require(['./components/MyHistory'],resolve)}
+const MyUserList = resolve => {require(['./components/MyUserList'],resolve)}
+const GatewayManager = resolve => {require(['./components/pages/GatewayManager'],resolve)}
+
 
 
 import cs from './components/pages/cs'
@@ -26,22 +36,45 @@ import rem from './assets/lib/flexible.js'
 
 Vue.use(VueRouter)
 
-// let setDocumentTitle = function (title) {
-//     document.title = title;
-//     let ua = navigator.userAgent;
-//     if (/\bMicroMessenger\/([\d\.]+)/.test(ua) && /ip(hone|od|ad)/i.test(ua)) {
-//         var i = document.createElement('iframe');
-//         i.src = '/favicon.ico';
-//         i.style.display = 'none';
-//         i.onload = function () {
-//             setTimeout(function () {
-//                 i.remove();
-//             }, 9);
-//         };
-//         document.body.appendChild(i);
-//     }
-// };
+ function GetQueryString(name) {
+         var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+         var r = window.location.search.substr(1).match(reg);
+         // if (r != null)return unescape(r[2]);
+         if (r != null){
+             return r[2];
+         }
+         return null;
+      }
+ var code = GetQueryString("code");
+ var href = window.location.href.split('#')[0];
+ var qs = require('qs');
+  api.postAPI("/wechatedit/auth",qs.stringify({
+    code:code,
+    url:href,
+    appId:'wx083b494330212064'
+  }))
+  .then( data => {
+          sessionStorage.setItem("token", data.data.data.token);
+        Vue.wechat.config({
+            debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+            appId:'wx083b494330212064', // 必填，公众号的唯一标识
+            timestamp: sessionStorage.getItem('timestamp'), // 必填，生成签名的时间戳
+            nonceStr: sessionStorage.getItem('nonceStr'), // 必填，生成签名的随机串
+            signature: sessionStorage.getItem('signature'),// 必填，签名，见附录1
+            jsApiList: ['scanQRCode'] // 必填，需要使用的JS接口列表，所有JS接口列表见附录2
+        })
 
+          new Vue({
+            router,
+            created (){
+                router.replace({path: window.localStorage.getItem("order")})
+            },
+            render: h => h(App)
+          }).$mount('#app-box')
+      })
+      .catch( err => {
+        console.log(err)
+  })
 
 const routes = [
     {
@@ -91,7 +124,7 @@ const routes = [
       path: '/V201_SYSTEMSECRET',
       component: MyDynamicKey
     },
-    { path: '*', component: MyInteligence},
+    // { path: '*', component: MyInteligence},
     // { path: '*', component: MyDynamicKey},
 ]
 
@@ -99,11 +132,11 @@ const router = new VueRouter({
   routes
 })
 
-router.beforeEach((to, from, next) => {
+// router.beforeEach((to, from, next) => {
   // alert(to.meta.pageTitle)
-  document.title = from.meta.title;
-  next();
-})
+//   document.title = from.meta.title;
+//   next();
+// })
 
 FastClick.attach(document.body)
 

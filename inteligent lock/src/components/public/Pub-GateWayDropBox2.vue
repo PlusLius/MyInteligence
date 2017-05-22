@@ -217,31 +217,31 @@ export default {
           this.show = true;
         }
         if(type == 'gatewayDelete'){
-          // api.deletes('gatewayUser/'+window.localStorage.getItem('currentUserId'))
-          // .then( data => {
-          //   if(data.data.data == true){
+          api.deletes('gatewayUser/'+window.localStorage.getItem('currentUserId'))
+          .then( data => {
+            if(data.data.data == true){
                 this.gatewayShow = false
-          //   }
-          // })
-          // .catch( err => {
-          //   console.log(err)
-          // })
+            }
+          })
+          .catch( err => {
+            console.log(err)
+          })
         }
         if(type == 'deviceEdit') {
           this.lockShow = true;
           this.lockIndex = index
         }
         if(type == 'deviceDelete'){
-          // api.deletes('gatewayUser/'+window.localStorage.getItem('currentUserId')+"/deviceStatus/" + this.gatewayLockList[this.lockIndex].id)
-          // .then( data => {
-          //   console.log(data)
-          //   if(data.data.data == true){
+          api.deletes('gatewayUser/'+window.localStorage.getItem('currentUserId')+"/deviceStatus/" + this.gatewayLockList[this.lockIndex].id)
+          .then( data => {
+            // console.log(data)
+            if(data.data.data == true){
                 Vue.set(this.gatewayLockList[index],"lockListHide",true)
-          //   }
-          // })
-          // .catch( err => {
-          //   console.log(err)
-          // })
+            }
+          })
+          .catch( err => {
+            console.log(err)
+          })
         }
       },
       handleEvents (type,id) {

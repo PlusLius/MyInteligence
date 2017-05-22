@@ -62,6 +62,9 @@
                         minlength="6"
                         v-model="remoteOpenLock"
                         >
+                        <div class="loading" v-if="loading">
+                          <span class="loadingFont"> 拼命开锁中</span><spinner type="ios-small" slot="value" class="loadingIcon"></spinner>
+                        </div>
                        <div
                        class="MyChangePassWordBox"
                        v-show="MyChangePassWordBox">
@@ -145,7 +148,7 @@
         <div v-if="type == 'MyHistory'"  class="MyHistory">
             <MyHistory></MyHistory>
         </div>
-        <div v-else-if="type == 'MyUserList'">
+        <div v-else-if="type == 'MyUserList'"   class="MyUserList">
             <MyUserList></MyUserList>
         </div>
 
@@ -166,7 +169,7 @@
     import MyHistory from '../MyHistory'
     import MyUserList from '../MyUserList'
     import API from '../../api/api'
-    import { md5 } from 'vux'
+    import { md5,Spinner } from 'vux'
     var api = new API()
 
     export default {
@@ -193,7 +196,8 @@
                 oldPasWord:'',
                 newPasWord:'',
                 newMorePasWord:'',
-                verifySetPasBol:false
+                verifySetPasBol:false,
+                loading:false
             }
         },
         computed: {
@@ -224,7 +228,8 @@
         },
         components: {
             MyHistory,
-            MyUserList
+            MyUserList,
+            Spinner
         },
         methods: {
             MyHistory (){
@@ -245,48 +250,77 @@
             },
             DialogOK () {
 
-                var qs = require('qs');
-                api.post("gatewayUser/"+window.localStorage.getItem("currentUserId")+"/deviceStatus/"+window.localStorage.getItem("gatewayLockId")+"/control",qs.stringify({
-                    remoteSecret:md5(this.remoteOpenLock,"remoteSecret")
-                }))
-                .then(res => {
-                    if(res.data.status == 0){
-                         var index = 0;
-                         var timer = null;
-                         var flag = true;
-                         timer = setInterval(function(){
-                            if(index == 6){
-                                clearInterval(timer)
-                            }
-                            if(index == 3 || index == 5){
-                                api.get("gatewayUser/"+window.localStorage.getItem("currentUserId")+"/deviceStatus/"+window.localStorage.getItem("gatewayLockId")+"/control")
-                                .then(res => {
-                                    if(res.data.data.success && flag){
-                                        alert("开锁成功!")
-                                        flag = false;
-                                        clearInterval(timer)
-                                    }
-                                })
-                                .catch(err => {
-                                    console.log(err)
-                                })
-                             }
-                             index++
-                        },1000)
-                    }
-                    else {
-                        alert("开锁失败")
-                    }
-                })
-                .catch(err => {
-                    console.log(err)
-                })
+                 var flag = false;
+                 var that = this;
+                // do{]
+                if(this.remoteOpenLock != ""){
+                     this.loading = true;
+                    openLock();
+                function openLock(){
+                    var qs = require('qs');
+                    api.post("gatewayUser/"+window.localStorage.getItem("currentUserId")+"/deviceStatus/"+window.localStorage.getItem("gatewayLockId")+"/control",qs.stringify({
+                        remoteSecret:md5(that.remoteOpenLock,"remoteSecret")
+                    }))
+                    .then(res => {
+                        var num = 0;
+                        var timer = null;
 
-                this.remoteOpenLock = ''
-                this.ShowLog = false;
-                this.MyChangePassWordBox = true;
+                        timer = setInterval(()=>{
+                            if(num < 3){
+                                 api.get("gatewayUser/"+window.localStorage.getItem("currentUserId")+"/deviceStatus/"+window.localStorage.getItem("gatewayLockId")+"/control")
+                                    .then(res => {
+                                        if(res.data.data.success){
+                                            alert("开锁成功!")
+                                            flag = true;
+                                            clearInterval(timer)
+                                        }
+                                    })
+                                    .catch(err => {
+                                        console.log(err)
+                                    })
+                             }
+                            num++
+                        },3000)
+                    // if(res.data.status == 0){
+                    //      var index = 0;
+                    //      var timer = null;
+                    //      var flag = true;
+                    //      timer = setInterval(function(){
+                    //         if(index == 6){
+                    //             clearInterval(timer)
+                    //         }
+                    //         if(index == 3 || index == 5){
+                    //             api.get("gatewayUser/"+window.localStorage.getItem("currentUserId")+"/deviceStatus/"+window.localStorage.getItem("gatewayLockId")+"/control")
+                    //             .then(res => {
+                    //                 if(res.data.data.success && flag){
+                    //                     alert("开锁成功!")
+                    //                     flag = false;
+                    //                     clearInterval(timer)
+                    //                 }
+                    //             })
+                    //             .catch(err => {
+                    //                 console.log(err)
+                    //             })
+                    //          }
+                    //          index++
+                    //     },1000)
+                    // }
+                    // else {
+                    //     alert("开锁失败")
+                    // }
+                    })
+                    .catch(err => {
+                        console.log(err)
+                    })
+                }
+            }
+                // }while(!flag)
+                // this.remoteOpenLock = ''
+                // this.ShowLog = false;
+                // this.MyChangePassWordBox = true;
             },
             DialogCancel () {
+                this.loading = false;
                 this.ShowLog = false;
                 this.MyChangePassWordBox = true;
             },
@@ -582,8 +616,15 @@
     .MyCancel {
         color:#666666;
     }
-    .MyHistory{
+    .MyHistory,.MyUserList{
         position:relative;
         min-height:toRem(1056)
+    }
+    .loading {
+
+    }
+    .loadingFont{
+        position: relative;
+        top:toRem(7)
     }
 </style>

@@ -39,7 +39,7 @@
                           <swipeout-button
                           background-color="#e84e40"
                           :width="83"
-                          @click.native="onButtonClick('delLock',index)"
+                          @click.native="onButtonClick('delLock',index,item.id)"
                           >{{'删除'}}
                           </swipeout-button>
                         </div>
@@ -47,7 +47,7 @@
                         <!-- 侧滑组件正文显示部分 -->
                         <div slot="content" class="DeviceListSize">
                             <!-- <div class="DeviceListIcon1"> -->
-                                <img :src="lockImg(item.unlockWayName)" class="DeviceListImg1">
+                                <img :src="lockImg(item.unlockWay)" class="DeviceListImg1">
                             <!-- </div> -->
                             <div class="DeviceListID">
                                 <div class="DeviceOpenLock">
@@ -123,7 +123,8 @@
               oldData:"",
               num:1,
               flagRefresh:true,
-              flagInfinite:true
+              flagInfinite:true,
+              index:0
             }
         },
         methods: {
@@ -134,58 +135,63 @@
             handleEvents (type) {
               console.log('event: ', type)
             },
-            pulldownLoading(){
-                setTimeout(() => {
-                      this.count += 1
-                      this.$nextTick(() => {
-                        this.$refs.scrollerBottom.reset({top:0})
-                      })
-                }, 2000)
-            },
-            pullupLoading(){
-                console.log(this.count)
-                setTimeout(() => {
-                      this.count += 1
-                      this.$nextTick(() => {
-                        this.$refs.scrollerBottom.donePullup()
-                      })
-                }, 2000)
-            },
-            onScrollBottom () {
-                if (this.onFetching) {
-                    // do nothing
-                } else {
-                    console.log(this.count)
-                    this.onFetching = true
-                    setTimeout(() => {
-                      this.count += 1
-                      this.$nextTick(() => {
-                        this.$refs.scrollerBottom.reset()
-                      })
-                      this.onFetching = false
-                    }, 2000)
-                }
-            },
+            // pulldownLoading(){
+            //     setTimeout(() => {
+            //           this.count += 1
+            //           this.$nextTick(() => {
+            //             this.$refs.scrollerBottom.reset({top:0})
+            //           })
+            //     }, 2000)
+            // },
+            // pullupLoading(){
+            //     console.log(this.count)
+            //     setTimeout(() => {
+            //           this.count += 1
+            //           this.$nextTick(() => {
+            //             this.$refs.scrollerBottom.donePullup()
+            //           })
+            //     }, 2000)
+            // },
+            // onScrollBottom () {
+            //     if (this.onFetching) {
+            //         // do nothing
+            //     } else {
+            //         console.log(this.count)
+            //         this.onFetching = true
+            //         setTimeout(() => {
+            //           this.count += 1
+            //           this.$nextTick(() => {
+            //             this.$refs.scrollerBottom.reset()
+            //           })
+            //           this.onFetching = false
+            //         }, 2000)
+            //     }
+            // },
             lockImg(name){
               switch(name){
-                case "指纹开锁":
+                case 1:
                 return require("../assets/qietu/icon/zhiwen@3x.png")
                 break;
-                case "远程开锁":
-                return require("../assets/qietu/icon/remoteOpen@3x.png")
+                case 2:
+                return require("../assets/qietu/icon/password@3x.png")
                 break;
-                case "动态密码开锁":
-                return require("../assets/qietu/icon/dynamicOpen@3x.png")
-                break;
-                case "IC卡开锁":
-                return require("../assets/qietu/icon/ICCard@3x.png")
-                break;
+                // case 3:
+                // return require("../assets/qietu/icon/ICCard@3x.png")
+                // break;
+                // case 4:
+                // return require("../assets/qietu/icon/fingerprintAndPassWord@3x.png@3x.png")
+                // break;
               }
             },
             refresh(done) {
 
               if(this.flagRefresh){
                   this.flagRefresh = false;
+                  if(this.index == 0){
+                    alert(1)
+                   this.oldData = dateFormat(new Date(), 'YYYY-MM-DD HH:mm:ss');
+                  }
+                  // console.log(this.oldData)
                   var timer = null;
                    timer = setTimeout(() => {
                     api.get("gatewayUser/"+window.localStorage.getItem("currentUserId")+"/deviceStatus/"+window.localStorage.getItem("gatewayLockId")+"/lockRecord",{
@@ -193,8 +199,14 @@
                         direction: true
                     })
                     .then(res => {
-                      for(var k in res.data.data.content){
-                         this.list.unshift(res.data.data.content[k])
+                      this.index = 1;
+                      if(res.data.data.content.length > 0){
+                        this.oldData = res.data.data.content[0]["unlockTime"]
+                        for(var k in res.data.data.content){
+                            // this.$nextTick(()=>{
+                              this.list.unshift(res.data.data.content[k])
+                            // })
+                        }
                       }
                        this.flagRefresh = true
                        clearTimeout(timer)
@@ -202,8 +214,10 @@
                     })
                     .catch(err => {
                       clearTimeout(timer)
+                       done(false)
                       console.log(err)
                     })
+
                   }, 1500)
               }
             },
@@ -218,14 +232,17 @@
                            unlockTime: this.nowDate
                         })
                         .then(res => {
-                          this.oldData = res.data.data.content[0]["unlockTime"];
-                          console.log(this.oldData)
-                          this.list = res.data.data.content
-                          this.flagInfinite = true;
-                          done(true)
-                          this.num++
-                          clearTimeout(timer)
-                          console.log(res)
+
+                              // console.log(this.oldData)
+                              sessionStorage.setItem("historyDate", res.data.data.content[0]["unlockTime"])
+                              this.list = res.data.data.content
+                              this.flagInfinite = true;
+                              done(true)
+                              if(res.data.data.content.length > 0){
+                                  this.num++
+                              }
+                              clearTimeout(timer)
+                              console.log(res)
                         })
                         .catch(err => {
                           console.log(err)
@@ -234,16 +251,20 @@
                       }
                       else {
                         api.get("gatewayUser/"+window.localStorage.getItem("currentUserId")+"/deviceStatus/"+window.localStorage.getItem("gatewayLockId")+"/lockRecord",{
-                           unlockTime: this.nowDate,
+                           unlockTime:sessionStorage.getItem("historyDate"),
                            pageNum:this.num
                         })
                         .then(res => {
-                          this.oldData = res.data.data.content[0]["unlockTime"];
-                          console.log(this.oldData)
-                          for (var k in res.data.data.content){
-                             this.list.push( res.data.data.content[k])
+                          // this.oldData = res.data.data.content[0]["unlockTime"];
+                          // console.log(this.oldData)
+                          this.$nextTick(()=>{
+                              for (var k in res.data.data.content){
+                                this.list.push( res.data.data.content[k])
+                              }
+                          })
+                          if(res.data.data.content.length > 0){
+                              this.num++
                           }
-                          this.num++
                           this.flagInfinite = true;
                           done(true)
                           clearTimeout(timer)
@@ -257,9 +278,20 @@
                 }, 1500)
               }
             },
-           onButtonClick(type,index){
+           onButtonClick(type,index,id){
               if(type == "delLock"){
-                this.list.splice(index, 1)
+                 var qs = require('qs')
+                api.deletes("gatewayUser/"+window.localStorage.getItem("currentUserId")+"/deviceStatus/"+window.localStorage.getItem("gatewayLockId")+"/lockRecord/"+id)
+                .then( res =>{
+                    if(res.data.data == true){
+                        // Vue.set(this.list[index],"userListHide",true)
+                        // console.log(this.list[index])
+                         this.list.splice(index, 1)
+                    }
+                })
+                .catch( err =>{
+                    console.log(err)
+                })
                  console.log(this.list[index])
               }
            }
