@@ -48,7 +48,7 @@
           <div v-if="!gatewayLockList">
             请添加锁 {{gatewayLockList}}
           </div>
-              <swipeout>
+          <swipeout>
            <transition-group name="fade">
             <swipeout-item
              @click.native="SaveId(item.id,item.gatewayUserId)"
@@ -217,7 +217,7 @@ export default {
           this.show = true;
         }
         if(type == 'gatewayDelete'){
-          api.deletes('gatewayUser/'+window.localStorage.getItem('currentUserId'))
+          api.deletes('gatewayUser/'+window.localStorage.getItem('currentUserId')+"/share/"+window.localStorage.getItem("currentUserId"))
           .then( data => {
             if(data.data.data == true){
                 this.gatewayShow = false
@@ -228,10 +228,14 @@ export default {
           })
         }
         if(type == 'deviceEdit') {
+          window.localStorage.setItem("currentUserId",this.gatewayUserId);
+          window.localStorage.setItem("gatewayUserId",window.localStorage.getItem("currentUserId"));
           this.lockShow = true;
           this.lockIndex = index
         }
         if(type == 'deviceDelete'){
+            window.localStorage.setItem("currentUserId",this.gatewayUserId);
+          window.localStorage.setItem("gatewayUserId",window.localStorage.getItem("currentUserId"));
           api.deletes('gatewayUser/'+window.localStorage.getItem('currentUserId')+"/deviceStatus/" + this.gatewayLockList[this.lockIndex].id)
           .then( data => {
             // console.log(data)

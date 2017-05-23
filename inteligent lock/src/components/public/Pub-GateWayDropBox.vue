@@ -281,7 +281,7 @@ export default {
       }
     },
    methods: {
-      onButtonClick (type,index) {
+      onButtonClick (type,index,) {
         // alert('on button click ' + type)
         if(type == 'gatewayEdit'){
           this.show = true;
@@ -298,10 +298,14 @@ export default {
           })
         }
         if(type == 'deviceEdit') {
+          window.localStorage.setItem("currentUserId",this.gatewayUserId);
+          window.localStorage.setItem("gatewayUserId",window.localStorage.getItem("currentUserId"));
           this.lockShow = true;
           this.lockIndex = index
         }
         if(type == 'deviceDelete'){
+            window.localStorage.setItem("currentUserId",this.gatewayUserId);
+          window.localStorage.setItem("gatewayUserId",window.localStorage.getItem("currentUserId"));
           // alert( this.gatewayLockList[index].id)
           api.deletes('gatewayUser/'+window.localStorage.getItem('currentUserId')+"/deviceStatus/" + this.gatewayLockList[index].id)
           .then( data => {

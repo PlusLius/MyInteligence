@@ -3,8 +3,10 @@
   <div>
     <!-- 锁添加密钥部分 -->
     <div class="addDevice">
-      <img src="../../assets/qietu/添加设备.png" class="DeviceIcon">
-      <div class="RichScan">扫一扫添加</div>
+      <div @click="SetScanQRcode">
+        <img src="../../assets/qietu/添加设备.png" class="DeviceIcon">
+        <div class="RichScan">扫一扫添加</div>
+      </div>
       <div class="DeviceFont" @click="addKeyFun">手动添加</div>
     </div>
     <!---->
@@ -21,16 +23,41 @@
         </div>
       </div>
     </div>
+    <!-- 扫描二维码后调弹框 -->
+    <div id="dialog1" v-if="scanBox">
+      <div class="weui-mask"></div>
+      <div class="weui-dialog addKeyBox">
+        <div class="weui-dialog__hd addCancelTitle">手动添加</div>
+        <div class="weui-dialog__bd addBd">
+          <input type="text" class="allInput" placeholder="请输入设备编码" v-model="myScanCode">
+          <input type="text" class="allInput" placeholder="请输入系统秘钥名" v-model="myScanName">
+        <div class="weui-dialog__ft">
+          <a class="weui-dialog__btn weui-dialog__btn_primary" @click="addOK">确定</a>
+          <a class="weui-dialog__btn weui-dialog__btn_default" @click="addCancel">取消</a>
+        </div>
+        </div>
+      </div>
+    </div>
+
+      <!--错误弹出框-->
+    <toast width="35%" v-model="wrong" type="warn">{{ wrongFont }}</toast>
+    <!--成功弹框-->
+    <toast width="35%" v-model="success" type="success">{{ successFont }}</toast>
+
     </div>
 </template>
 <script>
   import GetwayDrop from "../public/Pub-GatewayDrop.vue"
   import api from "../../api/api"
+  import Vue from "vue"
+  import { WechatPlugin,Toast } from 'vux'
+  Vue.use(WechatPlugin)
 
   let Api = new api();
   export default {
     components: {
-      GetwayDrop
+      GetwayDrop,
+      Toast
     },
     data () {
       return {
@@ -40,6 +67,14 @@
         addKey:false,
         DevCode:"",
         DeviceName:"",
+        scanBox:false,
+        myScanCode:"",
+        myScanName:"",
+        wrong:false,
+        success:false,
+        wrongFont:"",
+        successFont:"",
+        deviceCode:""
       }
     },
     methods:{
@@ -52,7 +87,7 @@
         if (this.DevCode.length < 15){
             alert("请输入正确的设备编码")
         }else{
-          Api.post("gatewayUser/139/deviceStatus",qs.stringify({
+          Api.post("gatewayUser/"+window.localStorage.getItem("currentUserId")+"/deviceStatus",qs.stringify({
             deviceCode : this.DevCode,
             deviceName : this.DeviceName
           }))
@@ -71,14 +106,61 @@
           this.addKey= false;
       },
       change(){
-        Api.get("gatewayUser/"+139+"/share")
+        Api.get("gatewayUser/"+window.localStorage.getItem("currentUserId")+"/share")
           .then(data =>{
             this.Lis = data.data.data.list;
           })
+      },
+      SetScanQRcode () {
+          var that = this;
+          Vue.wechat.scanQRCode({
+                needResult: 1, // 默认为0，扫描结果由微信处理，1则直接返回扫描结果，
+                scanType: ["qrCode","barCode"], // 可以指定扫二维码还是一维码，默认二者都有
+                success: function (res) {
+                   // this.scanBox = true;
+                   that.myScanCode = res.resultStr;
+                }
+          })
+          // // function demo(res){
+          //   this.ScanQ = true;
+          //   this.ScanQCode = res;
+          //   this.deviceCode = "";
+          //   this.ScanQName = "";
+          // }
+
+          this.scanBox = true;
+      },
+      addOK(){
+         var qs = require('qs');
+         Api.post("gatewayUser/"+window.localStorage.getItem('currentUserId')+"/deviceStatus",qs.stringify({
+              deviceCode:this.myScanCode,
+              deviceName: this.myScanName
+             }))
+             .then(data => {
+                this.scanBox = false;
+
+                if(data.data.data.status == 0){
+                   this.success = true;
+                   this.successFont = "添加设备成功!";
+                }
+                else {
+                   this.wrong = true;
+                   this.wrongFont = "添加设备失败!";
+                }
+
+             })
+             .catch(data => {
+               console.log(data)
+             })
+      },
+      addCancel(){
+        this.scanBox = false;
+        this.deviceCode = "";
+        this.deviceName = "";
       }
     },
     mounted(){
-        Api.get("gatewayUser/"+139+"/share")
+        Api.get("gatewayUser/"+window.localStorage.getItem("currentUserId")+"/share")
         .then(data =>{
             this.Lis = data.data.data.list;
             console.log(this.Lis);

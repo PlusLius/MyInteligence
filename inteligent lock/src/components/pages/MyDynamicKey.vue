@@ -91,7 +91,7 @@
             <div class="weui-mask"></div>
             <div class="weui-dialog addKeyBox">
               <div class="weui-dialog__hd addCancelTitle">修改系统锁秘钥</div>
-              <div class="weui-dialog__bd addBd"><p class="editDevCode">{{ DevCode }}</p><input type="text" class="allInput" placeholder="请输入系统秘钥名" v-model="LockName"><input type="password" class="allInput" placeholder="请输入系统秘钥" v-model="LockPassword"></div>
+              <div class="weui-dialog__bd addBd"><p class="editDevCode">{{ DevCode }}</p><input type="text" class="allInput" placeholder="请输入系统秘钥名" v-model="LockName"><input type="password" class="allInput" placeholder="请输入系统秘钥" v-model="LockPassword" v-if="PsShow"></div>
               <div class="weui-dialog__ft">
                 <a class="weui-dialog__btn weui-dialog__btn_primary" @click="editOnConfirm">确定</a>
                 <a class="weui-dialog__btn weui-dialog__btn_default" @click="editCancelFun">取消</a>
@@ -122,7 +122,7 @@
           </div>
           <!--分享弹出框-->
         <div v-transfer-dom>
-            <x-dialog v-model="shareDialogStyle" hide-on-blur :dialog-style="{'max-width': '100%', width: '100%', height: '50%', 'background-color': 'transparent'}">
+            <x-dialog v-model="shareDialogStyle" hide-on-blur :dialog-style="{'max-width': '80%', width: '80%', height: '50%', 'background-color': 'white'}">
               <p style="color:#cccccc;text-align:center;">
                 <img v-bind:src=" Src " class="shareImg">
                 <p class="shareFont">长按二维码可发送给朋友</p>
@@ -134,6 +134,19 @@
           <toast width="35%" v-model="wrong" type="warn">{{ msg }}</toast>
           <!--成功弹框-->
           <toast width="35%" v-model="success" type="success">{{ successFont }}</toast>
+          <!-- 扫描二维码后调弹框 -->
+          <div v-if="ScanQ">
+            <div class="weui-mask"></div>
+            <div class="weui-dialog addKeyBox">
+              <div class="weui-dialog__hd addCancelTitle">手动添加</div>
+              <div class="weui-dialog__bd addBd"><input type="text" class="allInput" placeholder="请输入设备编码" v-model="ScanQCode"><input type="text" class="allInput" placeholder="请输入系统秘钥名" v-model="ScanQName">
+              <div class="weui-dialog__ft">
+                <a class="weui-dialog__btn weui-dialog__btn_primary" @click="addOK">确定</a>
+                <a class="weui-dialog__btn weui-dialog__btn_default" @click="addCancel">取消</a>
+              </div>
+            </div>
+          </div>
+          </div>
       </div>
     </div>
 </template>
@@ -143,6 +156,10 @@
     import { Swipeout, SwipeoutItem, SwipeoutButton} from 'vux'
     import { Alert, XSwitch , XDialog, TransferDomDirective as TransferDom } from 'vux'
     import api from "../../api/api"
+    import Vue from "vue"
+    import { WechatPlugin } from 'vux'
+    Vue.use(WechatPlugin)
+
     let Api = new api();
     export default {
         directives: {
@@ -168,6 +185,7 @@
         },
         data () {
             return {
+              PsShow : true ,
               successFont:"",
               success:false,
               msg:"",
@@ -198,14 +216,31 @@
               countDown:"",//倒计时显示的提示文字
               timer: "",       //默认倒数30秒
               stop :false,   //默认是停止的，但界面加载之后会变成false
-              Interval:null  //setInterval的对象
+              Interval:null,  //setInterval的对象
+              ScanQ:false,
+              ScanQCode:"",
+              ScanQName:"",
+              wrong:false,
+              success:false,
+              successFont:""
             }
         },
         methods: {
             //扫一扫添加
             RichScan(){
-              this.wrong = true;
-              this.msg = "扫一扫接口"
+              Vue.wechat.scanQRCode({
+                    needResult: 1, // 默认为0，扫描结果由微信处理，1则直接返回扫描结果，
+                    scanType: ["qrCode","barCode"], // 可以指定扫二维码还是一维码，默认二者都有
+                    success: function (res) {
+                       var deviceCode = res.resultStr;
+                       // if(res.deviceCode != ""){
+                          this.ScanQ = true;
+                          this.ScanQCode = deviceCode;
+                          this.deviceCode = "";
+                          this.ScanQName = "";
+                        // }
+                    }
+              })
             },
             //手动添加锁
             addKeyFun(){
@@ -301,7 +336,7 @@
                     .then(data =>{
                       if (data.data.status == 0){
                         this.success = true;
-                        this.successFont = "添加成功";
+                        this.successFont = "删除成功";
                         Api.get("systemSecret")
                           .then(data =>{
                             this.Lis = data.data.data.list;
@@ -383,7 +418,12 @@
                 this.EditButton = true;
                 this.DevCode = DevCode;
                 this.ID = ID;
-                this.MyID = MyID
+                this.MyID = MyID;
+              if (level == 1){
+                    this.PsShow = true
+              }else{
+                  this.PsShow = false
+              }
             },
             //编辑取消
             editCancelFun(){
@@ -395,7 +435,7 @@
 //              如果是管理员
               if (this.Level == 1){
                   //管理员
-                if (this.LockPassword.length!=8){
+                if (this.LockPassword.length!=8 && this.LockPassword.length!=0){
                   this.wrong = true;
                 this.msg ="请输入8位的锁系统密钥"
                 }else{
@@ -420,12 +460,8 @@
                     })
                 }
               }else{//不是管理员
-                if (this.LockPassword.length!=8){
-                  alert("请输入8位的锁系统密钥");
-                }else{
                   Api.put("systemSecret/"+this.ID+"/systemSecretShare/"+this.MyID,qs.stringify({
                   name : this.LockName,
-                  systemSecret : this.LockPassword
                 }))
                   .then(data =>{
                     if (data.data.status == 0){
@@ -441,7 +477,6 @@
 
                     }
                   })
-              }
               }
 
             },
@@ -519,6 +554,32 @@
             shareFun(){
                    this.shareDialogStyle = true
               },
+            addOK(){
+             var qs = require('qs');
+             Api.post("gatewayUser/"+window.localStorage.getItem('currentUserId')+"/deviceStatus",qs.stringify({
+                  deviceCode:this.deviceCode,
+                  deviceName: this.ScanQName
+                 }))
+                 .then(data => {
+                    this.ScanQ = false;
+                    if(data.data.data.status == 0){
+                       this.success = true;
+                       this.successFont = "添加设备成功!";
+                    }
+                    else {
+                       this.wrong = true;
+                       this.msg = "添加设备失败!";
+                    }
+                 })
+                 .catch(data => {
+                   console.log(data)
+                 })
+            },
+            addCancel(){
+              this.ScanQ = false;
+              this.deviceCode = "";
+              this.deviceName = "";
+            }
         },
         mounted(){
           //    获取动态密钥列表

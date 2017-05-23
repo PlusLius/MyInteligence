@@ -161,6 +161,12 @@
                 我的智能
             </router-link>
         </div>
+
+
+                <!--错误弹出框-->
+          <toast width="35%" v-model="wrong" type="warn">{{ msg }}</toast>
+          <!--成功弹框-->
+          <toast width="35%" v-model="success" type="success">{{ successFont }}</toast>
     </div>
 
 </template>
@@ -169,7 +175,7 @@
     import MyHistory from '../MyHistory'
     import MyUserList from '../MyUserList'
     import API from '../../api/api'
-    import { md5,Spinner } from 'vux'
+    import { md5,Spinner,Toast } from 'vux'
     var api = new API()
 
     export default {
@@ -197,7 +203,11 @@
                 newPasWord:'',
                 newMorePasWord:'',
                 verifySetPasBol:false,
-                loading:false
+                loading:false,
+                wrong:false,
+                success:false,
+                msg:"",
+                successFont:"",
             }
         },
         computed: {
@@ -229,7 +239,8 @@
         components: {
             MyHistory,
             MyUserList,
-            Spinner
+            Spinner,
+            Toast
         },
         methods: {
             MyHistory (){
@@ -250,37 +261,57 @@
             },
             DialogOK () {
 
-                 var flag = false;
-                 var that = this;
-                // do{]
+                var qs = require("qs");
+
                 if(this.remoteOpenLock != ""){
                      this.loading = true;
-                    openLock();
-                function openLock(){
-                    var qs = require('qs');
+
                     api.post("gatewayUser/"+window.localStorage.getItem("currentUserId")+"/deviceStatus/"+window.localStorage.getItem("gatewayLockId")+"/control",qs.stringify({
-                        remoteSecret:md5(that.remoteOpenLock,"remoteSecret")
+                        remoteSecret:md5(this.remoteOpenLock,"remoteSecret")
                     }))
                     .then(res => {
-                        var num = 0;
-                        var timer = null;
+                        if(res.data.status == 0){
+                            openLock()
+                        }
+                        else {
+                            this.wrong = true;
+                            this.msg = res.data.msg;
+                        }
+                    })
 
-                        timer = setInterval(()=>{
-                            if(num < 3){
-                                 api.get("gatewayUser/"+window.localStorage.getItem("currentUserId")+"/deviceStatus/"+window.localStorage.getItem("gatewayLockId")+"/control")
-                                    .then(res => {
-                                        if(res.data.data.success){
-                                            alert("开锁成功!")
-                                            flag = true;
-                                            clearInterval(timer)
-                                        }
-                                    })
-                                    .catch(err => {
-                                        console.log(err)
-                                    })
-                             }
-                            num++
+                    var that = this;
+                    function openLock(){
+                         var timer = null;
+
+                         timer = setInterval(()=>{
+
+                            api.get("gatewayUser/"+window.localStorage.getItem("currentUserId")+"/deviceStatus/"+window.localStorage.getItem("gatewayLockId")+"/control")
+                            .then( res => {
+                                if(res.data.data.success == true){
+                                    that.loading = false;
+                                    clearInterval(timer);
+                                    that.success = true;
+                                    that.successFont = "开锁成功!"
+                                    that.remoteOpenLock = ''
+                                    that.ShowLog = false;
+                                    that.MyChangePassWordBox = true;
+                                }
+                                else {
+                                    that.wrong = true;
+                                    that.msg = "开锁失败!"
+                                    that.remoteOpenLock = ''
+                                    that.ShowLog = false;
+                                    that.MyChangePassWordBox = true;
+                                }
+                            })
+                            .catch(err => {
+                                console.log(err)
+                                clearInterval(timer)
+                            })
+
                         },3000)
+                    }
+
                     // if(res.data.status == 0){
                     //      var index = 0;
                     //      var timer = null;
@@ -308,13 +339,11 @@
                     // else {
                     //     alert("开锁失败")
                     // }
-                    })
-                    .catch(err => {
-                        console.log(err)
-                    })
+                    // })
+                    // .catch(err => {
+                    //     console.log(err)
+                    // })
                 }
-            }
-                // }while(!flag)
                 // this.remoteOpenLock = ''
                 // this.ShowLog = false;
                 // this.MyChangePassWordBox = true;
@@ -326,6 +355,7 @@
             },
             ChangePassWord() {
                 if(this.MyChangePassWordBox){
+                    this.loading = false;
                     this.MyChangePassWordBox2 = true;
                     this.MyChangePassWordBox = false;
                 }

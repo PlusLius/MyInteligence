@@ -124,7 +124,7 @@
               num:1,
               flagRefresh:true,
               flagInfinite:true,
-              index:0
+              dataIndex:0
             }
         },
         methods: {
@@ -175,20 +175,49 @@
                 case 2:
                 return require("../assets/qietu/icon/password@3x.png")
                 break;
-                // case 3:
-                // return require("../assets/qietu/icon/ICCard@3x.png")
-                // break;
-                // case 4:
-                // return require("../assets/qietu/icon/fingerprintAndPassWord@3x.png@3x.png")
-                // break;
+                case 3:
+                return require("../assets/qietu/icon/ICCard@3x.png")
+                break;
+                case 4:
+                return require("../assets/qietu/icon/fingerprintAndPassWord@3x.png")
+                break;
+                case 5:
+                return require("../assets/qietu/icon/fingerprintAndICard@3x.png")
+                break;
+                case 6:
+                return require("../assets/qietu/icon/pasAndICCard@3x.png")
+                break;
+                case 7:
+                return require("../assets/qietu/icon/fingerprintAndPasAndIC@3x.png")
+                break;
+                case 8:
+                return require("../assets/qietu/icon/dynamicOpen@3x.png")
+                break;
+                case 9:
+                return require("../assets/qietu/icon/fingerprintAndFingerCard@3x.png")
+                break;
+                case 10:
+                return require("../assets/qietu/icon/keyOpenLock@3x.png")
+                break;
+                case 11:
+                return require("../assets/qietu/icon/violentUnlock@3x.png")
+                break;
+                case 12:
+                return require("../assets/qietu/icon/lllegalUserUnlock@3x.png")
+                break;
+                case 13:
+                return require("../assets/qietu/icon/stressUnlock@3x.png")
+                break;
+                case 20:
+                return require("../assets/qietu/icon/remoteOpen@3x.png")
+                break;
               }
             },
             refresh(done) {
 
               if(this.flagRefresh){
                   this.flagRefresh = false;
-                  if(this.index == 0){
-                    alert(1)
+                  if(this.dataIndex == 0){
                    this.oldData = dateFormat(new Date(), 'YYYY-MM-DD HH:mm:ss');
                   }
                   // console.log(this.oldData)
@@ -199,7 +228,7 @@
                         direction: true
                     })
                     .then(res => {
-                      this.index = 1;
+                      this.dataIndex = 1;
                       if(res.data.data.content.length > 0){
                         this.oldData = res.data.data.content[0]["unlockTime"]
                         for(var k in res.data.data.content){

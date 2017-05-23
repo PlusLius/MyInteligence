@@ -6,10 +6,10 @@ class API {
     get (url,params) {
         return axios({
             method: 'get',
-            url: 'http://n16n237643.iok.la/api/v1.1.0/' + url,
+            url: 'https://devchat.leocheery.net/smarthome-devchat/api/v1.1.0/' + url,
             params: params,
             headers: {
-              'Token-JWT': "jwteyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJqd3QiLCJpYXQiOjE0OTU0MTM4MzcsInN1YiI6IntcIm9wZW5JZFwiOlwib1czUDF3ME83LWoxQ18zR2s5Y1lNV1NZX1lyOFwiLFwiYXBwSWRcIjpcInd4MDgzYjQ5NDMzMDIxMjA2NFwifSIsImV4cCI6MTQ5NTQ1NzAzN30.INz-hmmYh9gEqXUCSmXrEjrIv3n84u-9uWTF4b3ubSU",
+              'Token-JWT': sessionStorage.getItem("token"),
               'Content-Type':'application/x-www-form-urlencoded;charset=utf-8'
             }
         });
@@ -20,11 +20,11 @@ class API {
     post (url,data) {
         return  axios({
             method: 'post',
-            url:  'http://n16n237643.iok.la/api/v1.1.0/' + url,
+            url:  'https://devchat.leocheery.net/smarthome-devchat/api/v1.1.0/' + url,
             // url: 'http://n16n237643.iok.la/' + url,
             data: data,
             headers: {
-              'Token-JWT': "jwteyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJqd3QiLCJpYXQiOjE0OTU0MTM4MzcsInN1YiI6IntcIm9wZW5JZFwiOlwib1czUDF3ME83LWoxQ18zR2s5Y1lNV1NZX1lyOFwiLFwiYXBwSWRcIjpcInd4MDgzYjQ5NDMzMDIxMjA2NFwifSIsImV4cCI6MTQ5NTQ1NzAzN30.INz-hmmYh9gEqXUCSmXrEjrIv3n84u-9uWTF4b3ubSU",
+              'Token-JWT': sessionStorage.getItem("token"),
               'Content-type':'application/x-www-form-urlencoded;charset=utf-8'
             }
         });
@@ -33,10 +33,10 @@ class API {
     put (url,params) {
         return axios({
             method: 'put',
-            url: 'http://n16n237643.iok.la/api/v1.1.0/' + url,
+            url: 'https://devchat.leocheery.net/smarthome-devchat/api/v1.1.0/' + url,
             data: params,
             headers: {
-              'Token-JWT': "jwteyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJqd3QiLCJpYXQiOjE0OTU0MTM4MzcsInN1YiI6IntcIm9wZW5JZFwiOlwib1czUDF3ME83LWoxQ18zR2s5Y1lNV1NZX1lyOFwiLFwiYXBwSWRcIjpcInd4MDgzYjQ5NDMzMDIxMjA2NFwifSIsImV4cCI6MTQ5NTQ1NzAzN30.INz-hmmYh9gEqXUCSmXrEjrIv3n84u-9uWTF4b3ubSU",
+              'Token-JWT': sessionStorage.getItem("token"),
               'Content-Type':'application/x-www-form-urlencoded;charset=utf-8'
             }
         })
@@ -45,9 +45,9 @@ class API {
     deletes (url,params) {
         return axios({
             method: 'delete',
-            url: 'http://n16n237643.iok.la/api/v1.1.0/' + url,
+            url: 'https://devchat.leocheery.net/smarthome-devchat/api/v1.1.0/' + url,
             headers: {
-              'Token-JWT': "jwteyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJqd3QiLCJpYXQiOjE0OTU0MTM4MzcsInN1YiI6IntcIm9wZW5JZFwiOlwib1czUDF3ME83LWoxQ18zR2s5Y1lNV1NZX1lyOFwiLFwiYXBwSWRcIjpcInd4MDgzYjQ5NDMzMDIxMjA2NFwifSIsImV4cCI6MTQ5NTQ1NzAzN30.INz-hmmYh9gEqXUCSmXrEjrIv3n84u-9uWTF4b3ubSU",
+              'Token-JWT': sessionStorage.getItem("token"),
               'Content-Type':'application/x-www-form-urlencoded;charset=utf-8'
             }
         })
@@ -56,7 +56,7 @@ class API {
     postAPI (url,data) {
         return  axios({
             method: 'post',
-            url:  'http://n16n237643.iok.la' + url,
+            url:  'https://devchat.leocheery.net/smarthome-devchat/' + url,
             // url: 'http://n16n237643.iok.la/' + url,
             data: data,
             headers: {
@@ -68,10 +68,10 @@ class API {
     del (url,data) {
       return  axios({
         method: 'delete',
-        url: 'http://n16n237643.iok.la/api/v1.1.0/' + url,
+        url: 'https://devchat.leocheery.net/smarthome-devchat/api/v1.1.0/' + url,
         data: data,
         headers: {
-          'Token-JWT': "jwteyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJqd3QiLCJpYXQiOjE0OTU0MTM4MzcsInN1YiI6IntcIm9wZW5JZFwiOlwib1czUDF3ME83LWoxQ18zR2s5Y1lNV1NZX1lyOFwiLFwiYXBwSWRcIjpcInd4MDgzYjQ5NDMzMDIxMjA2NFwifSIsImV4cCI6MTQ5NTQ1NzAzN30.INz-hmmYh9gEqXUCSmXrEjrIv3n84u-9uWTF4b3ubSU",
+          'Token-JWT': sessionStorage.getItem("token"),
           'Content-Type':'application/x-www-form-urlencoded;charset=utf-8'
         }
     });
