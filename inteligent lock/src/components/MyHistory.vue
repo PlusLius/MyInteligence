@@ -1,23 +1,7 @@
 <!-- 历史记录组件 -->
 <template>
     <div>
-
-        <!-- 历史记录列表部分 -->
-        <!-- <div class="DeviceList"> -->
-            <!-- 上拉加载下拉滚动组件 -->
-          <!--   <scroller lock-x  @on-scorll="onScroll"
-             height="9.5rem"
-            :use-pulldown='true'
-            :use-pullup='true'
-            :pulldown-config='pulldownConfig'
-            :pullup-config='pullupConfig'
-            @on-pullup-loading="pullupLoading"
-            @on-pulldown-loading="pulldownLoading"
-            ref="scrollerBottom"
-            > -->
-            <!-- 上拉加载下拉滚动组件内容填充 -->
-              <!-- <div class="DeviceHeight" > -->
-                    <!-- 侧滑组件 -->
+            <!-- 侧滑组件 -->
                 <scroller
                   :on-refresh="refresh"
                   :on-infinite="infinite"
@@ -54,7 +38,7 @@
                                     {{item.unlockWayName}}
                                 </div>
                                 <div class="DeviceListColor">
-                                    {{'开锁人: 003'}}
+                                   开锁人: {{item.userName}}
                                 </div>
                             </div>
                             <div class="DeviceListGetKey">
@@ -83,13 +67,6 @@
 
     export default {
         components: {
-            // Scroller,
-            // Divider,
-            // Spinner,
-            // XButton,
-            // Group,
-            // Cell,
-            // LoadMore,
             Swipeout,
             SwipeoutItem,
             SwipeoutButton,
@@ -97,27 +74,6 @@
         data () {
             return {
               disabled: false,
-              // pulldownConfig: {
-              //     content: '',
-              //     height: 40,
-              //     autoRefresh: false,
-              //     downContent: '下拉刷新 ↓',
-              //     upContent: '释放刷新 ↑',
-              //     loadingContent: '<div class="weui-cell__ft" style="text-align:center"><span class="vux-spinner vux-spinner-ios"><svg viewBox="0 0 64 64"><g stroke-width="4" stroke-linecap="round"><line y1="17" y2="29" transform="translate(32,32) rotate(180)"><animate attributeName="stroke-opacity" dur="750ms" values="1;.85;.7;.65;.55;.45;.35;.25;.15;.1;0;1" repeatCount="indefinite"></animate></line><line y1="17" y2="29" transform="translate(32,32) rotate(210)"><animate attributeName="stroke-opacity" dur="750ms" values="0;1;.85;.7;.65;.55;.45;.35;.25;.15;.1;0" repeatCount="indefinite"></animate></line><line y1="17" y2="29" transform="translate(32,32) rotate(240)"><animate attributeName="stroke-opacity" dur="750ms" values=".1;0;1;.85;.7;.65;.55;.45;.35;.25;.15;.1" repeatCount="indefinite"></animate></line><line y1="17" y2="29" transform="translate(32,32) rotate(270)"><animate attributeName="stroke-opacity" dur="750ms" values=".15;.1;0;1;.85;.7;.65;.55;.45;.35;.25;.15" repeatCount="indefinite"></animate></line><line y1="17" y2="29" transform="translate(32,32) rotate(300)"><animate attributeName="stroke-opacity" dur="750ms" values=".25;.15;.1;0;1;.85;.7;.65;.55;.45;.35;.25" repeatCount="indefinite"></animate></line><line y1="17" y2="29" transform="translate(32,32) rotate(330)"><animate attributeName="stroke-opacity" dur="750ms" values=".35;.25;.15;.1;0;1;.85;.7;.65;.55;.45;.35" repeatCount="indefinite"></animate></line><line y1="17" y2="29" transform="translate(32,32) rotate(0)"><animate attributeName="stroke-opacity" dur="750ms" values=".45;.35;.25;.15;.1;0;1;.85;.7;.65;.55;.45" repeatCount="indefinite"></animate></line><line y1="17" y2="29" transform="translate(32,32) rotate(30)"><animate attributeName="stroke-opacity" dur="750ms" values=".55;.45;.35;.25;.15;.1;0;1;.85;.7;.65;.55" repeatCount="indefinite"></animate></line><line y1="17" y2="29" transform="translate(32,32) rotate(60)"><animate attributeName="stroke-opacity" dur="750ms" values=".65;.55;.45;.35;.25;.15;.1;0;1;.85;.7;.65" repeatCount="indefinite"></animate></line><line y1="17" y2="29" transform="translate(32,32) rotate(90)"><animate attributeName="stroke-opacity" dur="750ms" values=".7;.65;.55;.45;.35;.25;.15;.1;0;1;.85;.7" repeatCount="indefinite"></animate></line><line y1="17" y2="29" transform="translate(32,32) rotate(120)"><animate attributeName="stroke-opacity" dur="750ms" values=".85;.7;.65;.55;.45;.35;.25;.15;.1;0;1;.85" repeatCount="indefinite"></animate></line><line y1="17" y2="29" transform="translate(32,32) rotate(150)"><animate attributeName="stroke-opacity" dur="750ms" values="1;.85;.7;.65;.55;.45;.35;.25;.15;.1;0;1" repeatCount="indefinite"></animate></line></g></svg></span>  <!----></div>',
-              //     clsPrefix: 'xs-plugin-pulldown-'
-              // },
-              // pullupConfig: {
-              //     content: '',
-              //     pullUpHeight: 60,
-              //     height: 0,
-              //     autoRefresh: false,
-              //     downContent: '释放刷新 ↓',
-              //     upContent: '上拉刷新 ↑',
-              //     loadingContent: '加载中 ...',
-              //     clsPrefix: 'xs-plugin-pullup-'
-              // },
-              // count: 1,
-              // onFetching: false,
               list:[],
               nowDate:"",
               oldData:"",
@@ -130,43 +86,10 @@
         methods: {
             onScroll(){
                 this.disabled = true
-
             },
             handleEvents (type) {
               console.log('event: ', type)
             },
-            // pulldownLoading(){
-            //     setTimeout(() => {
-            //           this.count += 1
-            //           this.$nextTick(() => {
-            //             this.$refs.scrollerBottom.reset({top:0})
-            //           })
-            //     }, 2000)
-            // },
-            // pullupLoading(){
-            //     console.log(this.count)
-            //     setTimeout(() => {
-            //           this.count += 1
-            //           this.$nextTick(() => {
-            //             this.$refs.scrollerBottom.donePullup()
-            //           })
-            //     }, 2000)
-            // },
-            // onScrollBottom () {
-            //     if (this.onFetching) {
-            //         // do nothing
-            //     } else {
-            //         console.log(this.count)
-            //         this.onFetching = true
-            //         setTimeout(() => {
-            //           this.count += 1
-            //           this.$nextTick(() => {
-            //             this.$refs.scrollerBottom.reset()
-            //           })
-            //           this.onFetching = false
-            //         }, 2000)
-            //     }
-            // },
             lockImg(name){
               switch(name){
                 case 1:
@@ -215,10 +138,12 @@
             },
             refresh(done) {
 
-              if(this.flagRefresh){
-                  this.flagRefresh = false;
+              // if(this.flagRefresh){
+                  // this.flagRefresh = false;
                   if(this.dataIndex == 0){
-                   this.oldData = dateFormat(new Date(), 'YYYY-MM-DD HH:mm:ss');
+                   // this.oldData = dateFormat(new Date(), 'YYYY-MM-DD HH:mm:ss');
+                   this.oldData = sessionStorage.getItem("historyDate")
+
                   }
                   // console.log(this.oldData)
                   var timer = null;
@@ -243,12 +168,12 @@
                     })
                     .catch(err => {
                       clearTimeout(timer)
-                       done(false)
+                       done()
                       console.log(err)
                     })
 
-                  }, 1500)
-              }
+                  }, 500)
+              // }
             },
             infinite(done) {
               if(this.flagInfinite){
@@ -258,11 +183,9 @@
                 timer = setTimeout(() => {
                       if(this.num == 1){
                         api.get("gatewayUser/"+window.localStorage.getItem("currentUserId")+"/deviceStatus/"+window.localStorage.getItem("gatewayLockId")+"/lockRecord",{
-                           unlockTime: this.nowDate
+                           // unlockTime: this.nowDate
                         })
                         .then(res => {
-
-                              // console.log(this.oldData)
                               sessionStorage.setItem("historyDate", res.data.data.content[0]["unlockTime"])
                               this.list = res.data.data.content
                               this.flagInfinite = true;
@@ -284,27 +207,22 @@
                            pageNum:this.num
                         })
                         .then(res => {
-                          // this.oldData = res.data.data.content[0]["unlockTime"];
-                          // console.log(this.oldData)
-                          this.$nextTick(()=>{
-                              for (var k in res.data.data.content){
-                                this.list.push( res.data.data.content[k])
-                              }
-                          })
-                          if(res.data.data.content.length > 0){
-                              this.num++
-                          }
-                          this.flagInfinite = true;
-                          done(true)
-                          clearTimeout(timer)
-                          console.log(res)
+                            for (var k in res.data.data.content){
+                              this.list.push( res.data.data.content[k])
+                            }
+                            if(res.data.data.content.length > 0){
+                                this.num++
+                            }
+                            this.flagInfinite = true;
+                            clearTimeout(timer)
+                            done(true)
                         })
                         .catch(err => {
                           clearTimeout(timer)
-                          console.log(err)
+                          done(true)
                         })
                       }
-                }, 1500)
+                }, 500)
               }
             },
            onButtonClick(type,index,id){
@@ -326,19 +244,7 @@
            }
         },
         mounted(){
-          // var qs = require("qs")
-          // this.nowDate = dateFormat(new Date(), 'YYYY-MM-DD HH:mm:ss')
-          // api.get("gatewayUser/"+window.localStorage.getItem("currentUserId")+"/deviceStatus/"+window.localStorage.getItem("gatewayLockId")+"/lockRecord",qs.stringify({
-          //   unlockTime:this.nowDate
-          // }))
-          // .then(res => {
-          //   this.list = res.data.data.content
-          //   console.log(res)
-          // })
-          // .catch(err => {
-          //   console.log(err);
-          // })
-          //
+
         }
     }
 

@@ -28,11 +28,19 @@
         <div id="dialog1" v-show="ShowLog">
             <div class="weui-mask"></div>
             <div class="weui-dialog My-dialog ">
-                <div class="weui-dialog__hd My-title" v-if="remoteSecretSetted" v-show="!setPassWord"><strong class="weui-dialog__title" >远程开锁</strong></div>
-                <div class="weui-dialog__hd My-title" v-if="!remoteSecretSetted"><strong class="weui-dialog__title" >设置密码</strong></div>
+
+                <div class="weui-dialog__hd My-title" v-if="remoteSecretSetted && this.level == 1" v-show="!setPassWord"><strong class="weui-dialog__title" >远程开锁</strong></div>
+
+                <!-- 非管理员 -->
+                 <div class="weui-dialog__hd My-title" v-if="this.level != 1"><strong class="weui-dialog__title" >远程开锁</strong></div>
+
+                <div class="weui-dialog__hd My-title" v-if="!remoteSecretSetted && this.level == 1"><strong class="weui-dialog__title" >设置密码</strong></div>
+
                 <div class="weui-dialog__hd My-title" v-if="setPassWord"><strong class="weui-dialog__title" >修改密码</strong></div>
+
                 <div class="weui-dialog__bd My-dialogBody">
-                    <div v-if="!remoteSecretSetted">
+                    <!-- 管理员没有修改过的情况 -->
+                    <div v-if="!remoteSecretSetted && this.level == 1">
                         <input
                         type="password"
                         name="password"
@@ -52,7 +60,7 @@
                         >
 
                     </div>
-                    <div v-if="remoteSecretSetted">
+                    <div v-if="remoteSecretSetted && this.level == 1" class="My-PassWordBox">
                         <input
                         class="My-PassWord"
                         type="password"
@@ -67,13 +75,40 @@
                         </div>
                        <div
                        class="MyChangePassWordBox"
-                       v-show="MyChangePassWordBox">
+                       v-show="MyChangePassWordBox"
+                       v-if="this.level == 1"
+                       >
                             <div class="MyChangePassWord" @click="ChangePassWord">
                                 修改密码
                             </div>
                         </div>
                     </div>
-                    <div class="MyChangePassWordBox2"  v-show="MyChangePassWordBox2">
+                    <!-- 非管理员 -->
+                    <div v-if="this.level != 1" class="My-PassWordBox2">
+                        <input
+                        class="My-PassWord"
+                        type="password"
+                        name="password"
+                        placeholder="请输入您的远程开锁密码"
+                        v-show="MyChangePassWordBox"
+                        minlength="6"
+                        v-model="remoteOpenLock"
+                        >
+                        <div class="loading" v-if="loading">
+                          <span class="loadingFont"> 拼命开锁中</span><spinner type="ios-small" slot="value" class="loadingIcon"></spinner>
+                        </div>
+                       <div
+                       class="MyChangePassWordBox"
+                       v-show="MyChangePassWordBox"
+                       v-if="this.level == 1"
+                       >
+                            <div class="MyChangePassWord" @click="ChangePassWord">
+                                修改密码
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="MyChangePassWordBox2"  v-show="MyChangePassWordBox2" v-if="this.level == 1">
                         <input
                         class="My-PassWordOld"
                         type="password"
@@ -164,9 +199,9 @@
 
 
                 <!--错误弹出框-->
-          <toast width="35%" v-model="wrong" type="warn">{{ msg }}</toast>
+          <toast width="45%" v-model="wrong" type="warn">{{ msg }}</toast>
           <!--成功弹框-->
-          <toast width="35%" v-model="success" type="success">{{ successFont }}</toast>
+          <toast width="45%" v-model="success" type="success">{{ successFont }}</toast>
     </div>
 
 </template>
@@ -193,6 +228,7 @@
                 name:'',
                 power:'',
                 remoteSecretSetted:'',
+                level:'',
                 powerImg:'',
                 remoteOpenLock:'',
                 firstPassWord:'',
@@ -270,11 +306,14 @@
                         remoteSecret:md5(this.remoteOpenLock,"remoteSecret")
                     }))
                     .then(res => {
+                        // alert(res.data.status)
                         if(res.data.status == 0){
+                            // alert(this.loading)
                             openLock()
                         }
                         else {
                             this.wrong = true;
+                            this.loading = false;
                             this.msg = res.data.msg;
                         }
                     })
@@ -282,21 +321,22 @@
                     var that = this;
                     function openLock(){
                          var timer = null;
-
+                         // alert(that.loading)
                          timer = setInterval(()=>{
 
                             api.get("gatewayUser/"+window.localStorage.getItem("currentUserId")+"/deviceStatus/"+window.localStorage.getItem("gatewayLockId")+"/control")
                             .then( res => {
                                 if(res.data.data.success == true){
                                     that.loading = false;
-                                    clearInterval(timer);
                                     that.success = true;
                                     that.successFont = "开锁成功!"
                                     that.remoteOpenLock = ''
                                     that.ShowLog = false;
                                     that.MyChangePassWordBox = true;
+                                    clearInterval(timer);
                                 }
                                 else {
+                                    that.loading = false;
                                     that.wrong = true;
                                     that.msg = "开锁失败!"
                                     that.remoteOpenLock = ''
@@ -305,6 +345,7 @@
                                 }
                             })
                             .catch(err => {
+
                                 console.log(err)
                                 clearInterval(timer)
                             })
@@ -401,6 +442,19 @@
                     this.verifySetPasBol = false;
                 }
                 if(this.verifySetPasBol){
+                    var qs = require("qs");
+                    api.put("gatewayUser/"+window.localStorage.getItem("currentUserId")+"/deviceStatus/"+window.localStorage.getItem("gatewayLockId"),qs.stringify({
+                        remoteSecret:md5(this.newMorePasWord,"remoteSecret"),
+                        oldRemoteSecret:md5(this.oldPasWord,"remoteSecret")
+                    }))
+                    .then(res => {
+
+                        console.log(res);
+                    })
+                    .catch(err => {
+                        console.log(err);
+                    })
+
                     this.oldPasWord = '';
                     this.newPasWord = '';
                     this.newMorePasWord = '';
@@ -424,6 +478,22 @@
             this.name = this.$route.query.name;
             this.power = this.$route.query.power;
             this.remoteSecretSetted = this.$route.query.remoteSecretSetted;
+            this.level = this.$route.query.level;
+
+            // api.get("gatewayUser/"+window.localStorage.getItem("currentUserId")+"/deviceStatus/"+window.localStorage.getItem("gatewayLockId"))
+            // .then(res =>{
+            //     this.code = res.data.data.code
+            //     this.functionCode = res.data.data.functionCode
+            //     this.mode = res.data.data.mode
+            //     this.name = res.data.data.name
+            //     this.power = res.data.data.power
+            //     this.remoteSecretSetted = res.data.data.remoteSecretSetted
+            //     this.level = res.data.data.level
+            // })
+            // .catch(err => {
+            //     console.log(err)
+            // })
+
             // this.remoteSecretSetted = false;
             // alert(this.remoteSecretSetted)
         }
@@ -656,5 +726,12 @@
     .loadingFont{
         position: relative;
         top:toRem(7)
+    }
+    .My-PassWordBox2 {
+        width:100%;
+        display:flex;
+        justify-content:center;
+        align-items:center;
+        min-height:toRem(400);
     }
 </style>

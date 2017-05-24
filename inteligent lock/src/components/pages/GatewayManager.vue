@@ -15,7 +15,7 @@
     <div v-if="addKey">
       <div class="weui-mask"></div>
       <div class="weui-dialog addKeyBox">
-        <div class="weui-dialog__hd addCancelTitle">手动添加</div>
+        <div class="weui-dialog__hd addCancelTitle">添加智能设备</div>
         <div class="weui-dialog__bd addBd"><input type="text" class="allInput" placeholder="请输入设备编码" v-model="DevCode"><input type="text" class="allInput" placeholder="请输入设备名字" v-model="DeviceName"></div>
         <div class="weui-dialog__ft">
           <a class="weui-dialog__btn weui-dialog__btn_primary" @click="addConfirmFun">确定</a>
@@ -27,7 +27,7 @@
     <div id="dialog1" v-if="scanBox">
       <div class="weui-mask"></div>
       <div class="weui-dialog addKeyBox">
-        <div class="weui-dialog__hd addCancelTitle">手动添加</div>
+        <div class="weui-dialog__hd addCancelTitle">添加智能设备</div>
         <div class="weui-dialog__bd addBd">
           <input type="text" class="allInput" placeholder="请输入设备编码" v-model="myScanCode">
           <input type="text" class="allInput" placeholder="请输入系统秘钥名" v-model="myScanName">
@@ -139,7 +139,7 @@
              .then(data => {
                 this.scanBox = false;
 
-                if(data.data.data.status == 0){
+                if(data.data.status == 0){
                    this.success = true;
                    this.successFont = "添加设备成功!";
                 }

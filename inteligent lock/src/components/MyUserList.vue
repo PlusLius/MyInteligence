@@ -34,9 +34,12 @@
                         </div>
                         <div class="userMsg">
                             <p class="userAdmin">{{item.userName}}</p>
-                            <p>ID: {{item.userCode}} {{item.unlockWayName}}</p>
+                            <p>ID: {{item.userCode}}
+                              <span class="colYel" v-if="item.userType == 2">{{item.unlockWayName}}</span>
+                               <span  v-if="item.userType != 2">{{item.unlockWayName}}</span>
+                            </p>
                         </div>
-                        <div class="pushOpen">
+                        <div class="pushOpen"  v-if="item.userType != 2">
                            <div class="MySendMsg">
                               推送开门信息
                             </div>
@@ -352,6 +355,9 @@
 
   .delUser {
     background-color:#E74C3C;
+  }
+  .colYel {
+    color:orange;
   }
 
  input[type=text] {

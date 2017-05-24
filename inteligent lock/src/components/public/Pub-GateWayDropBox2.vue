@@ -46,13 +46,12 @@
 
 
           <div v-if="!gatewayLockList">
-            请添加锁 {{gatewayLockList}}
+            <!-- 请添加锁 {{gatewayLockList}} -->
           </div>
-          <swipeout>
+          <swipeout  v-for="(item,index) in gatewayLockList">
            <transition-group name="fade">
             <swipeout-item
              @click.native="SaveId(item.id,item.gatewayUserId)"
-              v-for="(item,index) in gatewayLockList"
               @on-close="handleEvents('gatewayLock-on-close')"
               @on-open="handleEvents('gatewayLock-on-open')"
               transition-mode="follow"
@@ -78,7 +77,7 @@
               <div
               slot="content"
               class="GateWayDropChild vux-1px-b"
-              @click="router(item.name,item.code,item.functionCode,item.power,item.mode,item.remoteSecretSetted)"
+              @click="router(item.name,item.code,item.functionCode,item.power,item.mode,item.remoteSecretSetted,level)"
               >
                 <div class="GateWayChildLock icon-lock"></div>
                 <div class="GateWayChildMore">
@@ -184,7 +183,8 @@ export default {
           'gatewayUserId',
           'index',
           'list',
-          'flag'
+          'flag',
+          'level'
    ],
    directives: {
     TransferDom
@@ -301,9 +301,8 @@ export default {
 
        window.localStorage.setItem("gatewayUserId", window.localStorage.getItem("currentUserId"))
       },
-      router (name,code,functionCode,power,mode,remoteSecretSetted){
+      router (name,code,functionCode,power,mode,remoteSecretSetted,level){
 
-        console.log(power)
         this.$router.replace(
           { path: '/MyResentUse',
             query: {
@@ -312,7 +311,8 @@ export default {
                 functionCode: functionCode,
                 power: power,
                 mode: mode,
-                remoteSecretSetted: remoteSecretSetted
+                remoteSecretSetted: remoteSecretSetted,
+                level:level
             }
           }
         );

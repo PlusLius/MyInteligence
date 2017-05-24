@@ -52,7 +52,7 @@
            </ul>
 
           <div v-if="!gatewayLockList">
-            请添加锁 {{gatewayLockList}}
+            <!-- 请添加锁 {{gatewayLockList}} -->
           </div>
           <swipeout v-for="(item,index) in gatewayLockList">
            <transition-group name="fade">
@@ -84,7 +84,7 @@
               <div
               slot="content"
               class="GateWayDropChild vux-1px-b"
-             @click="router(item.name,item.code,item.functionCode,item.power,item.mode,item.remoteSecretSetted)"
+             @click="router(item.name,item.code,item.functionCode,item.power,item.mode,item.remoteSecretSetted,level)"
               >
                 <div class="GateWayChildLock icon-lock"></div>
                 <div class="GateWayChildMore">
@@ -261,7 +261,8 @@ export default {
             'gatewayUserId',
             'index',
             'list',
-            'flag'
+            'flag',
+            'level'
           ],
    data () {
       return {
@@ -377,7 +378,7 @@ export default {
 
        window.localStorage.setItem("gatewayUserId", window.localStorage.getItem("currentUserId"))
       },
-      router (name,code,functionCode,power,mode,remoteSecretSetted){
+      router (name,code,functionCode,power,mode,remoteSecretSetted,level){
         window.localStorage.setItem("currentUserId",this.gatewayUserId);
        window.localStorage.setItem("gatewayUserId", window.localStorage.getItem("currentUserId"));
         this.$router.replace(
@@ -388,7 +389,8 @@ export default {
                 functionCode: functionCode,
                 power: power,
                 mode: mode,
-                remoteSecretSetted: remoteSecretSetted
+                remoteSecretSetted: remoteSecretSetted,
+                level: level
             }
           }
         );

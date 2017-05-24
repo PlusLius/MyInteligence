@@ -131,15 +131,15 @@
             </x-dialog>
           </div>
           <!--错误弹出框-->
-          <toast width="35%" v-model="wrong" type="warn">{{ msg }}</toast>
+          <toast width="45%" v-model="wrong" type="warn">{{ msg }}</toast>
           <!--成功弹框-->
-          <toast width="35%" v-model="success" type="success">{{ successFont }}</toast>
+          <toast width="45%" v-model="success" type="success">{{ successFont }}</toast>
           <!-- 扫描二维码后调弹框 -->
-          <div v-if="ScanQ">
+          <div v-if="scanBox">
             <div class="weui-mask"></div>
             <div class="weui-dialog addKeyBox">
               <div class="weui-dialog__hd addCancelTitle">手动添加</div>
-              <div class="weui-dialog__bd addBd"><input type="text" class="allInput" placeholder="请输入设备编码" v-model="ScanQCode"><input type="text" class="allInput" placeholder="请输入系统秘钥名" v-model="ScanQName">
+              <div class="weui-dialog__bd addBd"><input type="text" class="allInput" placeholder="请输入设备编码" v-model="myScanCode"><input type="text" class="allInput" placeholder="请输入系统秘钥名" v-model="myScanName">
               <div class="weui-dialog__ft">
                 <a class="weui-dialog__btn weui-dialog__btn_primary" @click="addOK">确定</a>
                 <a class="weui-dialog__btn weui-dialog__btn_default" @click="addCancel">取消</a>
@@ -217,9 +217,9 @@
               timer: "",       //默认倒数30秒
               stop :false,   //默认是停止的，但界面加载之后会变成false
               Interval:null,  //setInterval的对象
-              ScanQ:false,
-              ScanQCode:"",
-              ScanQName:"",
+              myScanCode:"",
+              myScanName:"",
+              scanBox:false,
               wrong:false,
               success:false,
               successFont:""
@@ -228,19 +228,23 @@
         methods: {
             //扫一扫添加
             RichScan(){
-              Vue.wechat.scanQRCode({
-                    needResult: 1, // 默认为0，扫描结果由微信处理，1则直接返回扫描结果，
-                    scanType: ["qrCode","barCode"], // 可以指定扫二维码还是一维码，默认二者都有
-                    success: function (res) {
-                       var deviceCode = res.resultStr;
-                       // if(res.deviceCode != ""){
-                          this.ScanQ = true;
-                          this.ScanQCode = deviceCode;
-                          this.deviceCode = "";
-                          this.ScanQName = "";
-                        // }
-                    }
-              })
+               var that = this;
+                Vue.wechat.scanQRCode({
+                      needResult: 1, // 默认为0，扫描结果由微信处理，1则直接返回扫描结果，
+                      scanType: ["qrCode","barCode"], // 可以指定扫二维码还是一维码，默认二者都有
+                      success: function (res) {
+                         // this.scanBox = true;
+                         that.myScanCode = res.resultStr;
+                      }
+                })
+                  // // function demo(res){
+                  //   this.ScanQ = true;
+                  //   this.ScanQCode = res;
+                  //   this.deviceCode = "";
+                  //   this.ScanQName = "";
+                  // }
+
+                  this.scanBox = true;
             },
             //手动添加锁
             addKeyFun(){
@@ -557,12 +561,12 @@
             addOK(){
              var qs = require('qs');
              Api.post("gatewayUser/"+window.localStorage.getItem('currentUserId')+"/deviceStatus",qs.stringify({
-                  deviceCode:this.deviceCode,
-                  deviceName: this.ScanQName
+                  deviceCode:this.myScanCode,
+                  deviceName: this.myScanName
                  }))
                  .then(data => {
-                    this.ScanQ = false;
-                    if(data.data.data.status == 0){
+                    this.scanBox = false;
+                    if(data.data.status == 0){
                        this.success = true;
                        this.successFont = "添加设备成功!";
                     }
@@ -576,7 +580,7 @@
                  })
             },
             addCancel(){
-              this.ScanQ = false;
+              this.scanBox = false;
               this.deviceCode = "";
               this.deviceName = "";
             }

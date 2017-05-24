@@ -1,15 +1,19 @@
 import axios from 'axios'
 
+// var root = 'http://100.10.0.121/smarthome-devchat/api/v1.1.0/'
+var root = 'https://devchat.leocheery.net/smarthome-devchat/api/v1.1.0/'
 
 class API {
 
     get (url,params) {
         return axios({
             method: 'get',
-            url: 'https://devchat.leocheery.net/smarthome-devchat/api/v1.1.0/' + url,
+            url: root + url,
+            // url: 'https://devchat.leocheery.net/smarthome-devchat/api/v1.1.0/'+ url,
             params: params,
             headers: {
               'Token-JWT': sessionStorage.getItem("token"),
+              // 'Token-JWT': "jwteyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJqd3QiLCJpYXQiOjE0OTU2MzA5NzYsInN1YiI6IntcIm9wZW5JZFwiOlwib1czUDF3ME83LWoxQ18zR2s5Y1lNV1NZX1lyOFwiLFwiYXBwSWRcIjpcInd4MDgzYjQ5NDMzMDIxMjA2NFwifSIsImV4cCI6MTQ5NTY3NDE3Nn0.fy0pggBBQ1Ffj0z2sTT0vVyTmqFgKG8D-Tek68AebcU",
               'Content-Type':'application/x-www-form-urlencoded;charset=utf-8'
             }
         });
@@ -20,11 +24,13 @@ class API {
     post (url,data) {
         return  axios({
             method: 'post',
-            url:  'https://devchat.leocheery.net/smarthome-devchat/api/v1.1.0/' + url,
+            // url:  'http://100.10.0.121/api/v1.1.0/' + url,
+            url: root + url,
             // url: 'http://n16n237643.iok.la/' + url,
             data: data,
             headers: {
               'Token-JWT': sessionStorage.getItem("token"),
+              // 'Token-JWT': "jwteyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJqd3QiLCJpYXQiOjE0OTU2MzA5NzYsInN1YiI6IntcIm9wZW5JZFwiOlwib1czUDF3ME83LWoxQ18zR2s5Y1lNV1NZX1lyOFwiLFwiYXBwSWRcIjpcInd4MDgzYjQ5NDMzMDIxMjA2NFwifSIsImV4cCI6MTQ5NTY3NDE3Nn0.fy0pggBBQ1Ffj0z2sTT0vVyTmqFgKG8D-Tek68AebcU",
               'Content-type':'application/x-www-form-urlencoded;charset=utf-8'
             }
         });
@@ -33,10 +39,12 @@ class API {
     put (url,params) {
         return axios({
             method: 'put',
-            url: 'https://devchat.leocheery.net/smarthome-devchat/api/v1.1.0/' + url,
+            // url: 'http://100.10.0.121/api/v1.1.0/' + url,
+            url: root + url,
             data: params,
             headers: {
               'Token-JWT': sessionStorage.getItem("token"),
+              // 'Token-JWT': "jwteyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJqd3QiLCJpYXQiOjE0OTU2MzA5NzYsInN1YiI6IntcIm9wZW5JZFwiOlwib1czUDF3ME83LWoxQ18zR2s5Y1lNV1NZX1lyOFwiLFwiYXBwSWRcIjpcInd4MDgzYjQ5NDMzMDIxMjA2NFwifSIsImV4cCI6MTQ5NTY3NDE3Nn0.fy0pggBBQ1Ffj0z2sTT0vVyTmqFgKG8D-Tek68AebcU",
               'Content-Type':'application/x-www-form-urlencoded;charset=utf-8'
             }
         })
@@ -45,9 +53,11 @@ class API {
     deletes (url,params) {
         return axios({
             method: 'delete',
-            url: 'https://devchat.leocheery.net/smarthome-devchat/api/v1.1.0/' + url,
+            // url: 'http://100.10.0.121/api/v1.1.0/' + url,
+            url: root + url,
             headers: {
               'Token-JWT': sessionStorage.getItem("token"),
+              // 'Token-JWT': "jwteyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJqd3QiLCJpYXQiOjE0OTU2MzA5NzYsInN1YiI6IntcIm9wZW5JZFwiOlwib1czUDF3ME83LWoxQ18zR2s5Y1lNV1NZX1lyOFwiLFwiYXBwSWRcIjpcInd4MDgzYjQ5NDMzMDIxMjA2NFwifSIsImV4cCI6MTQ5NTY3NDE3Nn0.fy0pggBBQ1Ffj0z2sTT0vVyTmqFgKG8D-Tek68AebcU",
               'Content-Type':'application/x-www-form-urlencoded;charset=utf-8'
             }
         })
@@ -56,7 +66,8 @@ class API {
     postAPI (url,data) {
         return  axios({
             method: 'post',
-            url:  'https://devchat.leocheery.net/smarthome-devchat/' + url,
+            // url:  'http://100.10.0.121/api/v1.1.0/' + url,
+            url: 'https://devchat.leocheery.net/smarthome-devchat/' + url,
             // url: 'http://n16n237643.iok.la/' + url,
             data: data,
             headers: {
@@ -68,10 +79,12 @@ class API {
     del (url,data) {
       return  axios({
         method: 'delete',
-        url: 'https://devchat.leocheery.net/smarthome-devchat/api/v1.1.0/' + url,
+        // url: 'http://100.10.0.121/api/v1.1.0/' + url,
+        url: root + url,
         data: data,
         headers: {
           'Token-JWT': sessionStorage.getItem("token"),
+           // 'Token-JWT': "jwteyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJqd3QiLCJpYXQiOjE0OTU2MzA5NzYsInN1YiI6IntcIm9wZW5JZFwiOlwib1czUDF3ME83LWoxQ18zR2s5Y1lNV1NZX1lyOFwiLFwiYXBwSWRcIjpcInd4MDgzYjQ5NDMzMDIxMjA2NFwifSIsImV4cCI6MTQ5NTY3NDE3Nn0.fy0pggBBQ1Ffj0z2sTT0vVyTmqFgKG8D-Tek68AebcU",
           'Content-Type':'application/x-www-form-urlencoded;charset=utf-8'
         }
     });

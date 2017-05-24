@@ -4,8 +4,11 @@
       <scroller>
         <!-- content goes here -->
 
-            <div v-if="list.length === 0">
-                没有网关,请添加网关
+            <div v-if="list.length === 0" class="NoGateWayBox">
+                <div class="NoGateWayImg">
+                  <img src="../../assets/qietu/tip.png">
+                </div>
+                <p class="NoGateWayFont">暂无设备请先添加</p>
             </div>
             <div v-for="(item,index) in list">
                    <!--  <div v-for= "item in item.Devlist">
@@ -22,6 +25,7 @@
                   :index = "index"
                   :list = "list"
                   :flag = "item.flag"
+                  :level = "item.level"
                 ></GateWayDropBox>
 
                 <GateWayDropBox2
@@ -34,6 +38,7 @@
                   :index = "index"
                   :list = "list"
                   :flag = "item.flag"
+                  :level = "item.level"
                 >
                 </GateWayDropBox2>
 
@@ -315,6 +320,25 @@ export default {
   .GateWayChildLockID {
       @include font-dpr(12px);
       color:#A5A5A5;
+  }
+  .NoGateWayBox {
+    width: 100%;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+  }
+  .NoGateWayImg {
+    min-height:toRem(320);
+    text-align: center;
+  }
+  .NoGateWayImg img {
+    /* align-items:; */
+    width: toRem(201);
+    height: toRem(201);
+  }
+  .NoGateWayFont {
+   @include font-dpr(15px);
+   color:#ccc;
   }
 
 .fade-enter-active, .fade-leave-active {
