@@ -75,11 +75,11 @@ Vue.use(WechatPlugin)
           new Vue({
             router,
             created (){
-              var order = sessionStorage.getItem("order");
+              // var order = sessionStorage.getItem("order");
               // if(order == "V201_SMART" && window.localStorage.getItem("gatewayLockId")){
               //     router.replace({path:"/MyResentUse/MyHistory"})
               // } else {
-                router.replace({path: order})
+                // router.replace({path: order})
               // }
 
             },
@@ -95,7 +95,7 @@ const routes = [
       path:'/',
       meta: {title: '我的智能'},
       // component: MyDynamicKey
-      component: MyInteligence
+      component: MyInteligence,
       // component: cs
     },
     {
@@ -132,7 +132,15 @@ const routes = [
     },
     {
       path: '/V201_SMART',
-      component: MyInteligence
+      component: MyInteligence,
+      beforeEnter: (to, from, next) => {
+        if(window.localStorage.getItem("currentUserId")){
+           next("/MyResentUse/MyHistory");
+        }
+        else{
+          next("/MyInteligence");
+        }
+      }
     },
     {
       path: '/V201_SYSTEMSECRET',
@@ -160,9 +168,9 @@ Vue.config.productionTip = false
 // new Vue({
 //   router,
 //   created: function(){
-//     if(window.localStorage.getItem("gatewayLockId")) {
-//       router.replace({path:"/MyResentUse/MyHistory"})
-//      }
+//     // if(window.localStorage.getItem("gatewayLockId")) {
+//     //   router.replace({path:"/MyResentUse/MyHistory"})
+//     //  }
 //      router.replace({path: window.localStorage.getItem("order")})
 //   },
 //   render: h => h(App)

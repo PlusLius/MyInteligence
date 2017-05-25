@@ -3,6 +3,9 @@ import axios from 'axios'
 // var root = 'http://100.10.0.121/smarthome-devchat/api/v1.1.0/'
 var root = 'https://devchat.leocheery.net/smarthome-devchat/api/v1.1.0/'
 
+// var token = "jwteyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJqd3QiLCJpYXQiOjE0OTU2NzkwNzAsInN1YiI6IntcIm9wZW5JZFwiOlwib1czUDF3ME83LWoxQ18zR2s5Y1lNV1NZX1lyOFwiLFwiYXBwSWRcIjpcInd4MDgzYjQ5NDMzMDIxMjA2NFwifSIsImV4cCI6MTQ5NTcyMjI3MH0.TOpEnPVnWUxTyJ1NbjXb46FHoqgrZIVq3U0R7cHZsew"
+
+
 class API {
 
     get (url,params) {
@@ -12,13 +15,11 @@ class API {
             // url: 'https://devchat.leocheery.net/smarthome-devchat/api/v1.1.0/'+ url,
             params: params,
             headers: {
-              'Token-JWT': sessionStorage.getItem("token"),
-              // 'Token-JWT': "jwteyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJqd3QiLCJpYXQiOjE0OTU2MzA5NzYsInN1YiI6IntcIm9wZW5JZFwiOlwib1czUDF3ME83LWoxQ18zR2s5Y1lNV1NZX1lyOFwiLFwiYXBwSWRcIjpcInd4MDgzYjQ5NDMzMDIxMjA2NFwifSIsImV4cCI6MTQ5NTY3NDE3Nn0.fy0pggBBQ1Ffj0z2sTT0vVyTmqFgKG8D-Tek68AebcU",
+              'Token-JWT':sessionStorage.getItem("token"),
+              // 'Token-JWT':token,
               'Content-Type':'application/x-www-form-urlencoded;charset=utf-8'
             }
         });
-
-        // console.log(window.localStorage.getItem('token'))
     };
 
     post (url,data) {
@@ -29,8 +30,8 @@ class API {
             // url: 'http://n16n237643.iok.la/' + url,
             data: data,
             headers: {
-              'Token-JWT': sessionStorage.getItem("token"),
-              // 'Token-JWT': "jwteyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJqd3QiLCJpYXQiOjE0OTU2MzA5NzYsInN1YiI6IntcIm9wZW5JZFwiOlwib1czUDF3ME83LWoxQ18zR2s5Y1lNV1NZX1lyOFwiLFwiYXBwSWRcIjpcInd4MDgzYjQ5NDMzMDIxMjA2NFwifSIsImV4cCI6MTQ5NTY3NDE3Nn0.fy0pggBBQ1Ffj0z2sTT0vVyTmqFgKG8D-Tek68AebcU",
+              'Token-JWT':sessionStorage.getItem("token"),
+              // 'Token-JWT':token,
               'Content-type':'application/x-www-form-urlencoded;charset=utf-8'
             }
         });
@@ -43,8 +44,8 @@ class API {
             url: root + url,
             data: params,
             headers: {
-              'Token-JWT': sessionStorage.getItem("token"),
-              // 'Token-JWT': "jwteyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJqd3QiLCJpYXQiOjE0OTU2MzA5NzYsInN1YiI6IntcIm9wZW5JZFwiOlwib1czUDF3ME83LWoxQ18zR2s5Y1lNV1NZX1lyOFwiLFwiYXBwSWRcIjpcInd4MDgzYjQ5NDMzMDIxMjA2NFwifSIsImV4cCI6MTQ5NTY3NDE3Nn0.fy0pggBBQ1Ffj0z2sTT0vVyTmqFgKG8D-Tek68AebcU",
+              'Token-JWT':sessionStorage.getItem("token"),
+              // 'Token-JWT':token,
               'Content-Type':'application/x-www-form-urlencoded;charset=utf-8'
             }
         })
@@ -56,8 +57,8 @@ class API {
             // url: 'http://100.10.0.121/api/v1.1.0/' + url,
             url: root + url,
             headers: {
-              'Token-JWT': sessionStorage.getItem("token"),
-              // 'Token-JWT': "jwteyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJqd3QiLCJpYXQiOjE0OTU2MzA5NzYsInN1YiI6IntcIm9wZW5JZFwiOlwib1czUDF3ME83LWoxQ18zR2s5Y1lNV1NZX1lyOFwiLFwiYXBwSWRcIjpcInd4MDgzYjQ5NDMzMDIxMjA2NFwifSIsImV4cCI6MTQ5NTY3NDE3Nn0.fy0pggBBQ1Ffj0z2sTT0vVyTmqFgKG8D-Tek68AebcU",
+              'Token-JWT':sessionStorage.getItem("token"),
+              // 'Token-JWT':token,
               'Content-Type':'application/x-www-form-urlencoded;charset=utf-8'
             }
         })
@@ -83,8 +84,8 @@ class API {
         url: root + url,
         data: data,
         headers: {
-          'Token-JWT': sessionStorage.getItem("token"),
-           // 'Token-JWT': "jwteyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJqd3QiLCJpYXQiOjE0OTU2MzA5NzYsInN1YiI6IntcIm9wZW5JZFwiOlwib1czUDF3ME83LWoxQ18zR2s5Y1lNV1NZX1lyOFwiLFwiYXBwSWRcIjpcInd4MDgzYjQ5NDMzMDIxMjA2NFwifSIsImV4cCI6MTQ5NTY3NDE3Nn0.fy0pggBBQ1Ffj0z2sTT0vVyTmqFgKG8D-Tek68AebcU",
+          'Token-JWT':sessionStorage.getItem("token"),
+          // 'Token-JWT':token,
           'Content-Type':'application/x-www-form-urlencoded;charset=utf-8'
         }
     });

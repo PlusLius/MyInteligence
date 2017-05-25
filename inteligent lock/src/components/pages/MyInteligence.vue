@@ -3,15 +3,16 @@
 
       <scroller>
         <!-- content goes here -->
-
-            <div v-if="list.length === 0" class="NoGateWayBox">
-                <div class="NoGateWayImg">
-                  <img src="../../assets/qietu/tip.png">
-                </div>
-                <p class="NoGateWayFont">暂无设备请先添加</p>
+            <div v-if="list.length === 0" class="NoGateWayAllBox">
+              <div class="NoGateWayBox">
+                  <div class="NoGateWayImg">
+                    <img src="../../assets/qietu/hint.png">
+                    <p class="NoGateWayFont">暂无设备请先添加</p>
+                  </div>
+              </div>
             </div>
             <div v-for="(item,index) in list">
-                   <!--  <div v-for= "item in item.Devlist">
+                    <!-- <div v-for= "item in item.Devlist">
 
                   {{item.code}}
                   </div> -->
@@ -120,7 +121,6 @@ export default {
             //没有网关ID的时候,默认将第一条数据的网关ID
             // window.localStorage.setItem('gatewayUserId',gatewayUserlist[0].id);
             window.localStorage.setItem('gatewayUserId',this.list[0].id);
-
             //没有锁ID的时候,去请求锁ID
             //window.localStorage.getItem('gatewayUserId')是当前Id
             api.get("gatewayUser/" + this.list[0].id + "/deviceStatus")
@@ -321,6 +321,13 @@ export default {
       @include font-dpr(12px);
       color:#A5A5A5;
   }
+  .NoGateWayAllBox {
+    width: 100%;
+    height: toRem(1557);
+    display:flex;
+    justify-content:center;
+    align-content:center;
+  }
   .NoGateWayBox {
     width: 100%;
     display:flex;
@@ -332,11 +339,12 @@ export default {
     text-align: center;
   }
   .NoGateWayImg img {
-    /* align-items:; */
+    align-items:center;
     width: toRem(201);
     height: toRem(201);
   }
   .NoGateWayFont {
+    margin-top: toRem(30);
    @include font-dpr(15px);
    color:#ccc;
   }

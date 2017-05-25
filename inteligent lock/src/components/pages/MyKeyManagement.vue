@@ -3,6 +3,14 @@
   <div>
     <div class="vux-1px-t">
       <!-- 上拉加载下拉滚动组件内容填充 -->
+      <div v-if="Lis.length == 0" class="NoGateWayAllBox">
+          <div class="NoGateWayBox">
+              <div class="NoGateWayImg">
+                <img src="../../assets/qietu/hint.png">
+                <p class="NoGateWayFont">暂无系统密钥分享</p>
+              </div>
+          </div>
+      </div>
       <div>
         <!--侧滑组件-->
         <swipeout>
@@ -377,6 +385,33 @@
   .endTime{
     margin-top: toRem(27);
     line-height:toRem(36);
+  }
+   .NoGateWayAllBox {
+    width: 100%;
+    height: toRem(1557);
+    display:flex;
+    justify-content:center;
+    align-content:center;
+  }
+  .NoGateWayBox {
+    width: 100%;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+  }
+  .NoGateWayImg {
+    min-height:toRem(320);
+    text-align: center;
+  }
+  .NoGateWayImg img {
+    align-items:center;
+    width: toRem(201);
+    height: toRem(201);
+  }
+  .NoGateWayFont {
+    margin-top: toRem(30);
+   @include font-dpr(15px);
+   color:#ccc;
   }
 </style>
 

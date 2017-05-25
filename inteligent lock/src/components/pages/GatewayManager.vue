@@ -30,7 +30,7 @@
         <div class="weui-dialog__hd addCancelTitle">添加智能设备</div>
         <div class="weui-dialog__bd addBd">
           <input type="text" class="allInput" placeholder="请输入设备编码" v-model="myScanCode">
-          <input type="text" class="allInput" placeholder="请输入系统秘钥名" v-model="myScanName">
+          <input type="text" class="allInput" placeholder="请输入设备名称" v-model="myScanName">
         <div class="weui-dialog__ft">
           <a class="weui-dialog__btn weui-dialog__btn_primary" @click="addOK">确定</a>
           <a class="weui-dialog__btn weui-dialog__btn_default" @click="addCancel">取消</a>
@@ -121,12 +121,6 @@
                    that.myScanCode = res.resultStr;
                 }
           })
-          // // function demo(res){
-          //   this.ScanQ = true;
-          //   this.ScanQCode = res;
-          //   this.deviceCode = "";
-          //   this.ScanQName = "";
-          // }
 
           this.scanBox = true;
       },

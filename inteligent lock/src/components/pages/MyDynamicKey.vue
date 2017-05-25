@@ -7,9 +7,6 @@
             <div class="RichScan">扫一扫添加</div>
             <div class="DeviceFont" @click="addKeyFun">手动添加</div>
         </div>
-        <div class="vux-1px-t">
-        <!-- 上拉加载下拉滚动组件内容填充 -->
-        <div>
         <!--侧滑组件-->
         <swipeout>
           <!-- 侧滑组件容器 -->
@@ -57,7 +54,7 @@
             </div>
           </swipeout-item>
         </swipeout>
-        </div>
+        <!-- </div> -->
           <!--手动输入id弹出框-->
           <div id="dialog" v-if="addKey">
             <div class="weui-mask"></div>
@@ -138,8 +135,11 @@
           <div v-if="scanBox">
             <div class="weui-mask"></div>
             <div class="weui-dialog addKeyBox">
-              <div class="weui-dialog__hd addCancelTitle">手动添加</div>
-              <div class="weui-dialog__bd addBd"><input type="text" class="allInput" placeholder="请输入设备编码" v-model="myScanCode"><input type="text" class="allInput" placeholder="请输入系统秘钥名" v-model="myScanName">
+              <div class="weui-dialog__hd addCancelTitle">添加系统密钥</div>
+              <div class="weui-dialog__bd addBd">
+                <input type="text" class="allInput" placeholder="请输入设备编码" v-model="myScanCode">
+                <input type="text" class="allInput" placeholder="请输入系统秘钥名" v-model="myScanName">
+                <input type="text" class="allInput" placeholder="请输入系统密钥" v-model="myScanPas">
               <div class="weui-dialog__ft">
                 <a class="weui-dialog__btn weui-dialog__btn_primary" @click="addOK">确定</a>
                 <a class="weui-dialog__btn weui-dialog__btn_default" @click="addCancel">取消</a>
@@ -147,8 +147,16 @@
             </div>
           </div>
           </div>
+
+          <!--没有网关的提示-->
+        <div v-if="Lis == ''" class="hint">
+          <img class="hintImg" src="../../assets/qietu/hint.png" alt="">
+          <p class="hintFont">暂无智能设备请先添加</p>
+        </div>
+
       </div>
     </div>
+
 </template>
 <script>
     import MyDynamicKey from "../public/Pub-MyDynamicKeyLose.vue"
@@ -222,7 +230,8 @@
               scanBox:false,
               wrong:false,
               success:false,
-              successFont:""
+              successFont:"",
+              myScanPas:""
             }
         },
         methods: {
@@ -233,17 +242,11 @@
                       needResult: 1, // 默认为0，扫描结果由微信处理，1则直接返回扫描结果，
                       scanType: ["qrCode","barCode"], // 可以指定扫二维码还是一维码，默认二者都有
                       success: function (res) {
-                         // this.scanBox = true;
+                //          // this.scanBox = true;
                          that.myScanCode = res.resultStr;
+                         // that.myScanCode = 'A00609290801146D';
                       }
                 })
-                  // // function demo(res){
-                  //   this.ScanQ = true;
-                  //   this.ScanQCode = res;
-                  //   this.deviceCode = "";
-                  //   this.ScanQName = "";
-                  // }
-
                   this.scanBox = true;
             },
             //手动添加锁
@@ -266,7 +269,7 @@
               }else{
                 this.addKey = false;
                 Api.post("systemSecret",qs.stringify({
-                  devCode:this.DevCode,
+                  deviceCode:this.DevCode,
                   name:this.LockName,
                   systemSecret:this.LockPassword
                 }))
@@ -277,6 +280,7 @@
                         //成功后重新获取列表
                       Api.get("systemSecret")
                         .then(data =>{
+
                           this.Lis = data.data.data.list;
 
                         })
@@ -560,23 +564,36 @@
               },
             addOK(){
              var qs = require('qs');
-             Api.post("gatewayUser/"+window.localStorage.getItem('currentUserId')+"/deviceStatus",qs.stringify({
+             Api.post("systemSecret",qs.stringify({
                   deviceCode:this.myScanCode,
-                  deviceName: this.myScanName
+                  name: this.myScanName,
+                  systemSecret:this.myScanPas
+                    // deviceCode:"A00609290801146D",
+                    // name:"dsfadf",
+                    // systemSecret:"12345678"
                  }))
                  .then(data => {
                     this.scanBox = false;
                     if(data.data.status == 0){
                        this.success = true;
-                       this.successFont = "添加设备成功!";
+                       this.successFont = "添加系统密钥成功!";
+                        //成功后重新获取列表
+                        Api.get("systemSecret")
+                          .then(data =>{
+                            console.log(data)
+                            this.Lis = data.data.data.list;
+                          })
+                          .catch(function (error) {
+                            console.log(error)
+                          });
                     }
                     else {
                        this.wrong = true;
-                       this.msg = "添加设备失败!";
+                       this.msg = data.data.msg;
                     }
                  })
-                 .catch(data => {
-                   console.log(data)
+                 .catch(err => {
+                   console.log(err)
                  })
             },
             addCancel(){
@@ -888,6 +905,19 @@
     .vux-swipeout-button{
     @include font-dpr(16px);
     }
+    .hint {
+    text-align: center;
+    margin-top: toRem(383);
+  }
+  .hintImg{
+    width:toRem(200);
+    height:toRem(200);
+    margin-bottom: toRem(60);
+  }
+  .hintFont{
+    color: #cccccc;
+  @include font-dpr(16px);
+  }
 </style>
 
 

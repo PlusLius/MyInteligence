@@ -15,12 +15,12 @@
                 <div class="MyDynamicKey">
                     {{name || "模拟数据"}}: {{code || "没有设备请添加设备"}}
                 </div>
-                <div class="RemoteUnlock" @click="RemoteUnlock" v-if="name">
+                <div class="RemoteUnlock" @click="RemoteUnlock">
                     {{"远程开锁"}}
                 </div>
-                <div class="RemoteUnlock" v-else>
+               <!--  <div class="RemoteUnlock" v-else>
                     {{"远程开锁"}}
-                </div>
+                </div> -->
             </div>
         </div>
 
@@ -56,7 +56,6 @@
                         minlength="6"
                         class="My-PassWord"
                         v-model="morePassWord"
-                        @blur="verifyPassWord"
                         >
 
                     </div>
@@ -97,7 +96,7 @@
                         <div class="loading" v-if="loading">
                           <span class="loadingFont"> 拼命开锁中</span><spinner type="ios-small" slot="value" class="loadingIcon"></spinner>
                         </div>
-                       <div
+                     <!--   <div
                        class="MyChangePassWordBox"
                        v-show="MyChangePassWordBox"
                        v-if="this.level == 1"
@@ -105,7 +104,7 @@
                             <div class="MyChangePassWord" @click="ChangePassWord">
                                 修改密码
                             </div>
-                        </div>
+                        </div> -->
                     </div>
 
                     <div class="MyChangePassWordBox2"  v-show="MyChangePassWordBox2" v-if="this.level == 1">
@@ -135,7 +134,7 @@
                     </div>
                 </div>
 
-                <div class="weui-dialog__ft My-dialogBottom" v-if="remoteSecretSetted" v-show="!setPassWord">
+                <div class="weui-dialog__ft My-dialogBottom" v-if="remoteSecretSetted && this.level == 1" v-show="!setPassWord">
                     <a href="javascript:;"
                     class="weui-dialog__btn weui-dialog__btn_default MyOk"
                     @click="DialogOK"
@@ -145,7 +144,18 @@
                     @click="DialogCancel"
                     >取消</a>
                 </div>
-                <div class="weui-dialog__ft My-dialogBottom" v-if="!remoteSecretSetted">
+                <!-- 非管理员 -->
+                <div class="weui-dialog__ft My-dialogBottom" v-if="this.level != 1">
+                    <a href="javascript:;"
+                    class="weui-dialog__btn weui-dialog__btn_default MyOk"
+                    @click="DialogOK"
+                    >开锁</a>
+                    <a href="javascript:;"
+                    class="weui-dialog__btn weui-dialog__btn_primary MyCancel "
+                    @click="DialogCancel"
+                    >取消</a>
+                </div>
+                <div class="weui-dialog__ft My-dialogBottom" v-if="!remoteSecretSetted  && this.level == 1 ">
                     <a href="javascript:;"
                     class="weui-dialog__btn weui-dialog__btn_default MyOk"
                     @click="setRemotePasOk"
@@ -155,7 +165,7 @@
                     @click="setRemotePasCancel"
                     >取消</a>
                 </div>
-                <div class="weui-dialog__ft My-dialogBottom" v-if="setPassWord">
+                <div class="weui-dialog__ft My-dialogBottom" v-if="setPassWord  && this.level == 1">
                     <a href="javascript:;"
                     class="weui-dialog__btn weui-dialog__btn_default MyOk"
                     @click="setPasOk"
@@ -165,6 +175,7 @@
                     @click="setPasCancel"
                     >取消</a>
                 </div>
+
             </div>
         </div>
 
@@ -297,6 +308,11 @@
             },
             DialogOK () {
 
+                if(this.remoteOpenLock == ""){
+                    this.wrong = true;
+                    this.msg = "请输入密码!"
+                }
+
                 var qs = require("qs");
 
                 if(this.remoteOpenLock != ""){
@@ -315,6 +331,7 @@
                             this.wrong = true;
                             this.loading = false;
                             this.msg = res.data.msg;
+                            this.remoteOpenLock = ""
                         }
                     })
 
@@ -403,43 +420,84 @@
                 this.setPassWord = true;
             },
             setRemotePasOk(){
-                var qs = require('qs');
-                api.put("gatewayUser/"+window.localStorage.getItem("currentUserId")+"/deviceStatus/"+window.localStorage.getItem("gatewayLockId"),qs.stringify({
-                    remoteSecret:md5(this.morePassWord,"remoteSecret")
-                }))
-                .then(res => {
-                    console.log(res)
-                })
-                .catch(err => {
-                    console.log(err)
-                })
-                if(this.verifyBol){
-                    this.ShowLog = false;
-                    this.MyChangePassWordBox = true;
-                    this.remoteOpenLock = '';
-                    this.remoteSecretSetted = true;
+                this.verifyPassWord()
+                if(this.verifyBol == true){
+                    var qs = require('qs');
+                    api.put("gatewayUser/"+window.localStorage.getItem("currentUserId")+"/deviceStatus/"+window.localStorage.getItem("gatewayLockId"),qs.stringify({
+                        remoteSecret:md5(this.morePassWord,"remoteSecret")
+                    }))
+                    .then(res => {
+                        if(res.data.status == 0){
+                            this.success = true;
+                            this.successFont = "设置密码成功!"
+                        }
+                        else {
+                            this.wrong = true;
+                            this.msg = res.data.msg
+                        }
+                    })
+                    .catch(err => {
+                        console.log(err)
+                    })
+                    if(this.verifyBol){
+                        this.ShowLog = false;
+                        this.MyChangePassWordBox = true;
+                        this.remoteOpenLock = '';
+                        this.remoteSecretSetted = true;
+                    }
                 }
+
             },
             setRemotePasCancel(){
                 this.ShowLog = false;
                 this.MyChangePassWordBox = true;
             },
             verifyPassWord(){
-                if(this.firstPassWord == this.morePassWord){
-                    this.verifyBol = true;
+                if(this.firstPassWord.length == '' || this.morePassWord.length == ''){
+                    this.wrong = true;
+                    this.msg = "密码不能为空!";
                 }
                 else {
-                    alert("2次密码输入不一致,请重新输入")
-                    this.verifyBol = false;
+                    if(this.firstPassWord != this.morePassWord){
+                        this.wrong = true;
+                        this.msg = "密码不一致,请重新输入";
+                    }
+                    else if(this.firstPassWord.length < 6 && this.morePassWord.length < 6){
+                        this.wrong = true;
+                        this.msg = "请输入六位以上密码!";
+                    }
+                    else if(this.firstPassWord == this.morePassWord && this.firstPassWord.length >= 6 && this.morePassWord.length >= 6){
+                        this.verifyBol = true;
+                    }
                 }
             },
             setPasOk(){
-                if(this.newPasWord == this.newMorePasWord){
-                    this.verifySetPasBol = true;
+
+                if(this.newPasWord == "" || this.newMorePasWord == "" || this.oldPasWord == ""){
+                    this.wrong = true;
+                    this.msg = "密码不能为空!";
                 }
                 else {
-                    alert("2次密码输入不一致,请重新输入")
-                    this.verifySetPasBol = false;
+                    if(this.newPasWord != this.newMorePasWord){
+                        this.wrong = true;
+                        this.msg = "密码不一致,请重新输入";
+                        this.verifySetPasBol = false;
+                        this.oldPasWord = '';
+                        this.newPasWord = '';
+                        this.newMorePasWord = '';
+                    }
+                    else {
+                        if (this.newPasWord.length < 6 || this.newMorePasWord.length < 6){
+                            this.wrong = true;
+                            this.msg = "请输入六位以上密码!";
+                            this.verifySetPasBol = false;
+                        }
+                        else{
+                            if(this.newPasWord == this.newMorePasWord && this.newPasWord.length >= 6 && this.newMorePasWord.length >= 6 ){
+                            this.verifySetPasBol = true;
+                            }
+                        }
+                    }
                 }
                 if(this.verifySetPasBol){
                     var qs = require("qs");
@@ -449,7 +507,15 @@
                     }))
                     .then(res => {
 
-                        console.log(res);
+                        if(res.data.status == 0){
+                            this.success = true;
+                            this.successFont = "修改密码成功!"
+                        }
+                        else {
+                            this.wrong = true;
+                            this.msg = res.data.msg
+                        }
+
                     })
                     .catch(err => {
                         console.log(err);
@@ -472,27 +538,27 @@
         },
         mounted(){
             this.MyHistory();
-            this.code = this.$route.query.code;
-            this.functionCode = this.$route.query.functionCode;
-            this.mode = this.$route.query.mode;
-            this.name = this.$route.query.name;
-            this.power = this.$route.query.power;
-            this.remoteSecretSetted = this.$route.query.remoteSecretSetted;
-            this.level = this.$route.query.level;
+            // this.code = this.$route.query.code;
+            // this.functionCode = this.$route.query.functionCode;
+            // this.mode = this.$route.query.mode;
+            // this.name = this.$route.query.name;
+            // this.power = this.$route.query.power;
+            // this.remoteSecretSetted = this.$route.query.remoteSecretSetted;
+            // this.level = this.$route.query.level;
 
-            // api.get("gatewayUser/"+window.localStorage.getItem("currentUserId")+"/deviceStatus/"+window.localStorage.getItem("gatewayLockId"))
-            // .then(res =>{
-            //     this.code = res.data.data.code
-            //     this.functionCode = res.data.data.functionCode
-            //     this.mode = res.data.data.mode
-            //     this.name = res.data.data.name
-            //     this.power = res.data.data.power
-            //     this.remoteSecretSetted = res.data.data.remoteSecretSetted
-            //     this.level = res.data.data.level
-            // })
-            // .catch(err => {
-            //     console.log(err)
-            // })
+            api.get("gatewayUser/"+window.localStorage.getItem("currentUserId")+"/deviceStatus/"+window.localStorage.getItem("gatewayLockId"))
+            .then(res =>{
+                this.code = res.data.data.code
+                this.functionCode = res.data.data.functionCode
+                this.mode = res.data.data.mode
+                this.name = res.data.data.name
+                this.power = res.data.data.power
+                this.remoteSecretSetted = res.data.data.remoteSecretSetted
+                this.level = res.data.data.gatewayUserLevel
+            })
+            .catch(err => {
+                console.log(err)
+            })
 
             // this.remoteSecretSetted = false;
             // alert(this.remoteSecretSetted)
@@ -721,7 +787,9 @@
         min-height:toRem(1056)
     }
     .loading {
-
+        // display:flex;
+        //  flex-wrap:nowrap;
+        // display:block
     }
     .loadingFont{
         position: relative;
@@ -730,6 +798,7 @@
     .My-PassWordBox2 {
         width:100%;
         display:flex;
+        flex-wrap:wrap;
         justify-content:center;
         align-items:center;
         min-height:toRem(400);

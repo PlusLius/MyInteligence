@@ -303,6 +303,8 @@ export default {
       },
       router (name,code,functionCode,power,mode,remoteSecretSetted,level){
 
+         window.localStorage.setItem("currentUserId",this.gatewayUserId);
+       window.localStorage.setItem("gatewayUserId", window.localStorage.getItem("currentUserId"));
         this.$router.replace(
           { path: '/MyResentUse',
             query: {
