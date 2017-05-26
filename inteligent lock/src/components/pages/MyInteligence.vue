@@ -1,7 +1,9 @@
 <template>
   <div>
-
-      <scroller>
+       <div class="loading" v-if="loading">
+      Loading...
+    </div>
+      <scroller v-if="list.length>0">
         <!-- content goes here -->
             <div v-if="list.length === 0" class="NoGateWayAllBox">
               <div class="NoGateWayBox">
@@ -86,7 +88,8 @@ export default {
         arrowMove1: false,
         arrowMove2: true,
         isTrue:false,
-        list:[]
+        list:[],
+        loading: false,
       }
   },
   methods: {
@@ -101,14 +104,11 @@ export default {
         this.arrowMove2 = !this.arrowMove2;
         this.isTrue = !this.isTrue;
       },
-   },
-  mounted(){
-
-      // var gatewayUserlist
-      //请求网关数据
-      api.get("gatewayUser")
+      fetchData(){
+         this.loading = true
+             api.get("gatewayUser")
       .then(data => {
-
+        this.loading = false
         //获取网关列表的list
         //{"list":[{"gatewayCode":"B00495A17D023149"}]}
         // gatewayUserlist = data.data.data.list;
@@ -159,6 +159,7 @@ export default {
               }
 
             }
+
         }
         // console.log(this.list)
         //然后用户网关ID请求锁信息,如果没有锁,提示添加锁,如果有锁
@@ -171,8 +172,19 @@ export default {
       .catch(err => {
         console.log(err)
       });
+      }
+   },
+  mounted(){
 
-   }
+      // var gatewayUserlist
+      //请求网关数据
+   this.fetchData()
+
+   },
+   watch: {
+    // 如果路由有变化，会再次执行该方法
+    '$route': 'fetchData'
+   },
 }
 </script>
 
