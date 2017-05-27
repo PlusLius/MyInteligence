@@ -1,8 +1,8 @@
 <template>
   <div>
-       <div class="loading" v-if="loading">
-      Loading...
-    </div>
+      <div class="loadingBox">
+        <div class="loading"></div>
+      </div>
       <scroller v-if="list.length>0">
         <!-- content goes here -->
             <div v-if="list.length === 0" class="NoGateWayAllBox">
@@ -14,7 +14,7 @@
               </div>
             </div>
             <div v-for="(item,index) in list">
-                    <!-- <div v-for= "item in item.Devlist">
+            <!--         <div v-for= "item in item.Devlist">
 
                   {{item.code}}
                   </div> -->
@@ -405,6 +405,47 @@ export default {
     }
     .router-link-active{
        color:#00AEFF;
+    }
+
+    .loadingBox {
+      display:flex;
+      justify-content:center;
+      /* background: black; */
+    }
+
+   .loading {
+      @include font-dpr(30px);
+
+      text-indent: -9999em;
+      overflow: hidden;
+      width: toRem(100);
+      height: toRem(100);
+      border-radius: 50%;
+      margin: 0.8em auto;
+      position: relative;
+      animation: loading 1.7s infinite ease;
+   }
+
+  @keyframes loading
+    {
+      0% {
+      transform: rotate(0deg);
+      box-shadow: -0.11em -0.83em 0 -0.4em skyblue, -0.11em -0.83em 0 -0.42em skyblue, -0.11em -0.83em 0 -0.44em skyblue, -0.11em -0.83em 0 -0.46em skyblue, -0.11em -0.83em 0 -0.477em skyblue;
+       }
+      5%, 95% {
+          box-shadow: -0.11em -0.83em 0 -0.4em skyblue, -0.11em -0.83em 0 -0.42em skyblue, -0.11em -0.83em 0 -0.44em skyblue, -0.11em -0.83em 0 -0.46em skyblue, -0.11em -0.83em 0 -0.477em skyblue;
+      }
+      30% {
+          box-shadow: -0.11em -0.83em 0 -0.4em gold, -0.51em -0.66em 0 -0.42em gold, -0.75em -0.36em 0 -0.44em gold, -0.83em -0.03em 0 -0.46em gold, -0.81em 0.21em 0 -0.477em gold;
+      }
+      55% {
+          box-shadow: -0.11em -0.83em 0 -0.4em pink, -0.29em -0.78em 0 -0.42em pink, -0.43em -0.72em 0 -0.44em pink, -0.52em -0.65em 0 -0.46em pink, -0.57em -0.61em 0 -0.477em pink;
+      }
+      100% {
+          -webkit-transform: rotate(360deg);
+          transform: rotate(360deg);
+          box-shadow: -0.11em -0.83em 0 -0.4em skyblue, -0.11em -0.83em 0 -0.42em skyblue, -0.11em -0.83em 0 -0.44em skyblue, -0.11em -0.83em 0 -0.46em skyblue, -0.11em -0.83em 0 -0.477em skyblue;
+      }
     }
 </style>
 

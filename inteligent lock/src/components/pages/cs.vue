@@ -1,4 +1,4 @@
-<template>
+<!-- <template>
   <div class="post">
     <div class="loading" v-if="loading">
       Loading...
@@ -51,4 +51,4 @@
         }
       }
   }
-</script>
+</script> -->
