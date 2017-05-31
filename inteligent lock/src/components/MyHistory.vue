@@ -12,11 +12,11 @@
                   <div>
                         <datetime :min-year=2000 format="YYYY-MM-DD HH:mm" @on-change="change" year-row="{value}年" month-row="{value}月" day-row="{value}日" hour-row="{value}点" minute-row="{value}分" confirm-text="完成" cancel-text="取消" :title="''" class="selectDateBox" v-model="dateValue">
                           <ul class="selectDate" v-model="defaultDate">
-                             <li>{{ dateFont[0] || this.defaultDateFont.year}} <span>年</span></li>
-                             <li>{{ dateFont[1] || this.defaultDateFont.mounth}} <span>月</span></li>
-                             <li>{{ dateFont[2] || this.defaultDateFont.day}} <span>日</span></li>
-                             <li>{{ dateFont[3] || this.defaultDateFont.hour}} <span>时</span></li>
-                             <li>{{ dateFont[4] || this.defaultDateFont.minutes}} <span>分</span></li>
+                             <li>{{ dateFont[0] || defaultDateFont.getFullYear()}} <span>年</span></li>
+                             <li>{{ dateFont[1] || defaultDateFont.getMonth()+1}} <span>月</span></li>
+                             <li>{{ dateFont[2] || defaultDateFont.getDate()}} <span>日</span></li>
+                             <li>{{ dateFont[3] || defaultDateFont.getHours()}} <span>时</span></li>
+                             <li>{{ dateFont[4] || defaultDateFont.getMinutes()}} <span>分</span></li>
                           </ul>
                         </datetime>
                   </div>
@@ -95,16 +95,6 @@
                 }
                 return this.dateFont;
           },
-          defaultDate(){
-              var oDate = new Date(); //实例一个时间对象；
-              this.defaultDateFont.year = oDate.getFullYear();   //获取系统的年；
-              this.defaultDateFont.mounth = oDate.getMonth()+1;   //获取系统月份，由于月份是从0开始计算，所以要加1
-              this.defaultDateFont.day = oDate.getDate(); // 获取系统日，
-              this.defaultDateFont.hour =  oDate.getHours(); //获取系统时，
-              this.defaultDateFont.minutes =  oDate.getMinutes(); //分
-
-              return this.defaultDateFont
-          }
         },
         data () {
             return {
@@ -124,7 +114,7 @@
               selectMsg:'',
               oldSelectData:"",
               defaultDate:"",
-              defaultDateFont:{}
+              defaultDateFont:new Date()
             }
         },
         methods: {

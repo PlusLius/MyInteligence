@@ -3,7 +3,7 @@ import axios from 'axios'
 var root = 'http://100.10.0.121/smarthome-devchat/api/v1.1.0/'
 // var root = 'https://devchat.leocheery.net/smarthome-devchat/api/v1.1.0/'
 
-var token = "jwteyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJqd3QiLCJpYXQiOjE0OTU4NDg4NTIsInN1YiI6IntcIm9wZW5JZFwiOlwib1czUDF3ME83LWoxQ18zR2s5Y1lNV1NZX1lyOFwiLFwiYXBwSWRcIjpcInd4MDgzYjQ5NDMzMDIxMjA2NFwifSIsImV4cCI6MTQ5NTg5MjA1Mn0.io_53bBf5YHhyzeGqg4AS_8jXsa-AGnkURIMceLPEVU"
+var token = "jwteyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJqd3QiLCJpYXQiOjE0OTYxOTAwMzIsInN1YiI6IntcIm9wZW5JZFwiOlwib1czUDF3ME83LWoxQ18zR2s5Y1lNV1NZX1lyOFwiLFwiYXBwSWRcIjpcInd4MDgzYjQ5NDMzMDIxMjA2NFwifSIsImV4cCI6MTQ5NjIzMzIzMn0.jJmoL4hn39SW3sDY6jKJtkgvgTLgMJH0pyJyQCoGyFw"
 
 
 class API {

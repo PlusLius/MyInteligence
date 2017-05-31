@@ -75,6 +75,13 @@
                     v-model="show"
                     >编辑</swipeout-button>
                   <swipeout-button
+                    @click.native="onButtonClick('deviceShare',index,item.gatewayUserId)"
+                    type="primary"
+                    :width="73"
+                    background-color="#F1C40F"
+                    v-model="show"
+                    >分享</swipeout-button>
+                  <swipeout-button
                     @click.native="onButtonClick('deviceDelete',index)"
                     type="warn"
                     :width="73"
@@ -227,6 +234,18 @@
             </p >
           </x-dialog>
         </div>
+        <!-- 锁分享 -->
+        <div v-transfer-dom>
+          <x-dialog v-model="lockShareDialogStyle" hide-on-blur :dialog-style="{'max-width': '80%', width: '80%', 'background-color': 'white'}">
+            <p style="color:#cccccc;text-align:center;">
+              <img :src="ticket" class="shareImg">
+              <p class="shareFont">
+                长按二维码可发送给朋友<br>此二维码分享仅一次有效
+              </p >
+            </p >
+          </x-dialog>
+        </div>
+
 
       </div>
   </div>
@@ -278,11 +297,12 @@ export default {
         remoteUpdateShow:false,
         remoteUpdateMsg: {},
         shareDialogStyle: false,
+        lockShareDialogStyle: false,
         ticket:"",
       }
     },
    methods: {
-      onButtonClick (type,index,) {
+      onButtonClick (type,index,id) {
         // alert('on button click ' + type)
         if(type == 'gatewayEdit'){
           this.show = true;
@@ -322,7 +342,22 @@ export default {
             console.log(err)
           })
         }
-      },
+        if(type == 'deviceShare'){
+          var qs = require('qs');
+          window.localStorage.setItem("currentUserId",id)
+          window.localStorage.setItem("gatewayUserId", window.localStorage.getItem("currentUserId"));
+            api.post("gatewayUser/"+window.localStorage.getItem("currentUserId")+"/share",qs.stringify({
+              shareDevIds:window.localStorage.getItem("gatewayLockId")
+            }))
+            .then(res=>{
+                 this.ticket = "https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=" + res.data.data.ticket;
+                this.lockShareDialogStyle = true;
+            })
+            .catch(err=>{
+              console.log(err)
+            })
+          }
+        },
       handleEvents (type,id) {
 
         if(type == "gateway-on-open"){
