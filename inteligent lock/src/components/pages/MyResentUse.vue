@@ -13,7 +13,10 @@
             </div>
             <div class="RemoteUnlockBox">
                 <div class="MyDynamicKey">
-                    {{name || "模拟数据"}}: {{code || "没有设备请添加设备"}}
+                   <p class="MyDynamicKeyFontBox">
+                        <span class="MyDynamicKeyFont">{{name || "模拟数据"}}: </span>
+                        <span class="MyDynamicKeyCode">{{code || "没有设备请添加设备"}}</span>
+                    </p>
                 </div>
                 <div class="RemoteUnlock" @click="RemoteUnlock">
                     {{"远程开锁"}}
@@ -802,5 +805,19 @@
         justify-content:center;
         align-items:center;
         min-height:toRem(400);
+    }
+    .MyDynamicKeyFont {
+        display:inline-block;
+        text-overflow : ellipsis;
+        width:toRem(200) ;
+        white-space : nowrap; 
+        overflow : hidden; 
+    }
+    .MyDynamicKeyCode {
+        display: inline-block;
+    }
+    .MyDynamicKeyFontBox {
+        display: flex;
+        justify-content: flex-end;
     }
 </style>

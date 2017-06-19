@@ -247,8 +247,12 @@
         margin-left: toRem(33);
     }
     .userAdmin {
-      @include font-dpr(16px);
+     @include font-dpr(16px);
       color:#444;
+      text-overflow : ellipsis;
+      width:toRem(300) ;
+      white-space : nowrap; 
+      overflow : hidden; 
     }
     .weui-cell__ft {
         margin-top: toRem(60);

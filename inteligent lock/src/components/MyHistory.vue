@@ -114,7 +114,8 @@
               selectMsg:'',
               oldSelectData:"",
               defaultDate:"",
-              defaultDateFont:new Date()
+              defaultDateFont:new Date(),
+               noData: true
             }
         },
         methods: {
@@ -288,7 +289,13 @@
 
             },
             infinite(done) {
-
+              if (this.noData) {
+                var timer = setTimeout(() => {
+                  done(true)
+                  clearTimeout(timer)
+                }, 5000)
+              }
+                            
               if(this.flagInfinite && this.selectNowDate == ''){
                 this.flagInfinite = false;
                 this.nowDate = dateFormat(new Date(), 'YYYY-MM-DD HH:mm:ss');
@@ -302,6 +309,7 @@
                               sessionStorage.setItem("historyDate", res.data.data.content[0]["unlockTime"])
                               this.list = res.data.data.content
                               this.flagInfinite = true;
+                               this.noData = false;
                               done(true)
                               if(res.data.data.content.length > 0){
                                   this.num++
@@ -320,6 +328,7 @@
                            pageNum:this.num
                         })
                         .then(res => {
+                           this.noData = false;
                             for (var k in res.data.data.content){
                               this.list.push( res.data.data.content[k])
                             }
@@ -369,6 +378,7 @@
                            pageNum:this.selcNum
                         })
                         .then(res => {
+                           this.noData = false;
                             for (var k in res.data.data.content){
                               this.list.push( res.data.data.content[k])
                             }

@@ -38,13 +38,17 @@
       </div>
       </swipeout-item>
     </swipeout>
-
+    <!--错误弹出框-->
+      <toast width="35%" v-model="wrong" type="warn">{{ wrongFont }}</toast>
+      <!--成功弹框-->
+      <toast width="35%" v-model="success" type="success">{{ successFont }}</toast>
   </div>
 
 
 </template>
 <script>
   import { Swipeout, SwipeoutItem, SwipeoutButton } from 'vux'
+  import {Toast} from 'vux'
   import api from "../../api/api"
   let Api = new api();
   export default {
@@ -59,7 +63,8 @@
     components: {
       Swipeout,
       SwipeoutItem,
-      SwipeoutButton
+      SwipeoutButton,
+      Toast
     },
     data () {
       return {
@@ -79,10 +84,12 @@
           Api.del("gatewayUser/"+gatewayUserId+"/share/"+id)
             .then(data =>{
               if (data.data.status == 0){
-                alert("删除成功");
+                this.success = true;
+                this.successFont ="删除成功";
                 this.$emit('upup','hehe');
               }else{
-                alert(data.data.msg)
+                this.wrong = true;
+                this.wrongFont = data.data.msg;
               }
             })
       }

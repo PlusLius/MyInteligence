@@ -1,9 +1,9 @@
 import axios from 'axios'
 
-var root = 'http://100.10.0.121/smarthome-devchat/api/v1.1.0/'
-// var root = 'https://devchat.leocheery.net/smarthome-devchat/api/v1.1.0/'
+// var root = 'http://100.10.0.121/smarthome-devchat/api/v1.1.0/'
+var root = 'https://devchat.leocheery.net/smarthome-devchat/api/v1.1.0/'
 
-var token = "jwteyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJqd3QiLCJpYXQiOjE0OTYxOTAwMzIsInN1YiI6IntcIm9wZW5JZFwiOlwib1czUDF3ME83LWoxQ18zR2s5Y1lNV1NZX1lyOFwiLFwiYXBwSWRcIjpcInd4MDgzYjQ5NDMzMDIxMjA2NFwifSIsImV4cCI6MTQ5NjIzMzIzMn0.jJmoL4hn39SW3sDY6jKJtkgvgTLgMJH0pyJyQCoGyFw"
+var token = "jwteyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJqd3QiLCJpYXQiOjE0OTc4NzUyMzcsInN1YiI6IntcIm9wZW5JZFwiOlwib1czUDF3ME83LWoxQ18zR2s5Y1lNV1NZX1lyOFwiLFwiYXBwSWRcIjpcInd4MDgzYjQ5NDMzMDIxMjA2NFwifSIsImV4cCI6MTQ5NzkxODQzN30.PGc1kFkUN47XYKPczOc-rBrsMtuwFkIOyUnTo-Jm7VQ"
 
 
 class API {

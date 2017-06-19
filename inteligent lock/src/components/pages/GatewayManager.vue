@@ -85,7 +85,8 @@
       addConfirmFun(){
         let qs = require('qs');
         if (this.DevCode.length < 15){
-            alert("请输入正确的设备编码")
+              this.wrong = true;
+              this.wrongFont = "请输入正确的设备编码";
         }else{
           Api.post("gatewayUser/"+window.localStorage.getItem("currentUserId")+"/deviceStatus",qs.stringify({
             deviceCode : this.DevCode,
@@ -94,9 +95,11 @@
             .then(data =>{
               if (data.data.status == 0){
                 this.addKey= false;
-                alert("添加成功")
+                this.success = true;
+                this.successFont ="添加成功";
               }else{
-                alert(data.data.msg)
+               this.success = true;
+                this.successFont = data.data.msg;
               }
             })
         }
@@ -135,7 +138,7 @@
 
                 if(data.data.status == 0){
                    this.success = true;
-                   this.successFont = "添加设备成功!";
+                   this.successFont = "添加设备成功!请返回主页面查看";
                 }
                 else {
                    this.wrong = true;

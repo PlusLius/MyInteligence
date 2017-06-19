@@ -1,9 +1,9 @@
 <template>
   <div>
-      <div class="loadingBox">
-        <div class="loading"></div>
+      <div class="loadingBox" v-transfer-dom >
+          <loading v-model="loading" :text="text1"></loading>
       </div>
-      <scroller v-if="list.length>0">
+      <scroller v-show="!loading">
         <!-- content goes here -->
             <div v-if="list.length === 0" class="NoGateWayAllBox">
               <div class="NoGateWayBox">
@@ -64,6 +64,7 @@
 
 <script>
 import { Swipeout, SwipeoutItem, SwipeoutButton, XButton } from 'vux'
+import {Loading,TransferDomDirective as TransferDom}  from 'vux'
 
 import GateWayDropBox from "../public/Pub-GateWayDropBox"
 import GateWayDropBox2 from "../public/Pub-GateWayDropBox2"
@@ -74,6 +75,9 @@ var api = new API();
 
 
 export default {
+    directives: {
+      TransferDom
+    },
    components: {
       Swipeout,
       SwipeoutItem,
@@ -81,6 +85,7 @@ export default {
       XButton,
       GateWayDropBox,
       GateWayDropBox2,
+      Loading
     },
    data () {
       return {
@@ -89,7 +94,8 @@ export default {
         arrowMove2: true,
         isTrue:false,
         list:[],
-        loading: false,
+        loading: true,
+        text1: 'loading'
       }
   },
   methods: {
@@ -105,8 +111,13 @@ export default {
         this.isTrue = !this.isTrue;
       },
       fetchData(){
-         this.loading = true
-             api.get("gatewayUser")
+        var timer = setInterval(()=>{
+          this.loading = false
+          clearInterval(timer)
+        },3000)
+        
+
+        api.get("gatewayUser")
       .then(data => {
         this.loading = false
         //获取网关列表的list
@@ -413,39 +424,39 @@ export default {
       /* background: black; */
     }
 
-   .loading {
-      @include font-dpr(30px);
+  //  .loading {
+  //     @include font-dpr(30px);
 
-      text-indent: -9999em;
-      overflow: hidden;
-      width: toRem(100);
-      height: toRem(100);
-      border-radius: 50%;
-      margin: 0.8em auto;
-      position: relative;
-      animation: loading 1.7s infinite ease;
-   }
+  //     text-indent: -9999em;
+  //     overflow: hidden;
+  //     width: toRem(100);
+  //     height: toRem(100);
+  //     border-radius: 50%;
+  //     margin: 0.8em auto;
+  //     position: relative;
+  //     animation: loading 1.7s infinite ease;
+  //  }
 
-  @keyframes loading
-    {
-      0% {
-      transform: rotate(0deg);
-      box-shadow: -0.11em -0.83em 0 -0.4em skyblue, -0.11em -0.83em 0 -0.42em skyblue, -0.11em -0.83em 0 -0.44em skyblue, -0.11em -0.83em 0 -0.46em skyblue, -0.11em -0.83em 0 -0.477em skyblue;
-       }
-      5%, 95% {
-          box-shadow: -0.11em -0.83em 0 -0.4em skyblue, -0.11em -0.83em 0 -0.42em skyblue, -0.11em -0.83em 0 -0.44em skyblue, -0.11em -0.83em 0 -0.46em skyblue, -0.11em -0.83em 0 -0.477em skyblue;
-      }
-      30% {
-          box-shadow: -0.11em -0.83em 0 -0.4em gold, -0.51em -0.66em 0 -0.42em gold, -0.75em -0.36em 0 -0.44em gold, -0.83em -0.03em 0 -0.46em gold, -0.81em 0.21em 0 -0.477em gold;
-      }
-      55% {
-          box-shadow: -0.11em -0.83em 0 -0.4em pink, -0.29em -0.78em 0 -0.42em pink, -0.43em -0.72em 0 -0.44em pink, -0.52em -0.65em 0 -0.46em pink, -0.57em -0.61em 0 -0.477em pink;
-      }
-      100% {
-          -webkit-transform: rotate(360deg);
-          transform: rotate(360deg);
-          box-shadow: -0.11em -0.83em 0 -0.4em skyblue, -0.11em -0.83em 0 -0.42em skyblue, -0.11em -0.83em 0 -0.44em skyblue, -0.11em -0.83em 0 -0.46em skyblue, -0.11em -0.83em 0 -0.477em skyblue;
-      }
-    }
+  // @keyframes loading
+  //   {
+  //     0% {
+  //     transform: rotate(0deg);
+  //     box-shadow: -0.11em -0.83em 0 -0.4em skyblue, -0.11em -0.83em 0 -0.42em skyblue, -0.11em -0.83em 0 -0.44em skyblue, -0.11em -0.83em 0 -0.46em skyblue, -0.11em -0.83em 0 -0.477em skyblue;
+  //      }
+  //     5%, 95% {
+  //         box-shadow: -0.11em -0.83em 0 -0.4em skyblue, -0.11em -0.83em 0 -0.42em skyblue, -0.11em -0.83em 0 -0.44em skyblue, -0.11em -0.83em 0 -0.46em skyblue, -0.11em -0.83em 0 -0.477em skyblue;
+  //     }
+  //     30% {
+  //         box-shadow: -0.11em -0.83em 0 -0.4em gold, -0.51em -0.66em 0 -0.42em gold, -0.75em -0.36em 0 -0.44em gold, -0.83em -0.03em 0 -0.46em gold, -0.81em 0.21em 0 -0.477em gold;
+  //     }
+  //     55% {
+  //         box-shadow: -0.11em -0.83em 0 -0.4em pink, -0.29em -0.78em 0 -0.42em pink, -0.43em -0.72em 0 -0.44em pink, -0.52em -0.65em 0 -0.46em pink, -0.57em -0.61em 0 -0.477em pink;
+  //     }
+  //     100% {
+  //         -webkit-transform: rotate(360deg);
+  //         transform: rotate(360deg);
+  //         box-shadow: -0.11em -0.83em 0 -0.4em skyblue, -0.11em -0.83em 0 -0.42em skyblue, -0.11em -0.83em 0 -0.44em skyblue, -0.11em -0.83em 0 -0.46em skyblue, -0.11em -0.83em 0 -0.477em skyblue;
+  //     }
+  //   }
 </style>
 

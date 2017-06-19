@@ -277,6 +277,9 @@
     line-height: toRem(45);
     color: #444444;
     @include font-dpr(16px);
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
   }
   .DeviceContentName3{
     height:toRem(45);

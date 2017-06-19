@@ -1,4 +1,4 @@
-<!-- 动态秘钥组件 -->
+<!-- 动态密钥组件 -->
 <template>
     <div>
       <!-- 锁添加密钥部分 -->
@@ -47,7 +47,7 @@
               </router-link>
               <div v-if="item.effective==-1" class="effectiveFont">已失效</div>
               <div v-if="item.effective==0" class="effectiveFont">未生效</div>
-              <!--获取秘钥-->
+              <!--获取密钥-->
               <div class="DeviceGetKey" :class="{'light-DeviceGetKey':item.effective==1,'gray-DeviceGetKey':item.effective!=1}" v-model="keysShow" @click="keysFun(item.id,item.effective,item.level,item.adminId)">
                 获取密钥
               </div>
@@ -60,18 +60,18 @@
             <div class="weui-mask"></div>
             <div class="weui-dialog addKeyBox">
               <div class="weui-dialog__hd addCancelTitle">手动添加</div>
-              <div class="weui-dialog__bd addBd"><input type="text" class="allInput" placeholder="请输入设备编码" v-model="DevCode"><input type="text" class="allInput" placeholder="请输入系统秘钥名" v-model="LockName"><input type="password" class="allInput" placeholder="请输入系统秘钥" v-model="LockPassword"></div>
+              <div class="weui-dialog__bd addBd"><input type="text" class="allInput" placeholder="请输入设备编码" v-model="DevCode"><input type="text" class="allInput" placeholder="请输入系统密钥名" v-model="LockName"><input type="password" class="allInput" placeholder="请输入系统密钥" v-model="LockPassword"></div>
               <div class="weui-dialog__ft">
                 <a class="weui-dialog__btn weui-dialog__btn_primary" @click="addConfirmFun">确定</a>
                 <a class="weui-dialog__btn weui-dialog__btn_default" @click="addCancelFun">取消</a>
               </div>
             </div>
           </div>
-          <!--系统秘钥弹出框-->
+          <!--系统密钥弹出框-->
           <div v-if="keysShow">
             <div class="weui-mask"></div>
             <div class="weui-dialog addKeyBox">
-              <div class="weui-dialog__hd addCancelTitle">系统秘钥</div>
+              <div class="weui-dialog__hd addCancelTitle">系统密钥</div>
               <div class="weui-dialog__bd ">
                 <div class="keysShowFont" v-if="keySuccess">{{DynamicSecret}}</div>
                 <p class="keysShowWrong warning" v-if="KEYWrong">{{ keyWrong }}</p>
@@ -87,8 +87,8 @@
           <div v-if="EditButton">
             <div class="weui-mask"></div>
             <div class="weui-dialog addKeyBox">
-              <div class="weui-dialog__hd addCancelTitle">修改系统锁秘钥</div>
-              <div class="weui-dialog__bd addBd"><p class="editDevCode">{{ DevCode }}</p><input type="text" class="allInput" placeholder="请输入系统秘钥名" v-model="LockName"><input type="password" class="allInput" placeholder="请输入系统秘钥" v-model="LockPassword" v-if="PsShow"></div>
+              <div class="weui-dialog__hd addCancelTitle">修改系统锁密钥</div>
+              <div class="weui-dialog__bd addBd"><p class="editDevCode">{{ DevCode }}</p><input type="text" class="allInput" placeholder="请输入系统密钥名" v-model="LockName"><input type="password" class="allInput" placeholder="请输入系统密钥" v-model="LockPassword" v-if="PsShow"></div>
               <div class="weui-dialog__ft">
                 <a class="weui-dialog__btn weui-dialog__btn_primary" @click="editOnConfirm">确定</a>
                 <a class="weui-dialog__btn weui-dialog__btn_default" @click="editCancelFun">取消</a>
@@ -138,7 +138,7 @@
               <div class="weui-dialog__hd addCancelTitle">添加系统密钥</div>
               <div class="weui-dialog__bd addBd">
                 <input type="text" class="allInput" placeholder="请输入设备编码" v-model="myScanCode">
-                <input type="text" class="allInput" placeholder="请输入系统秘钥名" v-model="myScanName">
+                <input type="text" class="allInput" placeholder="请输入系统密钥名" v-model="myScanName">
                 <input type="text" class="allInput" placeholder="请输入系统密钥" v-model="myScanPas">
               <div class="weui-dialog__ft">
                 <a class="weui-dialog__btn weui-dialog__btn_primary" @click="addOK">确定</a>
@@ -200,13 +200,13 @@
               wrong:false,
               DynamicSecretHS:"",
               keyWrong:"",
-              KEYWrong:"false",//秘钥请求错误提示
-              frequently:false,//秘钥请求频繁 系统秘钥请求id以及秒数显示
-              keySuccess:false,//秘钥请求成功
+              KEYWrong:"false",//密钥请求错误提示
+              frequently:false,//密钥请求频繁 系统密钥请求id以及秒数显示
+              keySuccess:false,//密钥请求成功
               Level:"",//判断是否为管理员
               addKey:false,//手动添加锁
               LockName:"",//设备名称
-              LockPassword:"",//秘钥
+              LockPassword:"",//密钥
               EditButton:false,//编辑弹出
               Src:"",//分享二维码图片路径
               ID:"",//设备id
@@ -218,8 +218,8 @@
               endValue:"永久分享",//结束时间
               shareDialogStyle: false,//分享图片弹出框
               disabled: false,
-              keysShow: false,//获取秘钥alert
-              Lis:[],//获取系统秘钥列表
+              keysShow: false,//获取密钥alert
+              Lis:[],//获取系统密钥列表
               DynamicSecret:"",//获取锁动态密码
               countDown:"",//倒计时显示的提示文字
               timer: "",       //默认倒数30秒
@@ -360,7 +360,7 @@
             handleEvents (type) {
               console.log('event: ', type)
             },
-            //获取秘钥alert
+            //获取密钥alert
             keysFun (ID,effective,level,MyID){
               this.DynamicSecret = "";
               this.countDown = "";
@@ -377,7 +377,7 @@
                    .then(data =>{
                      if (data.data.status == 0){
                        console.log("请求成功");
-                       this.frequently = false;//系统秘钥请求id以及秒数显示
+                       this.frequently = false;//系统密钥请求id以及秒数显示
                        this.KEYWrong = false;//密钥错误提示
                        this.keySuccess = true;
                        this.keysShow = true;
@@ -400,7 +400,7 @@
                          this.frequently = true;
                          this.keysShow = true;
                          this.timer = data.data.data.ttl;
-                         this.DynamicSecretHS = "历史秘钥 : "+data.data.data.dynamicSecret;
+                         this.DynamicSecretHS = "历史密钥 : "+data.data.data.dynamicSecret;
                        }else{
 
                        }
@@ -416,7 +416,7 @@
 
 
                },
-            //获取秘钥确定
+            //获取密钥确定
             keysShowOnConfirm(){
                   this.keysShow = false
             },
@@ -796,12 +796,18 @@
       height:toRem(47);
       line-height: toRem(47);
       @include font-dpr(16px);
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
     }
     .gray-DeviceListTitle{
       height:toRem(47);
       line-height: toRem(47);
       color: #CCCCCC;
-    @include font-dpr(16px);
+      @include font-dpr(16px);
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
     }
     .DeviceListIcon2 {
         position:relative;

@@ -74,13 +74,13 @@
                     background-color="#00A6F4"
                     v-model="show"
                     >编辑</swipeout-button>
-                  <swipeout-button
+                  <!--<swipeout-button
                     @click.native="onButtonClick('deviceShare',index,item.gatewayUserId)"
                     type="primary"
                     :width="73"
                     background-color="#F1C40F"
                     v-model="show"
-                    >分享</swipeout-button>
+                    >分享</swipeout-button>-->
                   <swipeout-button
                     @click.native="onButtonClick('deviceDelete',index)"
                     type="warn"
@@ -578,7 +578,11 @@ export default {
   }
 
   .GateWayName {
-    margin-top: toRem(50);
+     margin-top: toRem(50);
+    text-overflow : ellipsis;
+    width:toRem(300) ;
+    white-space : nowrap; 
+    overflow : hidden; 
     @include font-dpr(15px);
     color:#444444;
   }
@@ -681,6 +685,10 @@ export default {
   }
 
   .GateWayChildLockTitle {
+       text-overflow : ellipsis;
+        width:toRem(300) ;
+        white-space : nowrap; 
+        overflow : hidden; 
        margin-top: toRem(16);
        @include font-dpr(15px);
        color:#666666;
